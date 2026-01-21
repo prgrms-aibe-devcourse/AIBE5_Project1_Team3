@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>여기저기 - 지도 보기</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/map.css">
+</head>
+<body class="map-body">
+
+    <!-- Simple Header for Map -->
+    <div class="map-header">
+        <div class="map-info-box">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">여행지 지도</h2>
+            <p style="font-size: 0.75rem; color: var(--gray-500);">전 세계의 멋진 여행지를 탐색해보세요.</p>
+        </div>
+        <a href="index.html" class="close-btn-circle">
+            <i data-lucide="x" width="24"></i>
+        </a>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map-container" class="map-viewport">
+        <!-- Background Map Image -->
+        <div class="map-bg"></div>
+
+        <!-- Pins will be injected here -->
+        <div id="pins-layer"></div>
+        
+        <div style="position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); color: white; padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500;">
+            지도에서 원하는 여행지를 클릭하세요.
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        const pinsLayer = document.getElementById('pins-layer');
+        ARTICLES.forEach((article, index) => {
+            const top = 20 + (index * 15) % 60; 
+            const left = 20 + (index * 13) % 70;
+
+            const pin = document.createElement('div');
+            pin.className = 'map-pin';
+            pin.style.top = `${top}%`;
+            pin.style.left = `${left}%`;
+            
+            pin.onclick = () => location.href = `article.html?id=${article.id}`;
+            pin.innerHTML = `
+                <div class="pin-content">
+                    <div class="pin-img-wrap">
+                        <img src="${article.imageUrl}" class="object-cover w-full h-full">
+                    </div>
+                    <div class="pin-tooltip">
+                        ${article.title}
+                    </div>
+                    <span class="ping-animation"></span>
+                </div>
+            `;
+            
+            pinsLayer.appendChild(pin);
+        });
+    </script>
+</body>
+</html>

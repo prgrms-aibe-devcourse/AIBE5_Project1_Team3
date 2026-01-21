@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - 여기저기</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/mypage.css">
+</head>
+<body style="background-color: var(--gray-50); padding-bottom: 5rem;">
+
+    <!-- Navbar -->
+    <nav class="navbar" style="position: sticky; top: 0; background: white; border-bottom: 1px solid var(--gray-100);">
+        <div class="nav-inner" style="max-width: 800px;">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="nav-icon-btn" style="color: var(--gray-800); background: transparent;">
+                    <i data-lucide="arrow-left" width="24"></i>
+                </a>
+                <h1 class="font-bold text-lg">마이페이지</h1>
+            </div>
+            <button onclick="logout()" style="font-size: 0.75rem; color: var(--gray-500); text-decoration: underline;">
+                로그아웃
+            </button>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 800px; padding-top: 2rem;">
+        
+        <!-- Profile Section -->
+        <div class="profile-card">
+            <div class="profile-img-wrap">
+                <div class="profile-img-inner">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="object-cover w-full h-full">
+                </div>
+            </div>
+            <div>
+                <h2 class="text-xl font-black text-gray-900" style="margin-bottom: 0.25rem;">여행자 님</h2>
+                <p class="text-sm text-gray-500" style="margin-bottom: 0.75rem;">오늘도 새로운 여행을 꿈꾸시나요?</p>
+                <div class="flex gap-2">
+                    <span class="card-badge" style="background: var(--gray-100); color: var(--gray-600); border:none;">Level 3. 탐험가</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('itinerary')">
+                AI 저장 코스
+            </button>
+            <button class="tab-btn" onclick="switchTab('favorites')">
+                좋아요 목록
+            </button>
+        </div>
+
+        <!-- Tab Content: AI Itineraries -->
+        <div id="tab-itinerary" class="tab-content animate-fade-in" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Tab Content: Favorites -->
+        <div id="tab-favorites" class="tab-content hidden animate-fade-in" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Injected by JS -->
+        </div>
+
+    </div>
+
+    <!-- Itinerary Modal -->
+    <div id="itinerary-modal" class="modal-overlay hidden">
+        <div onclick="closeModal()" class="absolute inset-0"></div>
+        
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="font-bold text-lg" id="modal-title">여행 코스 상세</h3>
+                <button onclick="closeModal()" style="padding: 0.5rem; background: var(--gray-100); border-radius: 50%;">
+                    <i data-lucide="x" width="20"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="modal-content"></div>
+            </div>
+
+            <div class="modal-footer">
+                 <button id="btn-delete-itinerary" class="btn w-full" style="background: #fef2f2; color: #ef4444;">
+                     이 코스 삭제하기
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        function logout() {
+            if(confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('isLoggedIn');
+                location.href = 'index.html';
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`tab-${tabName}`);
+            if(target) target.classList.remove('hidden');
+            
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(btn => btn.classList.remove('active'));
+            
+            const activeBtn = document.querySelector(`button[onclick="switchTab('${tabName}')"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        function renderItineraries() {
+            const container = document.getElementById('tab-itinerary');
+            const data = JSON.parse(localStorage.getItem('myItineraries') || '[]');
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 5rem 0; text-align: center; color: var(--gray-400);">
+                        <i data-lucide="sparkles" width="48" style="margin: 0 auto 0.75rem auto; color: var(--gray-200);"></i>
+                        <p>저장된 AI 여행 코스가 없습니다.<br>여행지 상세페이지에서 코스를 만들어보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            data.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                card.onclick = () => openModal(index);
+                card.innerHTML = `
+                    <div class="list-thumb">
+                        <img src="${item.image}" class="object-cover w-full h-full">
+                    </div>
+                    <div class="list-info">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.25rem;">
+                            <h3 class="font-bold text-gray-900" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${item.title}</h3>
+                            <span class="ai-badge">AI 생성</span>
+                        </div>
+                        <p class="text-xs text-gray-400" style="margin-bottom: 0.75rem;">${item.date}</p>
+                        <span class="text-xs font-bold text-gray-500" style="text-decoration: underline;">코스 상세보기 ></span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function renderMyFavorites() {
+            const container = document.getElementById('tab-favorites');
+            const favIds = typeof getFavorites === 'function' ? getFavorites() : JSON.parse(localStorage.getItem('favorites') || '[]');
+            
+            if (favIds.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 5rem 0; text-align: center; color: var(--gray-400);">
+                        <i data-lucide="heart" width="48" style="margin: 0 auto 0.75rem auto; color: var(--gray-200);"></i>
+                        <p>아직 찜한 여행지가 없어요.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            favIds.forEach(id => {
+                const article = ARTICLES.find(a => a.id === id);
+                if (!article) return;
+                
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                card.onclick = (e) => {
+                    if(!e.target.closest('button')) location.href = `article.html?id=${article.id}`;
+                };
+                card.innerHTML = `
+                    <div class="list-thumb">
+                        <img src="${article.imageUrl}" class="object-cover w-full h-full">
+                    </div>
+                    <div class="list-info">
+                        <div>
+                            <h3 class="font-bold text-gray-900" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</h3>
+                            <p class="text-xs text-gray-500">${article.category}</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                            <span class="text-sm font-bold">${article.price || '-'}</span>
+                             <button onclick="removeFav('${article.id}')" style="color: var(--gray-300); padding: 0.25rem;">
+                                <i data-lucide="trash-2" width="16"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function removeFav(id) {
+            if (typeof toggleFavorite === 'function') {
+                toggleFavorite(id);
+                renderMyFavorites();
+            }
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('itinerary-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalTitle = document.getElementById('modal-title');
+        let currentItineraryIndex = -1;
+
+        function openModal(index) {
+            const data = JSON.parse(localStorage.getItem('myItineraries') || '[]');
+            const item = data[index];
+            if (!item) return;
+
+            currentItineraryIndex = index;
+            modalTitle.textContent = item.title;
+            modalContent.innerHTML = item.content;
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+
+            document.getElementById('btn-delete-itinerary').onclick = () => {
+                if(confirm('정말 삭제하시겠습니까?')) {
+                    const latestData = JSON.parse(localStorage.getItem('myItineraries') || '[]');
+                    latestData.splice(index, 1);
+                    localStorage.setItem('myItineraries', JSON.stringify(latestData));
+                    closeModal();
+                    renderItineraries();
+                }
+            };
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            renderItineraries();
+            renderMyFavorites();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

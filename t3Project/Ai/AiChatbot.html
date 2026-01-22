@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 챗봇</title>
+    <link rel="stylesheet" href="css.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="chat-container" id="chat-container">
+        <div class="message ai">
+            <div class="message-bubble">안녕하세요! 무엇을 도와드릴까요?</div>
+        </div>
+        </div>
+
+    <div class="input-container" id="input-container">
+        <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+        <button id="send-button">전송</button>
+        <div class="loading-spinner" id="loading-spinner"></div>
+    </div>
+
+    <script type="module" src="AIchat.js"></script>
+    <script>
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') return;
+
+            addMessage('user', message);
+            userInput.value = '';
+            setLoading(true);
+
+            try {
+                // [핵심]: 내 컴퓨터에서 돌아가는 Node.js 서버에 질문을 던짐
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                addMessage('ai', data.reply); // 서버가 준 대답을 화면에 출력
+
+            } catch (error) {
+                addMessage('ai', "서버와 연결할 수 없습니다.");
+            } finally {
+                setLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>

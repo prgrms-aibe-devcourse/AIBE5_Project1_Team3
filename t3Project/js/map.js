@@ -1,10 +1,8 @@
 
-import { ARTICLES } from './data.js';
-
 // --- STATE ---
 let state = {
     query: '',
-    activeFilters: [], // Changed to empty array by default
+    activeFilters: [], 
     selectedId: null,
     isSidebarOpen: true,
     filteredArticles: [...ARTICLES],
@@ -20,10 +18,9 @@ let state = {
 let map = null;
 let markers = {};
 let routeLayerGroup = null; 
-let routingControls = []; 
+let routingControl = null;
 
 // --- FILTER CATEGORIES CONFIGURATION ---
-// Based on the visual requirement
 const TAG_CATEGORIES = [
     { 
         id: 'style', 
@@ -112,15 +109,6 @@ function initMap() {
     routeLayerGroup = L.layerGroup().addTo(map);
 }
 
-function clearRoutingControls() {
-    if (routingControls.length > 0) {
-        routingControls.forEach(control => {
-            if (map) map.removeControl(control);
-        });
-        routingControls = [];
-    }
-}
-
 function toggleFilter(tagName) {
     if (state.activeFilters.includes(tagName)) {
         state.activeFilters = state.activeFilters.filter(t => t !== tagName);
@@ -137,16 +125,11 @@ function toggleFilterExpand() {
 
 function updateFilteredArticles() {
     state.filteredArticles = ARTICLES.filter(article => {
-        // Filter Tags Match (OR logic within filters: show if it matches ANY selected filter)
-        // If no filters selected, show all.
         let matchesFilter = true;
         if (state.activeFilters.length > 0) {
-            // Check if article has ANY tag that includes the selected filter keyword (Fuzzy Match)
-            // e.g. Selected "가족" should match article tag "가족여행"
             const articleTagsString = article.tags.join(' ') + ' ' + article.category;
             matchesFilter = state.activeFilters.some(filter => articleTagsString.includes(filter));
         }
-
         return matchesFilter;
     });
     
@@ -169,9 +152,14 @@ function togglePlanMode() {
     closeModal();
     state.selectedId = null; 
     
-    clearRoutingControls();
     if (routeLayerGroup) {
         routeLayerGroup.clearLayers();
+    }
+    
+    // Cleanup routing control
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
     }
     
     if (state.isPlanMode) {
@@ -183,8 +171,11 @@ function togglePlanMode() {
 
 function clearItinerary() {
     state.itinerary = [];
-    clearRoutingControls();
     if (routeLayerGroup) routeLayerGroup.clearLayers();
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
     render();
 }
 
@@ -216,8 +207,13 @@ function moveItineraryItem(id, direction) {
 }
 
 function updateItineraryRoute() {
-    clearRoutingControls();
     if (routeLayerGroup) routeLayerGroup.clearLayers();
+    
+    // Remove old routing control
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
 
     if (state.itinerary.length === 0) return;
 
@@ -236,36 +232,50 @@ function updateItineraryRoute() {
         }
     });
 
+    // Draw numbered markers for all stops
     allStops.forEach(stop => {
         const icon = createCoursePinIcon(stop.globalIndex, stop.name);
         const marker = L.marker([stop.lat, stop.lng], { 
             icon: icon,
             zIndexOffset: 2000 
         }).addTo(routeLayerGroup);
-        
-        // ... (Popup logic remains same) ...
     });
 
+    // Draw route line if more than 1 stop
     if (allStops.length > 1) {
         const waypoints = allStops.map(s => L.latLng(s.lat, s.lng));
         
-        const control = L.Routing.control({
-            waypoints: waypoints,
-            router: L.Routing.osrmv1({
-                serviceUrl: 'https://router.project-osrm.org/route/v1',
-                profile: 'car' 
-            }),
-            lineOptions: {
-                styles: [{color: '#2563eb', opacity: 0.8, weight: 6, className: 'animate-draw'}]
-            },
-            createMarker: function() { return null; },
-            addWaypoints: false,
-            draggableWaypoints: false,
-            fitSelectedRoutes: false,
-            show: false
-        }).addTo(map);
-        
-        routingControls.push(control);
+        // Use Leaflet Routing Machine
+        if (typeof L.Routing !== 'undefined') {
+            routingControl = L.Routing.control({
+                waypoints: waypoints,
+                router: L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1'
+                }),
+                lineOptions: {
+                    styles: [{color: '#2563eb', opacity: 0.8, weight: 6}]
+                },
+                plan: L.Routing.plan(waypoints, {
+                    createMarker: function() { return null; }, // Suppress default markers, we use our own
+                    addWaypoints: false,
+                    draggableWaypoints: false
+                }),
+                addWaypoints: false,
+                draggableWaypoints: false,
+                fitSelectedRoutes: false,
+                show: false, // Hide instructions panel
+                containerClassName: 'hidden-routing-container'
+            }).addTo(map);
+            
+            // Explicitly hide container if needed by direct style manipulation
+            // (CSS usually handles this but this is a fallback)
+            if (routingControl.getContainer()) {
+                routingControl.getContainer().style.display = 'none';
+            }
+        } else {
+            console.warn("Leaflet Routing Machine is not loaded. Add the library to your HTML.");
+        }
+
         const bounds = L.latLngBounds(waypoints);
         map.flyToBounds(bounds, { padding: [50, 50], duration: 1.5 });
     } else if (allStops.length === 1) {
@@ -288,7 +298,10 @@ function selectArticle(id) {
     if (article && map) {
         // Ensure no route layers are active in explorer mode
         if (routeLayerGroup) routeLayerGroup.clearLayers();
-        clearRoutingControls();
+        if (routingControl) {
+             map.removeControl(routingControl);
+             routingControl = null;
+        }
 
         // Just fly to the location
         map.flyTo([article.lat, article.lng], 15, {
@@ -317,7 +330,10 @@ function resetApp() {
     if (routeLayerGroup) {
         routeLayerGroup.clearLayers();
     }
-    clearRoutingControls();
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
     
     if (map) map.flyTo([13.75, 100.5], 5);
     closeModal();
@@ -655,10 +671,6 @@ function openModal(article) {
     </div>
 
     <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-between shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div>
-            <p class="text-xs text-gray-500">예상 비용</p>
-            <p class="text-lg font-bold text-blue-600">${article.price}</p>
-        </div>
         <button onclick="window.location.href='article.html?id=${article.id}'" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
             자세히 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
@@ -680,7 +692,6 @@ function closeModal() {
              if (routeLayerGroup) {
                 routeLayerGroup.clearLayers();
             }
-            clearRoutingControls();
         }
         
         render(); 

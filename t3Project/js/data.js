@@ -699,7 +699,7 @@ const ARTICLES = [
       { user: '주말드라이버', comment: '분위기가 너무 좋아서 가평 올 때마다 들르는 곳입니다.', rating: 5 },
       { user: '지락실투어중', comment: '방송에서 보던 것보다 훨씬 넓고 예뻐요. 사진 잘 나옵니다!', rating: 5 }
     ]
-  }
+  },
 
     {
     id: 'article-31',
@@ -823,7 +823,7 @@ const ARTICLES = [
     description: '강릉 지역 특산 두부로 만든 순두부 요리점.', 
     content: '부드럽고 진한 맛의 초당순두부 전문점으로 관광객들에게 사랑받는 메뉴입니다.', 
     name: '강릉 초당순두부',
-    address: '한국 강원특별자치도 강릉시 초당순두부길,
+    address: '한국 강원특별자치도 강릉시 초당순두부길',
     lat: 37.7899231,
     lng: 128.9137687,
     host: '현지인 추천',
@@ -966,7 +966,7 @@ const ARTICLES = [
       { user: 'Aiko', comment: '여행 내내 또 먹었어요.', rating: 5 },
       { user: 'Jun', comment: '가성비 좋아요.', rating: 4 }
     ]
-  }
+  },
 
   
 {
@@ -997,7 +997,7 @@ const ARTICLES = [
     { user: '박준형', comment: '사람이 좀 많긴 하지만 경주만의 독특한 분위기를 느끼기에 이만한 곳이 없습니다.', rating: 4 },
     { user: '최지우', comment: '대릉원이랑 가까워서 산책하기 정말 좋아요. 한복 입고 사진 찍으니 정말 예쁘게 나오네요.', rating: 5 }
   ]
-}
+},
 
 {
   id: 'article-44',
@@ -1026,7 +1026,7 @@ const ARTICLES = [
     { user: '이지혜', comment: '아이들과 오션플레이에서 즐거운 시간 보냈습니다. 시설이 깔끔하고 직원들이 매우 친절해요.', rating: 5 },
     { user: '정다운', comment: '조식 뷔페 퀄리티가 기대 이상이었습니다. 메뉴도 다양하고 재료가 신선해서 좋았어요.', rating: 4 }
   ]
-}
+},
 
 {
   id: 'article-45',
@@ -1055,7 +1055,7 @@ const ARTICLES = [
     { user: '이진우', comment: '건축 디자인이 독특해서 구경하는 재미가 있어요. 불국사 들렀다가 오기 딱 좋네요.', rating: 4 },
     { user: '최민기', comment: '빵도 맛있고 커피 향도 좋네요. 주차장이 넓어서 초보 운전인데도 편하게 왔어요.', rating: 5 }
   ]
-}
+},
 
 
 {
@@ -1085,7 +1085,7 @@ const ARTICLES = [
     { user: 'Jason Lee', comment: '괌의 역사를 알 수 있는 의미 있는 장소입니다. 낮에는 너무 더우니 양산 필수예요.', rating: 4 },
     { user: '박서준', comment: 'GUAM 글자 조형물에서 줄 서서 사진 찍었어요. 하갓냐 투어 하실 분들은 꼭 들르세요.', rating: 5 }
   ]
-}
+},
 
 {
   id: 'article-47',
@@ -1114,7 +1114,7 @@ const ARTICLES = [
     { user: 'Sarah Kim', comment: '인피니티 풀에서 보는 노을은 정말 환상적이에요. 객실 상태도 매우 깨끗하고 만족스러웠습니다.', rating: 5 },
     { user: '김도윤', comment: '수영장 시설이 아이들과 놀기에 참 좋았습니다. 해변과 바로 연결되어 있어서 스노클링 하기에도 편해요.', rating: 4 }
   ]
-}
+},
 
 {
   id: 'article-48',
@@ -1143,7 +1143,7 @@ const ARTICLES = [
     { user: '이지혜', comment: '현지인들이 왜 많이 찾는지 알겠네요. 분위기도 좋고 직원들도 엄청 친절해요. 베네딕트 강추!', rating: 5 },
     { user: 'Thomas W.', comment: 'Great local breakfast spot. The portions are huge, but it can get very salty. Ask for less salt!', rating: 4 }
   ]
-}
+},
 
 {
   id: 'article-49',

@@ -113,7 +113,7 @@ async function getAiWithFailover(prompt) {
                 반드시 제공된 [여행지 데이터] 목록에 있는 장소만을 추천해야 해. 
                 데이터에 없는 장소에 대해 물으면 모른다고 답하거나 데이터 내의 유사한 곳을 제안해.
                 추천 장소를 언급할 때는 반드시 아래 링크 형식을 사용해.
-                형식: [장소이름](http://127.0.0.1:5500/html/article.html?id=장소ID)
+                형식: [장소이름](http://127.0.0.1:5500/t3Project/html/article.html?id=장소ID)
                 답변 끝에는 항상 {"recommend_id": "해당_ID"} 형식의 JSON을 붙여줘.
                 `
             });

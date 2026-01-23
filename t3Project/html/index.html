@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/Aichatbot.css">
 </head>
 <body id="page-home">
 
@@ -154,6 +155,12 @@
             <!-- Content Injected by JS -->
         </div>
     </div>
+    <!-- 6. Ai Chat Modal -->
+    <button id="floating-chat-btn" onclick="toggleChatIframe()">💬</button>
+    <div id="chat-frame-container">
+        <iframe src="../Ai/AiChatbot.html" style="width:100%; height:100%; border:none;" scrolling="no"></iframe>
+    </div>
+
 
     <!-- Footer -->
     <footer>
@@ -186,5 +193,6 @@
 
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/Ai.js"></script>
 </body>
 </html>

@@ -45,7 +45,7 @@ body {
 }
 
 .message.user .message-bubble {
-    background-color: #007bff;
+    background-color: #7a18cf;
     color: white;
     border-bottom-right-radius: 2px;
 }
@@ -82,7 +82,7 @@ body {
 .input-container button {
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #8d18b4;
     color: white;
     border: none;
     border-radius: 20px;

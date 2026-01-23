@@ -1,9 +1,26 @@
-
-// 여행지 및 공통 데이터
-
 const LOREM_CONTENT = `
-  <div class="article-content-wrapper">
-    <p class="article-main-text">일상에서 벗어나 진정한 휴식을 취할 수 있는 완벽한 장소입니다.</p>
+  <div class="space-y-6">
+    <p class="text-lg leading-relaxed text-gray-700">
+      일상에서 벗어나 진정한 휴식을 취할 수 있는 완벽한 장소입니다. 
+      아침에는 새들의 지저귐과 함께 눈을 뜨고, 저녁에는 붉게 물드는 노을을 바라보며 하루를 마무리할 수 있습니다.
+    </p>
+    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+      <h3 class="text-xl font-bold mb-4 text-gray-900">✨ 매력 포인트</h3>
+      <ul class="space-y-3 text-gray-700">
+        <li class="flex items-start gap-2">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
+          <span>현지인들이 추천하는 숨겨진 맛집 탐방</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
+          <span>자연과 하나되는 트레킹 코스</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
+          <span>인생 사진을 남길 수 있는 포토 스팟</span>
+        </li>
+      </ul>
+    </div>
   </div>
 `;
 
@@ -21,7 +38,6 @@ const ARTICLES = [
     address: '169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국',
     lat: 13.7538,
     lng: 100.4991,
-    price: '₩15,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
@@ -44,7 +60,6 @@ const ARTICLES = [
     address: '30/1 Soi Somdej Pra Pinklaow 1(Behind Wat Dusidharam, 27 Borommaratchachonnani Rd, Arun Amarin, Bangkok Noi, Bangkok 10700 태국',
     lat: 13.7602,
     lng: 100.4855,
-    price: '₩120,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
@@ -67,7 +82,6 @@ const ARTICLES = [
     address: '10 Thanon Si Wiang, Si Lom, Bang Rak, Bangkok 10500 태국',
     lat: 13.7214,
     lng: 100.5238,
-    price: '₩80,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.9,
@@ -90,7 +104,6 @@ const ARTICLES = [
     address: '18 ซ Ari 4 Fang Nua Alley, แขวง พญาไท Phaya Thai, Bangkok 10400 태국',
     lat: 13.7801,
     lng: 100.5445,
-    price: '₩12,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
@@ -113,7 +126,6 @@ const ARTICLES = [
     address: '25 Ari 4 Fang Nua Alley, Phaya Thai, Bangkok 10400 태국',
     lat: 13.7805,
     lng: 100.5448,
-    price: '무료 (입장료 없음)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.4,
@@ -136,7 +148,6 @@ const ARTICLES = [
     address: '944 Rama IV Rd, Wang Mai, Pathum Wan, Bangkok 10330 태국',
     lat: 13.7335,
     lng: 100.5284,
-    price: '무료 (쇼핑비 별도)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
@@ -159,7 +170,6 @@ const ARTICLES = [
     address: 'Sukhumvit 24 Alley, Klongton-Nua, Watthana, Bangkok 10110 태국',
     lat: 13.7302,
     lng: 100.5678,
-    price: '₩50,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
@@ -182,7 +192,6 @@ const ARTICLES = [
     address: '36, 190 Thong Lo, แขวง คลองเตยเหนือ, Watthana, Bangkok 10110 태국',
     lat: 13.7248,
     lng: 100.5785,
-    price: '₩20,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
@@ -205,7 +214,6 @@ const ARTICLES = [
     address: '587, 10 Kamphaeng Phet 2 Rd, Khwaeng Chatuchak, Chatuchak, Bangkok 10900 태국',
     lat: 13.7999,
     lng: 100.5502,
-    price: '저렴함',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
@@ -228,7 +236,6 @@ const ARTICLES = [
     address: '2 Sanam Chai Rd, Phra Borom Maha Ratchawang, Phra Nakhon, Bangkok 10200 태국',
     lat: 13.7465,
     lng: 100.4933,
-    price: '₩7,500 (입장료)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
@@ -251,7 +258,6 @@ const ARTICLES = [
     address: '191 Si Lom Rd, Si Lom, Bang Rak, Bangkok 10500 태국',
     lat: 13.7286,
     lng: 100.5348,
-    price: '무료 (쇼핑비 별도)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.3,
@@ -274,7 +280,6 @@ const ARTICLES = [
     address: 'Sukhumvit Rd, Khlong Tan, Khlong Toei, Bangkok 10110 태국',
     lat: 13.7382,
     lng: 100.5592,
-    price: '₩30,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
@@ -297,7 +302,6 @@ const ARTICLES = [
     address: '93, 95 Soi Sukhumvit 26, Khlong Tan, Khlong Toei, Bangkok 10110 태국',
     lat: 13.7278,
     lng: 100.5695,
-    price: '₩10,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
@@ -320,7 +324,6 @@ const ARTICLES = [
     address: 'Bo Put, Ko Samui District, Surat Thani 84320 태국',
     lat: 9.5583,
     lng: 100.0305,
-    price: '₩40,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
@@ -343,7 +346,6 @@ const ARTICLES = [
     address: '38, 2, Tambon Na Mueang, Koh Samui, Surat Thani 84110 태국',
     lat: 9.4312,
     lng: 99.9928,
-    price: '₩180,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
@@ -366,7 +368,6 @@ const ARTICLES = [
     address: '124/2 Maret, Suratthani, Surat Thani 84310 태국',
     lat: 9.4795,
     lng: 100.0632,
-    price: '₩70,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.9,
@@ -389,7 +390,6 @@ const ARTICLES = [
     address: 'H25J+9HJ, Tambon Bo Put, Ko Samui District, Surat Thani 84320 태국',
     lat: 9.5592,
     lng: 100.0321,
-    price: '무료 (쇼핑비 별도)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
@@ -412,7 +412,6 @@ const ARTICLES = [
     address: '289 ถ. ทวีราษฎร์ภักดี Tambon Maret, Ko Samui District, Chang Wat Surat Thani 84310 태국',
     lat: 9.4712,
     lng: 100.0485,
-    price: '₩4,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.4,
@@ -435,7 +434,6 @@ const ARTICLES = [
     address: '38/2 Moo 3 Borpud, Chaweng Beach, Surat Thani 84320 태국',
     lat: 9.5315,
     lng: 100.0618,
-    price: '₩50,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
@@ -458,7 +456,6 @@ const ARTICLES = [
     address: '220, Tha Rong Chang, Phunphin District, Surat Thani 84130 태국',
     lat: 9.1124,
     lng: 99.2158,
-    price: '₩5,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
@@ -481,7 +478,6 @@ const ARTICLES = [
     address: '400 เขาสก Tambon Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9145,
     lng: 98.5312,
-    price: '₩100,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
@@ -504,7 +500,6 @@ const ARTICLES = [
     address: 'Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9128,
     lng: 98.5295,
-    price: '₩7,000~',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
@@ -527,7 +522,6 @@ const ARTICLES = [
     address: 'WG64+68R, Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9168,
     lng: 98.5155,
-    price: '₩10,000 (입장료)',
     category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
@@ -556,7 +550,6 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 미사리로 267-124',
     lat: 37.712852,
     lng: 127.487123,
-    price: '₩200,000~',
     category: '국내여행',
     host: '지락실팬',
     rating: 4.9,
@@ -585,7 +578,6 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 한서로 581',
     lat: 37.668541,
     lng: 127.561234,
-    price: '₩12,000~',
     category: '국내여행',
     host: '미식가K',
     rating: 4.7,
@@ -614,7 +606,6 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 유명로 1209',
     lat: 37.711234,
     lng: 127.456789,
-    price: '₩8,000 (입장료)',
     category: '국내여행',
     host: '여행작가L',
     rating: 4.8,
@@ -643,7 +634,6 @@ const ARTICLES = [
     address: '경기도 가평군 청평면 고재길 227',
     lat: 37.712345,
     lng: 127.421234,
-    price: '₩14,000~',
     category: '국내여행',
     host: '먹보지망생',
     rating: 4.6,
@@ -672,7 +662,6 @@ const ARTICLES = [
     address: '강원특별자치도 춘천시 스포츠타운길433번길 10',
     lat: 37.868752,
     lng: 127.712345,
-    price: '₩12,000 (입장료)',
     category: '국내여행',
     host: '휴식전문가M',
     rating: 4.9,
@@ -701,7 +690,6 @@ const ARTICLES = [
     address: '경기도 가평군 상면 임초밤안골로 254',
     lat: 37.754321,
     lng: 127.356789,
-    price: '₩250,000~',
     category: '국내여행',
     host: '숙소큐레이터P',
     rating: 4.8,
@@ -730,7 +718,6 @@ const ARTICLES = [
     address: '경기도 가평군 상면 수목원로 204',
     lat: 37.756789,
     lng: 127.361234,
-    price: '₩6,000~',
     category: '국내여행',
     host: '카페투어러H',
     rating: 4.7,
@@ -1191,6 +1178,4 @@ const FILTERS = [
   { id: 'nature', name: '자연/힐링' },
   { id: 'city', name: '도시/야경' },
   { id: 'activity', name: '액티비티' },
-  { id: 'place', name: '명소/문화' }
- 
 ];

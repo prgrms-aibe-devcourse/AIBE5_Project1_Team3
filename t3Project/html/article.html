@@ -125,13 +125,12 @@
         </div>
     </div>
 
-    <!-- Keep script.js for utility functions -->
+    <!-- Data Script Loaded Before Logic -->
+    <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
     
-    <!-- Main Logic using Module -->
-    <script type="module">
-        import { ARTICLES } from '../js/data.js';
-
+    <!-- Main Logic using Global Variables -->
+    <script>
         // Global function for Accordion (needs to be on window for onclick attribute)
         window.toggleAccordion = function(btn) {
             const content = btn.nextElementSibling;

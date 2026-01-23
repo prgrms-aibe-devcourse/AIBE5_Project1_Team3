@@ -290,6 +290,7 @@ function handleSearch() {
         renderArticles(); 
     }
 }
+
 if (mainSearchInput) {
     // 포커스 시 드롭다운 열기
     mainSearchInput.addEventListener("focus", () => {

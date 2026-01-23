@@ -1,27 +1,9 @@
 
+// 여행지 및 공통 데이터
+
 const LOREM_CONTENT = `
-  <div class="space-y-6">
-    <p class="text-lg leading-relaxed text-gray-700">
-      일상에서 벗어나 진정한 휴식을 취할 수 있는 완벽한 장소입니다. 
-      아침에는 새들의 지저귐과 함께 눈을 뜨고, 저녁에는 붉게 물드는 노을을 바라보며 하루를 마무리할 수 있습니다.
-    </p>
-    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
-      <h3 class="text-xl font-bold mb-4 text-gray-900">✨ 매력 포인트</h3>
-      <ul class="space-y-3 text-gray-700">
-        <li class="flex items-start gap-2">
-          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
-          <span>현지인들이 추천하는 숨겨진 맛집 탐방</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
-          <span>자연과 하나되는 트레킹 코스</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 mt-0.5"></i>
-          <span>인생 사진을 남길 수 있는 포토 스팟</span>
-        </li>
-      </ul>
-    </div>
+  <div class="article-content-wrapper">
+    <p class="article-main-text">일상에서 벗어나 진정한 휴식을 취할 수 있는 완벽한 장소입니다.</p>
   </div>
 `;
 
@@ -1209,4 +1191,6 @@ const FILTERS = [
   { id: 'nature', name: '자연/힐링' },
   { id: 'city', name: '도시/야경' },
   { id: 'activity', name: '액티비티' },
+  { id: 'place', name: '명소/문화' }
+ 
 ];

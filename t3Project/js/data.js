@@ -1,6 +1,4 @@
 
-// 여행지 및 공통 데이터
-
 const LOREM_CONTENT = `
   <div class="space-y-6">
     <p class="text-lg leading-relaxed text-gray-700">
@@ -41,6 +39,8 @@ const ARTICLES = [
     address: '169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국',
     lat: 13.7538,
     lng: 100.4991,
+    price: '₩15,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
     reviews: [
@@ -62,6 +62,8 @@ const ARTICLES = [
     address: '30/1 Soi Somdej Pra Pinklaow 1(Behind Wat Dusidharam, 27 Borommaratchachonnani Rd, Arun Amarin, Bangkok Noi, Bangkok 10700 태국',
     lat: 13.7602,
     lng: 100.4855,
+    price: '₩120,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
     reviews: [
@@ -83,6 +85,8 @@ const ARTICLES = [
     address: '10 Thanon Si Wiang, Si Lom, Bang Rak, Bangkok 10500 태국',
     lat: 13.7214,
     lng: 100.5238,
+    price: '₩80,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.9,
     reviews: [
@@ -104,6 +108,8 @@ const ARTICLES = [
     address: '18 ซ Ari 4 Fang Nua Alley, แขวง พญาไท Phaya Thai, Bangkok 10400 태국',
     lat: 13.7801,
     lng: 100.5445,
+    price: '₩12,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
     reviews: [
@@ -125,6 +131,8 @@ const ARTICLES = [
     address: '25 Ari 4 Fang Nua Alley, Phaya Thai, Bangkok 10400 태국',
     lat: 13.7805,
     lng: 100.5448,
+    price: '무료 (입장료 없음)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.4,
     reviews: [
@@ -146,6 +154,8 @@ const ARTICLES = [
     address: '944 Rama IV Rd, Wang Mai, Pathum Wan, Bangkok 10330 태국',
     lat: 13.7335,
     lng: 100.5284,
+    price: '무료 (쇼핑비 별도)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
     reviews: [
@@ -167,6 +177,8 @@ const ARTICLES = [
     address: 'Sukhumvit 24 Alley, Klongton-Nua, Watthana, Bangkok 10110 태국',
     lat: 13.7302,
     lng: 100.5678,
+    price: '₩50,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
     reviews: [
@@ -188,6 +200,8 @@ const ARTICLES = [
     address: '36, 190 Thong Lo, แขวง คลองเตยเหนือ, Watthana, Bangkok 10110 태국',
     lat: 13.7248,
     lng: 100.5785,
+    price: '₩20,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
     reviews: [
@@ -209,6 +223,8 @@ const ARTICLES = [
     address: '587, 10 Kamphaeng Phet 2 Rd, Khwaeng Chatuchak, Chatuchak, Bangkok 10900 태국',
     lat: 13.7999,
     lng: 100.5502,
+    price: '저렴함',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
     reviews: [
@@ -230,6 +246,8 @@ const ARTICLES = [
     address: '2 Sanam Chai Rd, Phra Borom Maha Ratchawang, Phra Nakhon, Bangkok 10200 태국',
     lat: 13.7465,
     lng: 100.4933,
+    price: '₩7,500 (입장료)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
     reviews: [
@@ -251,6 +269,8 @@ const ARTICLES = [
     address: '191 Si Lom Rd, Si Lom, Bang Rak, Bangkok 10500 태국',
     lat: 13.7286,
     lng: 100.5348,
+    price: '무료 (쇼핑비 별도)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.3,
     reviews: [
@@ -272,6 +292,8 @@ const ARTICLES = [
     address: 'Sukhumvit Rd, Khlong Tan, Khlong Toei, Bangkok 10110 태국',
     lat: 13.7382,
     lng: 100.5592,
+    price: '₩30,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
     reviews: [
@@ -293,6 +315,8 @@ const ARTICLES = [
     address: '93, 95 Soi Sukhumvit 26, Khlong Tan, Khlong Toei, Bangkok 10110 태국',
     lat: 13.7278,
     lng: 100.5695,
+    price: '₩10,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
     reviews: [
@@ -314,6 +338,8 @@ const ARTICLES = [
     address: 'Bo Put, Ko Samui District, Surat Thani 84320 태국',
     lat: 9.5583,
     lng: 100.0305,
+    price: '₩40,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
     reviews: [
@@ -335,6 +361,8 @@ const ARTICLES = [
     address: '38, 2, Tambon Na Mueang, Koh Samui, Surat Thani 84110 태국',
     lat: 9.4312,
     lng: 99.9928,
+    price: '₩180,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
     reviews: [
@@ -356,6 +384,8 @@ const ARTICLES = [
     address: '124/2 Maret, Suratthani, Surat Thani 84310 태국',
     lat: 9.4795,
     lng: 100.0632,
+    price: '₩70,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.9,
     reviews: [
@@ -377,6 +407,8 @@ const ARTICLES = [
     address: 'H25J+9HJ, Tambon Bo Put, Ko Samui District, Surat Thani 84320 태국',
     lat: 9.5592,
     lng: 100.0321,
+    price: '무료 (쇼핑비 별도)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
     reviews: [
@@ -398,6 +430,8 @@ const ARTICLES = [
     address: '289 ถ. ทวีราษฎร์ภักดี Tambon Maret, Ko Samui District, Chang Wat Surat Thani 84310 태국',
     lat: 9.4712,
     lng: 100.0485,
+    price: '₩4,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.4,
     reviews: [
@@ -414,11 +448,13 @@ const ARTICLES = [
     mainTags: ['솔트소사이어티', '코사무이핫플', '뿅뿅지구오락실'],
     tags: ['태국', '코사무이', '차웽비치', '비치바', '해변레스토랑', '트렌디', '힙플레이스', '예술적인', '지락실맛집', '나영석PD픽', '안유진', '이영지', '미미', '이은지', '코사무이저녁', '칵테일바', '해산물그릴', '분위기좋은', '석양명소', '라이브DJ', '감각적인인테리어', '여름휴가', '인생샷', '태국여행', '섬휴양', '사무이맛집', '럭셔리바', '세련된', '데이트장소', '친구와함께', '밤문화', '바다전망', '해변라이프', '파티분위기', '맛있는요리', '창의적인메뉴', '태국남부', '방콕외지역', '지구오락실투어', '코사무이필수코스', '뿅뿅지구오락실'],
     description: '차웽 비치에 위치한 스타일리시한 비치 바 겸 키친으로, 감각적인 플레이팅과 신나는 음악이 특징입니다.',
-    content: '솔트 소사이어티는 코사무이에서 가장 번화한 차웽 해변에서 독보적인 존재감을 뽐내는 비치 클럽 스타일의 레스토랑입니다. 뿅뿅지구오락실 멤버들이 이곳의 세련된 분위기 속에서 화려한 요리들을 맛보며 즐거운 시간을 보낸 곳입니다. 소금을 테마로 한 독특한 인테리어와 탁 트인 오션뷰는 들어서는 순간 감탄을 자아내며, 제공되는 요리들은 마치 하나의 예술 작품처럼 정교하고 창의적입니다. 낮에는 푸른 바다를 보며 여유로운 브런치를 즐길 수 있고, 밤에는 DJ의 세련된 음악과 함께 화려한 조명 아래서 칵테일을 만끽할 수 있습니다. 코사무이의 힙한 매력을 온몸으로 느끼고 싶다면 주저 없이 방문해야 할 곳입니다.',
+    content: '솔트 소사이어티는 코사무이에서 가장 번화한 차웽 해변에서 독보적인 존재감을 뽐내는 비치 클럽 스타일의 레스토랑입니다. 뿅뿅지구오락실 멤버들이 이곳의 세련된 분위기 속에서 화려한 요리들을 맛보며 즐거운 시간을 보낸 곳입니다. 소금을 테마로 한 독특한 인테리어와 탁 트인 오션뷰는 들어서는 순간 감탄을 자아내며, 제공되는 요리들은 마치 하나의 예술 작품처럼 정교하고 창의적입니다. 낮에는 푸른 바다를 보며 여유로운 브런치를 즐길 수 있고, 밤에는 DJ의 세련된 음악과 함께 화려한 조명 아래서 칵테일을 만끽할 수 있습니다. 코사무이의 힙한 매력을 온몸으로 느끼고 싶은다면 주저 없이 방문해야 할 곳입니다.',
     name: '솔트 소사이어티 비치 바 & 키친 (Salt Society – Beach Bar & Kitchen)',
     address: '38/2 Moo 3 Borpud, Chaweng Beach, Surat Thani 84320 태국',
     lat: 9.5315,
     lng: 100.0618,
+    price: '₩50,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
     reviews: [
@@ -440,6 +476,8 @@ const ARTICLES = [
     address: '220, Tha Rong Chang, Phunphin District, Surat Thani 84130 태국',
     lat: 9.1124,
     lng: 99.2158,
+    price: '₩5,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.5,
     reviews: [
@@ -461,6 +499,8 @@ const ARTICLES = [
     address: '400 เขาสก Tambon Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9145,
     lng: 98.5312,
+    price: '₩100,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.8,
     reviews: [
@@ -482,6 +522,8 @@ const ARTICLES = [
     address: 'Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9128,
     lng: 98.5295,
+    price: '₩7,000~',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.6,
     reviews: [
@@ -503,6 +545,8 @@ const ARTICLES = [
     address: 'WG64+68R, Khlong Sok, Phanom District, Surat Thani 84250 태국',
     lat: 8.9168,
     lng: 98.5155,
+    price: '₩10,000 (입장료)',
+    category: '해외여행',
     host: '지구오락실 제작진',
     rating: 4.7,
     reviews: [
@@ -530,6 +574,8 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 미사리로 267-124',
     lat: 37.712852,
     lng: 127.487123,
+    price: '₩200,000~',
+    category: '국내여행',
     host: '지락실팬',
     rating: 4.9,
     reviews: [
@@ -557,6 +603,8 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 한서로 581',
     lat: 37.668541,
     lng: 127.561234,
+    price: '₩12,000~',
+    category: '국내여행',
     host: '미식가K',
     rating: 4.7,
     reviews: [
@@ -584,6 +632,8 @@ const ARTICLES = [
     address: '경기도 가평군 설악면 유명로 1209',
     lat: 37.711234,
     lng: 127.456789,
+    price: '₩8,000 (입장료)',
+    category: '국내여행',
     host: '여행작가L',
     rating: 4.8,
     reviews: [
@@ -611,6 +661,8 @@ const ARTICLES = [
     address: '경기도 가평군 청평면 고재길 227',
     lat: 37.712345,
     lng: 127.421234,
+    price: '₩14,000~',
+    category: '국내여행',
     host: '먹보지망생',
     rating: 4.6,
     reviews: [
@@ -638,6 +690,8 @@ const ARTICLES = [
     address: '강원특별자치도 춘천시 스포츠타운길433번길 10',
     lat: 37.868752,
     lng: 127.712345,
+    price: '₩12,000 (입장료)',
+    category: '국내여행',
     host: '휴식전문가M',
     rating: 4.9,
     reviews: [
@@ -665,6 +719,8 @@ const ARTICLES = [
     address: '경기도 가평군 상면 임초밤안골로 254',
     lat: 37.754321,
     lng: 127.356789,
+    price: '₩250,000~',
+    category: '국내여행',
     host: '숙소큐레이터P',
     rating: 4.8,
     reviews: [
@@ -692,6 +748,8 @@ const ARTICLES = [
     address: '경기도 가평군 상면 수목원로 204',
     lat: 37.756789,
     lng: 127.361234,
+    price: '₩6,000~',
+    category: '국내여행',
     host: '카페투어러H',
     rating: 4.7,
     reviews: [
@@ -700,52 +758,7 @@ const ARTICLES = [
       { user: '지락실투어중', comment: '방송에서 보던 것보다 훨씬 넓고 예뻐요. 사진 잘 나옵니다!', rating: 5 }
     ]
   },
-    {
-    id: 'article-31',
-    imageUrl: 'https://images.unsplash.com/photo-1501117716987-c8e8a44bbdec?auto=format&fit=crop&q=80&w=1000',
-    title: '브라운도트 강릉교동점',
-    subtitle: '강릉 중심부 깔끔한 모텔 숙소',
-    mainTags: ['강릉', '숙박', '교동맛집근처'],
-    tags: ['한국', '강릉', '숙박시설', '모텔', '가성비'],
-    description: '강릉역과 경포대 접근성이 좋은 깔끔한 모텔 숙소입니다.', 
-    content: '강릉 중심 교동 상권에 위치해 관광과 식도락을 즐기기에 편리한 공간입니다. 객실은 세련된 인테리어와 깔끔한 시설로 구성되어 있어 여행 숙박에 적합합니다.', 
-    name: '브라운도트 강릉교동점',
-    address: '강원도 강릉시 솔올로5번길 12-3 한국',
-    lat: 37.763123,
-    lng: 128.876057,
-    host: '현지 여행객 평',
-    rating: 4.2,
-    reviews: [
-      { user: '김지훈', comment: '위치가 좋아서 강릉 여행하기 편했어요.', rating: 4 },
-      { user: '유나', comment: '객실 깔끔하고 조식도 괜찮아요.', rating: 5 },
-      { user: '태현', comment: '가성비 대비 만족스럽습니다.', rating: 4 }
-    ]
-  },
-  // ===== 강릉 숙박 2 =====
-  {
-    id: 'article-32',
-    imageUrl: 'https://images.unsplash.com/photo-1519824145371-296894a0daa9?auto=format&fit=crop&q=80&w=1000',
-    title: '그리다, 강릉',
-    subtitle: '감성 가득한 강릉 숙소',
-    mainTags: ['강릉', '숙박', '감성여행'],
-    tags: ['한국', '강릉', '숙박시설', '게스트하우스', '감성'],
-    description: '강릉역 근처 감성 숙소로 청결하고 분위기 좋은 공간.', 
-    content: '강릉 여행객들 사이에서 가성비와 감성 공간으로 평가받는 숙소입니다. 강릉역·시장 방문에 편리합니다.', 
-    name: '그리다, 강릉',
-    address: '강원도 강릉시 옥천로62번길 20 한국',
-    lat: 37.7612597,
-    lng: 128.899641,
-    host: '강릉 트래블리뷰',
-    rating: 4.3,
-    reviews: [
-      { user: '하늘', comment: '감성 공간이라 사진도 예쁘게 나와요.', rating: 5 },
-      { user: '지우', comment: '직원도 친절하고 위치가 좋아요.', rating: 4 },
-      { user: '민철', comment: '가격 대비 시설 만족합니다.', rating: 4 }
-    ]
-  },
-
-  // ===== 강릉 관광지 1 =====
-  {
+{
     id: 'article-33',
     imageUrl: 'https://images.unsplash.com/photo-1517353023074-5bcb1435e436?auto=format&fit=crop&q=80&w=1000',
     title: '경포대 & 경포해변',
@@ -758,6 +771,7 @@ const ARTICLES = [
     address: '강원도 강릉시 경포동 한국',
     lat: 37.7950174,
     lng: 128.8966766,
+    category: '국내여행',
     host: '강릉 관광청',
     rating: 4.8,
     reviews: [
@@ -780,6 +794,7 @@ const ARTICLES = [
     address: '강원도 강릉시 주문진읍 한국',
     lat: 37.8920571,
     lng: 128.8298918,
+    category: '국내여행',
     host: '강릉 여행객',
     rating: 4.7,
     reviews: [
@@ -803,6 +818,7 @@ const ARTICLES = [
     address: '강원도 강릉시 주문진읍 한국',
     lat: 37.7563022,
     lng: 128.8990843,
+    category: '국내여행',
     host: '먹방여행가',
     rating: 4.5,
     reviews: [
@@ -825,6 +841,7 @@ const ARTICLES = [
     address: '한국 강원특별자치도 강릉시 초당순두부길',
     lat: 37.7899231,
     lng: 128.9137687,
+    category: '국내여행',
     host: '현지인 추천',
     rating: 4.6,
     reviews: [
@@ -848,6 +865,7 @@ const ARTICLES = [
     address: 'Namba, Chuo Ward, Osaka, 542-0076 일본',
     lat: 34.6657531,
     lng: 135.5010362,
+    category: '해외여행',
     host: '여행자 추천',
     rating: 4.4,
     reviews: [
@@ -870,6 +888,7 @@ const ARTICLES = [
     address: '일본 〒530-0001 오사카부 오사카시 기타구 우메다',
     lat: 34.7005588,
     lng: 135.4957339,
+    category: '해외여행',
     host: '도시 여행객',
     rating: 4.5,
     reviews: [
@@ -892,6 +911,7 @@ const ARTICLES = [
     address: '1-1 Osakajo, Chuo Ward, Osaka, 540-0002 Japan',
     lat: 34.6872571,
     lng: 135.5258546,
+    category: '해외여행',
     host: 'Osaka 관광청',
     rating: 4.7,
     reviews: [
@@ -914,6 +934,7 @@ const ARTICLES = [
     address: '일본 〒550-0023 오사카부 오사카시 니시구 지요자키 3 조메−北２',
     lat: 34.6712725,
     lng: 135.4775725,
+    category: '해외여행',
     host: '미식가 켄',
     rating: 4.8,
     reviews: [
@@ -936,6 +957,7 @@ const ARTICLES = [
     address: '1-chōme-7-26 Dōtonbori, Chuo Ward, Osaka, 542-0077 일본',
     lat: 34.6686694,
     lng: 135.5030523,
+    category: '해외여행',
     host: '오사카 돈부리 마스터',
     rating: 4.6,
     reviews: [
@@ -958,6 +980,7 @@ const ARTICLES = [
     address: '일본 〒542-0071 Osaka, Chuo Ward, Dōtonbori, 1-chōme-10-5 白亜ビル １階',
     lat: 34.66879460000001,
     lng: 135.5009642,
+    category: '해외여행',
     host: '타코마루',
     rating: 4.5,
     reviews: [
@@ -971,6 +994,7 @@ const ARTICLES = [
   imageUrl: '',
   title: '천년 고도의 향기와 현대의 감성이 만나는 곳, 경주 황리단길',
   subtitle: '한옥의 고즈넉함과 세련된 카페 문화가 어우러진 경주의 가장 핫한 거리',
+  mainTags: ['경주', '관광지', '거리'],
   tags: [
     '국내', '대한민국', '경주', '관광', '사계절', '컬쳐뷰',
     '경주여행', '황리단길', '경주가볼만한곳', '한옥마을', '감성카페',
@@ -987,6 +1011,7 @@ const ARTICLES = [
   address: '경상북도 경주시 황남동 포석로',
   lat: 35.839123,
   lng: 129.210123,
+  category: '해외여행',
   host: '류태우',
   rating: 4.7,
   reviews: [
@@ -1000,6 +1025,7 @@ const ARTICLES = [
   imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop',
   title: '보문호수의 푸른 물결을 품은 프리미엄 휴식처, 소노캄 경주',
   subtitle: '사계절 아름다운 보문단지의 전경과 최상의 서비스를 경험하는 고품격 리조트',
+  mainTags: ['경주', '숙박', '호텔'],
   tags: [
     '국내', '대한민국', '경주', '호텔', '사계절', '레이크뷰',
     '경주숙소', '소노캄경주', '보문단지호텔', '경주호텔추천', '보문호수뷰',
@@ -1015,6 +1041,7 @@ const ARTICLES = [
   address: '경상북도 경주시 신평동 보문로 402-12',
   lat: 35.840251,
   lng: 129.281146,
+  category: '해외여행',
   host: '김수현',
   rating: 4.8,
   reviews: [
@@ -1027,6 +1054,7 @@ const ARTICLES = [
   id: 'article-45',
   imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
   title: '전통의 미학과 현대의 공간감이 공존하는 미학적 쉼터, 경주 아래헌',
+  mainTags: ['경주', '맛집', '카페'],
   subtitle: '연못을 품은 독특한 건축물과 고요한 자연 속에서 즐기는 프리미엄 티타임',
   tags: [
     '국내', '대한민국', '경주', '카페', '사계절', '레이크뷰',
@@ -1043,6 +1071,7 @@ const ARTICLES = [
   address: '경상북도 경주시 보불로 181',
   lat: 35.804364,
   lng: 129.284478,
+  category: '해외여행',
   host: '이지훈',
   rating: 4.6,
   reviews: [
@@ -1056,6 +1085,7 @@ const ARTICLES = [
   imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop',
   title: '스페인의 정취와 괌의 역사가 머무는 곳, 괌 스페인광장',
   subtitle: '과거 스페인 통치 시대의 흔적을 간직한 하갓냐의 역사적 랜드마크',
+  mainTags: ['괌', '관광지', '광장'],
   tags: [
     '해외', '괌', '관광', '사계절', '헤리티지 뷰',
     '괌여행', '스페인광장', '하갓냐', '괌가볼만한곳', '역사여행',
@@ -1071,6 +1101,7 @@ const ARTICLES = [
   address: 'FQF2+HM3, Hagåtña, 96910 괌',
   lat: 13.474600,
   lng: 144.752300,
+  category: '해외여행',
   host: 'Carlos Santos',
   rating: 4.5,
   reviews: [
@@ -1084,6 +1115,7 @@ const ARTICLES = [
   imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop',
   title: '투몬 베이의 에메랄드빛 바다를 품은 휴식처, 롯데호텔 괌',
   subtitle: '세련된 디자인과 최상의 서비스가 어우러진 괌 최고의 럭셔리 비즈니스 리조트',
+  mainTags: ['괌', '숙박', '리조트'],
   tags: [
     '해외', '괌', '호텔', '사계절', '오션뷰',
     '괌여행', '롯데호텔괌', '투몬베이', '괌숙소추천', '오션뷰호텔',
@@ -1099,6 +1131,7 @@ const ARTICLES = [
   address: '185 Gun Beach Road, Tumon, 96913 괌',
   lat: 13.518252,
   lng: 144.805543,
+  category: '해외여행',
   host: '박현준',
   rating: 4.8,
   reviews: [
@@ -1112,6 +1145,7 @@ const ARTICLES = [
   imageUrl: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000&auto=format&fit=crop',
   title: '현지인이 사랑하는 괌 최고의 브런치 맛집, 피카스 카페(Pika\'s Cafe)',
   subtitle: '차모로 전통 스타일을 가미한 독창적인 브런치 요리와 향긋한 커피의 만남',
+  mainTags: ['괌', '맛집', '카페'],
   tags: [
     '해외', '괌', '브런치카페', '사계절', '컨트리뷰',
     '괌여행', '피카스카페', '괌맛집', '투몬맛집', '괌브런치',
@@ -1127,6 +1161,7 @@ const ARTICLES = [
   address: '1300 Pale San Vitores Rd, Tumon, 96913 괌',
   lat: 13.504212,
   lng: 144.796123,
+  category: '해외여행',
   host: 'Pika Fejeran',
   rating: 4.6,
   reviews: [
@@ -1135,11 +1170,13 @@ const ARTICLES = [
     { user: 'Thomas W.', comment: 'Great local breakfast spot. The portions are huge, but it can get very salty. Ask for less salt!', rating: 4 }
   ]
 },
+
 {
   id: 'article-49',
   imageUrl: 'https://images.unsplash.com/photo-1505118380757-91f5f45d8de2?q=80&w=1000&auto=format&fit=crop',
   title: '괌의 붉은 노을과 야생 돌고래의 만남, 선셋 디너 크루즈 & 돌핀 워칭',
   subtitle: '푸른 태평양 위에서 즐기는 환상적인 일몰과 고품격 선상 뷔페의 낭만',
+  mainTags: ['괌', '관광지', '패키지'],
   tags: [
     '해외', '괌', '관광', '액티비티', '봄/여름', '오션뷰',
     '괌여행', '선셋크루즈', '돌핀워칭', '괌액티비티', '괌자유여행',
@@ -1155,6 +1192,7 @@ const ARTICLES = [
   address: '1199 Pale San Vitores Rd, Tumon, 96910 괌',
   lat: 13.502500,
   lng: 144.795000,
+  category: '해외여행',
   host: '괌 해양 관광 협회',
   rating: 4.8,
   reviews: [
@@ -1162,165 +1200,8 @@ const ARTICLES = [
     { user: '최지우', comment: '아이들이 돌고래 보고 너무 좋아했어요. 가족 여행 코스로 정말 추천합니다. 선상 공연도 너무 재밌었어요!', rating: 5 },
     { user: '강하늘', comment: '일몰이 정말 예술입니다. 다만 괌 음식이 전반적으로 짜서 많이 못 먹은 게 아쉬워요. 음료수 필수입니다.', rating: 4 }
   ]
-}
-
-
-
-/* 기존 데이터
-  {
-    id: 'hero-1',
-    title: '발리의 숨겨진 보석, 누사 페니다',
-    subtitle: '신들의 섬에서 만나는 태초의 자연',
-    description: '에메랄드 빛 바다와 거대한 절벽이 만들어내는 장관. 지금 바로 떠나보세요.',
-    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=1000',
-    category: '해외여행',
-    season: '여름/가을',
-    host: '트래블러 제이',
-    tags: ['휴양지', '자연', '힐링', '발리'],
-    rating: 4.8,
-    lat: -8.7278,
-    lng: 115.5444,
-    price: '₩1,500,000~',
-    programInfo: '3박 4일 알짜배기 투어',
-    courseInfo: '공항 픽업 -> 클링킹 비치 -> 엔젤 빌라봉 -> 숙소',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: 'hero-2',
-    title: '도심 속 힐링, 서울의 고궁 산책',
-    subtitle: '과거와 현재가 공존하는 시간 여행',
-    description: '바쁜 일상 속에서 찾는 여유. 고즈넉한 돌담길을 걸으며 가을을 만끽하세요.',
-    imageUrl: 'https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&q=80&w=1000',
-    category: '국내여행',
-    season: '봄/가을',
-    host: '문화 해설사 김',
-    tags: ['서울', '역사', '산책', '고궁'],
-    rating: 4.6,
-    lat: 37.5796,
-    lng: 126.9770,
-    price: '₩50,000~',
-    programInfo: '반나절 워킹 투어',
-    courseInfo: '경복궁 -> 북촌 한옥마을 -> 삼청동 카페거리',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '1',
-    title: '파리의 아침, 몽마르뜨 언덕에서',
-    subtitle: '예술과 낭만이 흐르는 도시',
-    description: '예술가들의 영감이 살아숨쉬는 곳. 파리에서 가장 낭만적인 일출을 만나보세요.',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800',
-    category: '해외여행',
-    season: '사계절',
-    host: '파리지앵 리',
-    tags: ['프랑스', '낭만', '예술', '파리'],
-    rating: 4.9,
-    price: '₩1,200,000~',
-    lat: 48.8867,
-    lng: 2.3431,
-    programInfo: '예술가와 함께하는 도보 여행',
-    courseInfo: '사크레쾨르 대성당 -> 테르트르 광장 -> 사랑해 벽',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '2',
-    title: '교토의 가을, 단풍이 물드는 시간',
-    subtitle: '천년의 고도에서 즐기는 붉은 물결',
-    description: '천년의 역사를 간직한 교토. 붉게 물든 사찰에서의 차 한 잔의 여유.',
-    imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=800',
-    category: '해외여행',
-    season: '가을',
-    host: '교토 토박이',
-    tags: ['일본', '가을', '전통', '교토'],
-    rating: 4.7,
-    price: '₩850,000~',
-    lat: 35.0116,
-    lng: 135.7681,
-    programInfo: '2박 3일 단풍 놀이',
-    courseInfo: '기요미즈데라 -> 산넨자카 -> 기온 거리',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '3',
-    title: '제주도 푸른 밤, 별빛 투어',
-    subtitle: '밤하늘을 수놓는 은하수',
-    description: '도시의 불빛이 없는 곳에서 쏟아지는 별을 감상하세요. 제주만의 특별한 밤.',
-    imageUrl: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?auto=format&fit=crop&q=80&w=800',
-    category: '국내여행',
-    season: '여름',
-    host: '제주지킴이',
-    tags: ['제주', '야경', '캠핑', '별'],
-    rating: 4.8,
-    price: '₩350,000~',
-    lat: 33.3846,
-    lng: 126.5535,
-    programInfo: '야간 오름 투어',
-    courseInfo: '용눈이오름 -> 별빛 관측 -> 심야 식당',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '4',
-    title: '뉴욕의 스카이라인, 탑 오브 더 락',
-    subtitle: '잠들지 않는 도시의 화려함',
-    description: '잠들지 않는 도시의 화려함을 한눈에 담다. 맨해튼 최고의 뷰포인트.',
-    imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=800',
-    category: '해외여행',
-    season: '겨울',
-    host: '뉴요커 앤',
-    tags: ['미국', '도시', '야경', '뉴욕'],
-    rating: 4.9,
-    price: '₩2,100,000~',
-    lat: 40.7587,
-    lng: -73.9787,
-    programInfo: '맨해튼 야경 투어',
-    courseInfo: '타임스퀘어 -> 록펠러 센터 -> 브루클린 브릿지',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '5',
-    title: '방콕 스트리트 푸드 완전 정복',
-    subtitle: '미식가들의 성지',
-    description: '미슐랭이 인정한 길거리 음식부터 현지인 맛집까지. 미식의 천국 방콕.',
-    imageUrl: 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&q=80&w=800',
-    category: '해외여행',
-    season: '겨울/봄',
-    host: '쉐프 톰',
-    tags: ['태국', '미식', '가성비', '방콕'],
-    rating: 4.5,
-    price: '₩450,000~',
-    lat: 13.7563,
-    lng: 100.5018,
-    programInfo: '올데이 먹방 투어',
-    courseInfo: '짜뚜짝 시장 -> 차이나타운 -> 루프탑 바',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  },
-  {
-    id: '6',
-    title: '스위스 알프스, 기차 여행',
-    subtitle: '동화 속 풍경으로의 초대',
-    description: '창밖으로 펼쳐지는 그림 같은 풍경. 융프라우로 향하는 잊지 못할 여정.',
-    imageUrl: 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&q=80&w=800',
-    category: '해외여행',
-    season: '여름/겨울',
-    host: '알프스 하이디',
-    tags: ['스위스', '자연', '기차', '알프스'],
-    rating: 5.0,
-    price: '₩2,500,000~',
-    lat: 46.5593,
-    lng: 7.9620,
-    programInfo: '산악 열차 패키지',
-    courseInfo: '인터라켄 -> 융프라우요흐 -> 그린델발트',
-    content: LOREM_CONTENT,
-    reviews: REVIEWS
-  }, */
-];
-
+},
+]
 const FILTERS = [
   { id: 'all', name: '전체' },
   { id: 'domestic', name: '국내여행' },

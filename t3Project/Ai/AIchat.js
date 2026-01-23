@@ -48,6 +48,7 @@ const SYSTEM_INSTRUCTION = `
 반드시 제공된 [여행지 데이터] 목록에 있는 장소만을 추천해야 해.
 데이터에 없는 장소에 대해 물으면 모른다고 답하거나 데이터 내의 유사한 곳을 제안해.
 추천 장소를 언급할 때는 반드시 아래 링크 형식을 사용해.
+ui_text : 에 hidden_data에 대한 내용을 모두 설명해줘 그리고 여행지를 추천할때는 아래 형식으로 링크를 포함해줘
 형식: [장소이름](http://127.0.0.1:5500/t3Project/html/article.html?id=장소ID)
 {
   "ui_text": "사용자에게 보여줄 친절한 설명 (마크다운 포함 가능)",
@@ -64,6 +65,17 @@ const SYSTEM_INSTRUCTION = `
 }
 `;
 
+/* [의도] 팝업 UI의 ID와 hidden_data의 키값을 매칭함 [cite: 2025-11-17] */
+const POPUP_MAPPING = {
+    'pop-title': 'title',
+    'pop-loc': 'location',
+    'pop-date': 'date',
+    'pop-budget': 'budget',
+    'pop-comp': 'companion',
+    'pop-theme': 'theme',
+    'pop-schedule': 'schedule', // 마크다운 렌더링 필요
+    'pop-tip': 'tip'            // 마크다운 렌더링 필요
+};
 
 // [인자 출처: HTML 상단 data.js에서 로드된 전역 변수 ARTICLES]
 const localKnowledge = ARTICLES || []; 

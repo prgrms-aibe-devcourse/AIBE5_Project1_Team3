@@ -33,10 +33,37 @@ const API_KEYS = [
     "AIzaSyB_UQO3yrYJgKf1GrrxN_eTIhL7mLusOxE",
     "AIzaSyB3UZbwSdKMyLDPD4V4qQJXkcsYp2FL93A",
     "AIzaSyARP9esQe-nx_Bzbm4fTqtLHMXTrcAV4e0",
-    "AIzaSyANKs0xet8h2n_OeAFgYM_5sW0iJ_E-C_8"
+    "AIzaSyANKs0xet8h2n_OeAFgYM_5sW0iJ_E-C_8",
+    "AIzaSyA2atjqOxFuUqHLrLP1WIhSJtyOTfCtKuc",
+    "AIzaSyCpfLqJL3dYhcVDZRgDM1OLd96owqsPTyQ",
+    "AIzaSyCDRLh6NFQdO-DpIQHCn4Bai3_bxrCLTX8",
+    "AIzaSyCvhbtC-MsyIJ_WYYr5RiCrtWJJVTaSetE",
+    "AIzaSyA2atjqOxFuUqHLrLP1WIhSJtyOTfCtKuc"
 ];
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
+
+const SYSTEM_INSTRUCTION = `
+너는 전문 여행 플래너야. 모든 답변은 반드시 아래의 JSON 형식 하나만 출력해라. 텍스트를 따로 섞지 마.
+반드시 제공된 [여행지 데이터] 목록에 있는 장소만을 추천해야 해.
+데이터에 없는 장소에 대해 물으면 모른다고 답하거나 데이터 내의 유사한 곳을 제안해.
+추천 장소를 언급할 때는 반드시 아래 링크 형식을 사용해.
+형식: [장소이름](http://127.0.0.1:5500/t3Project/html/article.html?id=장소ID)
+{
+  "ui_text": "사용자에게 보여줄 친절한 설명 (마크다운 포함 가능)",
+  "hidden_data": {
+    "title": "여행 제목",
+    "location": "장소명",
+    "date": "일정",
+    "budget": "예산",
+    "companion": "동행",
+    "theme": "테마",
+    "schedule": "상세 코스 요약",
+    "tip": "꿀팁"
+  }
+}
+`;
+
 
 // [인자 출처: HTML 상단 data.js에서 로드된 전역 변수 ARTICLES]
 const localKnowledge = ARTICLES || []; 
@@ -108,14 +135,7 @@ async function getAiWithFailover(prompt) {
             const genAI = new GoogleGenerativeAI(activeKey);
             const model = genAI.getGenerativeModel({ 
                 model: "gemini-2.5-flash",
-                systemInstruction: `
-                너는 'T3 여행 가이드'야. 
-                반드시 제공된 [여행지 데이터] 목록에 있는 장소만을 추천해야 해. 
-                데이터에 없는 장소에 대해 물으면 모른다고 답하거나 데이터 내의 유사한 곳을 제안해.
-                추천 장소를 언급할 때는 반드시 아래 링크 형식을 사용해.
-                형식: [장소이름](http://127.0.0.1:5500/t3Project/html/article.html?id=장소ID)
-                답변 끝에는 항상 {"recommend_id": "해당_ID"} 형식의 JSON을 붙여줘.
-                `
+                systemInstruction: SYSTEM_INSTRUCTION
             });
 
             const result = await model.generateContent(prompt);

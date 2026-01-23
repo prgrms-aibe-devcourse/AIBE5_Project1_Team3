@@ -1,5 +1,5 @@
 
-export const LOREM_CONTENT = `
+const LOREM_CONTENT = `
   <div class="space-y-6">
     <p class="text-lg leading-relaxed text-gray-700">
       일상에서 벗어나 진정한 휴식을 취할 수 있는 완벽한 장소입니다. 
@@ -25,7 +25,7 @@ export const LOREM_CONTENT = `
   </div>
 `;
 
-export const ARTICLES = [
+const ARTICLES = [
   {
     id: 'article-1',
     imageUrl: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1000',
@@ -1202,7 +1202,7 @@ export const ARTICLES = [
   ]
 },
 ]
-export const FILTERS = [
+const FILTERS = [
   { id: 'all', name: '전체' },
   { id: 'domestic', name: '국내여행' },
   { id: 'overseas', name: '해외여행' },

@@ -1,3 +1,4 @@
+
 import { ARTICLES } from './data.js';
 
 // --- STATE ---
@@ -27,7 +28,7 @@ const TAG_CATEGORIES = [
     { 
         id: 'style', 
         label: '여행 스타일', 
-        tags: ['자연', '도시', '문화', '휴식', '액티비티', '사진', '쇼핑', '맛집', '모험', '웰니스'] 
+        tags: ['자연', '도시', '문화', '휴식', '액티비티', '사진', '쇼핑', '맛집', '모험', '웰니스', '호캉스', '관광지'] 
     },
     { 
         id: 'companion', 
@@ -37,7 +38,7 @@ const TAG_CATEGORIES = [
     { 
         id: 'region', 
         label: '지역', 
-        tags: ['국내', '해외', '태국', '방콕', '가평', '춘천', '코사무이'] 
+        tags: ['국내', '해외', '태국', '방콕', '가평', '춘천', '코사무이', '강릉', '오사카', '경주', '괌', '수랏타니'] 
     },
     { 
         id: 'amenity', 
@@ -47,7 +48,7 @@ const TAG_CATEGORIES = [
     { 
         id: 'theme', 
         label: '테마', 
-        tags: ['로맨틱', '힐링', '이색', '로컬', '유명', '숨은 명소', '핫플', '럭셔리'] 
+        tags: ['로맨틱', '힐링', '이색', '로컬', '유명', '숨은 명소', '핫플', '럭셔리', '지락실', '방송출연'] 
     }
 ];
 
@@ -71,15 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id) {
         // Slight delay to allow map to initialize dimensions
         setTimeout(() => selectArticle(id), 100);
-    }
-    
-    // Event Listeners
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            state.query = e.target.value;
-            updateFilteredArticles();
-        });
     }
     
     // Initialize icons if library is loaded
@@ -111,9 +103,10 @@ function initMap() {
     
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19
+    // Use Google Maps with Korean labels (hl=ko)
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&hl=ko&x={x}&y={y}&z={z}', {
+        attribution: '&copy; Google Maps',
+        maxZoom: 20
     }).addTo(map);
 
     routeLayerGroup = L.layerGroup().addTo(map);
@@ -143,14 +136,8 @@ function toggleFilterExpand() {
 }
 
 function updateFilteredArticles() {
-    const query = state.query.toLowerCase();
-    
     state.filteredArticles = ARTICLES.filter(article => {
-        // 1. Search Text Match
-        const matchesSearch = article.title.toLowerCase().includes(query) || 
-                              article.tags.some(tag => tag.toLowerCase().includes(query));
-        
-        // 2. Filter Tags Match (OR logic within filters: show if it matches ANY selected filter)
+        // Filter Tags Match (OR logic within filters: show if it matches ANY selected filter)
         // If no filters selected, show all.
         let matchesFilter = true;
         if (state.activeFilters.length > 0) {
@@ -160,7 +147,7 @@ function updateFilteredArticles() {
             matchesFilter = state.activeFilters.some(filter => articleTagsString.includes(filter));
         }
 
-        return matchesSearch && matchesFilter;
+        return matchesFilter;
     });
     
     render();
@@ -325,9 +312,6 @@ function resetApp() {
     state.itinerary = [];
     state.isFilterExpanded = false;
     
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) searchInput.value = '';
-    
     state.filteredArticles = [...ARTICLES];
     
     if (routeLayerGroup) {
@@ -427,8 +411,8 @@ function renderHeader() {
     if (state.isPlanMode) {
         plannerHeader.classList.remove('hidden');
         toggleBtn.classList.add('bg-blue-600', 'text-white', 'border-transparent');
-        toggleBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
-        toggleBtn.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i> Exit Plan';
+        toggleBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200'); // Matches new border in HTML
+        toggleBtn.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i> 계획 종료';
         
         if (state.itinerary.length === 0) {
             itineraryList.innerHTML = '<p class="text-xs text-gray-400 italic py-1">Select places on the map to build your route.</p>';
@@ -456,8 +440,8 @@ function renderHeader() {
     } else {
         plannerHeader.classList.add('hidden');
         toggleBtn.classList.remove('bg-blue-600', 'text-white', 'border-transparent');
-        toggleBtn.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
-        toggleBtn.innerHTML = '<i data-lucide="map" class="w-4 h-4"></i> Plan Trip';
+        toggleBtn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+        toggleBtn.innerHTML = '<i data-lucide="map" class="w-4 h-4"></i> 여행 계획하기';
     }
 }
 

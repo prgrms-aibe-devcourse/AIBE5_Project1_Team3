@@ -980,7 +980,7 @@ const ARTICLES = [
   address: '경상북도 경주시 황남동 포석로',
   lat: 35.839123,
   lng: 129.210123,
-  category: '해외여행',
+  category: '국내여행',
   host: '류태우',
   rating: 4.7,
   reviews: [
@@ -1010,7 +1010,7 @@ const ARTICLES = [
   address: '경상북도 경주시 신평동 보문로 402-12',
   lat: 35.840251,
   lng: 129.281146,
-  category: '해외여행',
+  category: '국내여행',
   host: '김수현',
   rating: 4.8,
   reviews: [
@@ -1040,7 +1040,7 @@ const ARTICLES = [
   address: '경상북도 경주시 보불로 181',
   lat: 35.804364,
   lng: 129.284478,
-  category: '해외여행',
+  category: '국내여행',
   host: '이지훈',
   rating: 4.6,
   reviews: [

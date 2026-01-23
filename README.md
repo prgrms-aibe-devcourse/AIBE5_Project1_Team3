@@ -10,7 +10,7 @@
     git remote add origin https://github.com/사용자명/저장소명.git
     의미: "이 프로젝트의 서버 주소는 여기야."
    
-
+   
    
 ## 새 브랜치 만들고 동시에 이동
     git checkout -b 내-브랜치-이름

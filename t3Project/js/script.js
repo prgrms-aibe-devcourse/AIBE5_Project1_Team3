@@ -5,12 +5,10 @@
 if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
-
 let activeFilters = new Set(); // 선택된 필터를 저장하는 집합
 let visibleCount = 9; // 처음에 보여줄 카드 개수 (3x3)
 let isInfiniteScroll = false; // 더보기 버튼 클릭 후 무한스크롤 전환 여부
 let searchQuery = ''; // [중요] 검색어 저장 변수
-
 /**
  * --- 1. 네비게이션 & 스크롤 UI ---
  */
@@ -18,7 +16,6 @@ const nav = document.getElementById("navbar");
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileMenu = document.getElementById("mobile-menu");
 const mobileMenuClose = document.getElementById("mobile-menu-close");
-
 window.addEventListener("scroll", () => {
   // 네비게이션 배경 처리
   if (nav) {
@@ -28,7 +25,6 @@ window.addEventListener("scroll", () => {
       nav.classList.remove("scrolled");
     }
   }
-
   // 무한 스크롤 로직
   if (isInfiniteScroll) {
     if (
@@ -38,7 +34,6 @@ window.addEventListener("scroll", () => {
       handleInfiniteLoad();
     }
   }
-
   // 플로팅 배너 노출 제어
   const floBan = document.getElementById("floating-banner");
   if (floBan) {
@@ -49,22 +44,18 @@ window.addEventListener("scroll", () => {
     }
   }
 });
-
 // 모바일 메뉴 열기/닫기
 if (mobileMenuBtn)
   mobileMenuBtn.onclick = () => mobileMenu.classList.add("open");
 if (mobileMenuClose)
   mobileMenuClose.onclick = () => mobileMenu.classList.remove("open");
-
 /**
  * --- 2. 로그인 및 최근 본 상품 관리 ---
  */
 function checkLoginStatus() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
   const loginBtn = document.getElementById("nav-login-btn");
   const userAvatar = document.getElementById("nav-user-avatar");
-
   if (loginBtn && userAvatar) {
     if (isLoggedIn) {
       loginBtn.style.display = "none";
@@ -74,13 +65,11 @@ function checkLoginStatus() {
       userAvatar.style.display = "none";
     }
   }
-
   const otherTriggers = document.querySelectorAll(".btn-login-trigger");
   otherTriggers.forEach((btn) => {
     btn.style.display = isLoggedIn ? "none" : "block";
   });
 }
-
 function addToRecent(articleId) {
   let recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
   recent = recent.filter((id) => id !== articleId);
@@ -88,15 +77,12 @@ function addToRecent(articleId) {
   if (recent.length > 5) recent.pop();
   localStorage.setItem("recentArticles", JSON.stringify(recent));
 }
-
 function renderFloatingBanner() {
   const floBanContent = document.getElementById("floban-content");
   if (!floBanContent || typeof ARTICLES === "undefined") return;
-
   const recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
   const article =
     recent.length > 0 ? ARTICLES.find((a) => a.id === recent[0]) : ARTICLES[0];
-
   if (article) {
     floBanContent.innerHTML = `
       <div class="flex items-center gap-3 cursor-pointer" onclick="location.href='article.html?id=${article.id}'" style="display: flex; align-items: center; gap: 0.75rem;">
@@ -108,14 +94,12 @@ function renderFloatingBanner() {
       </div>`;
   }
 }
-
 /**
  * --- 3. 카드 렌더링 (검색 + 필터 통합) ---
  */
 function toggleFilter(filterId) {
   const btn = document.querySelector(`.filter-btn[data-id="${filterId}"]`);
   if (!btn) return;
-
   if (filterId === "all") {
     activeFilters.clear();
     document
@@ -135,11 +119,9 @@ function toggleFilter(filterId) {
         .querySelector('.filter-btn[data-id="all"]')
         .classList.add("active");
   }
-
   visibleCount = 9;
   renderArticles();
 }
-
 function handleLoadMore() {
   isInfiniteScroll = true;
   const loadMoreBtn = document.querySelector(".load-more-container");
@@ -147,21 +129,17 @@ function handleLoadMore() {
   visibleCount = 21;
   renderArticles();
 }
-
 function handleInfiniteLoad() {
   if (typeof ARTICLES !== "undefined" && visibleCount < ARTICLES.length) {
     visibleCount += 3;
     renderArticles();
   }
 }
-
 // [핵심] 검색 로직이 포함된 렌더링 함수
 function renderArticles() {
   const grid = document.getElementById("article-grid");
   if (!grid || typeof ARTICLES === "undefined") return;
-
   grid.innerHTML = "";
-
   // 1. 필터링 및 검색 로직
   const filtered = ARTICLES.filter((article) => {
     // [A] 상단 버튼 필터 (국내/해외 등)
@@ -187,7 +165,6 @@ function renderArticles() {
         return false;
       });
     }
-
     // [B] 검색어 체크 (data.js의 tags 포함 여부 확인)
     let matchesSearch = true;
     if (searchQuery) {
@@ -204,16 +181,13 @@ function renderArticles() {
       
       matchesSearch = inTitle || inSubtitle || inTags || inMainTags;
     }
-
     return matchesFilter && matchesSearch;
   });
-
   // 2. 결과 없음 처리
   if (filtered.length === 0) {
     grid.innerHTML = `<div class="no-result" style="grid-column: 1/-1; text-align: center; padding: 100px 0; color: #999;">검색 결과가 없습니다.</div>`;
     return;
   }
-
   // 3. 카드 HTML 생성
   filtered.slice(0, visibleCount).forEach((article) => {
     const card = document.createElement("div");
@@ -243,11 +217,9 @@ function renderArticles() {
     };
     grid.appendChild(card);
   });
-
   if (typeof lucide !== "undefined") lucide.createIcons();
   updateFavoriteUI();
 }
-
 /**
  * --- 4. 좋아요 기능 ---
  */
@@ -258,21 +230,17 @@ function toggleFavorite(id) {
     }
     return;
   }
-
   let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
   const index = favorites.indexOf(id);
   index === -1 ? favorites.push(id) : favorites.splice(index, 1);
-
   localStorage.setItem("favorites", JSON.stringify(favorites));
   updateFavoriteUI();
 }
-
 function updateFavoriteUI() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const favorites = isLoggedIn
     ? JSON.parse(localStorage.getItem("favorites") || "[]")
     : [];
-
   const countEl = document.getElementById("favorite-count");
   if (countEl) {
     if (isLoggedIn && favorites.length > 0) {
@@ -282,12 +250,10 @@ function updateFavoriteUI() {
       countEl.style.display = "none";
     }
   }
-
   document.querySelectorAll(".btn-like").forEach((btn) => {
     const id = btn.dataset.id;
     const isFav = favorites.includes(id);
     const icon = btn.querySelector("svg");
-
     if (isFav) {
       btn.style.background = "white";
       btn.style.color = "#ef4444";
@@ -305,14 +271,12 @@ function updateFavoriteUI() {
     }
   });
 }
-
 /**
  * --- 5. 검색 및 이벤트 핸들링 (수정된 부분) ---
  */
 const mainSearchInput = document.getElementById("main-search-input");
 const searchDropdown = document.getElementById("search-dropdown");
 const clearBtn = document.getElementById("search-clear-btn");
-
 // 검색 실행 함수
 function handleSearch() {
     if(mainSearchInput) {
@@ -339,7 +303,6 @@ if (mainSearchInput) {
             e.target.value.length > 0 ? clearBtn.classList.remove("hidden") : clearBtn.classList.add("hidden");
         }
     });
-
     // 엔터키 입력 시 검색
     mainSearchInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
@@ -347,20 +310,17 @@ if (mainSearchInput) {
         }
     });
 }
-
 // "검색" 버튼 클릭 이벤트 (.search-btn-inside)
 const searchBtnInside = document.querySelector(".search-btn-inside");
 if (searchBtnInside) {
     searchBtnInside.addEventListener("click", handleSearch);
 }
-
 // 돋보기 아이콘 클릭 이벤트 (혹시 있을 경우)
 const searchIconBtn = document.querySelector(".search-container .lucide-search");
 if (searchIconBtn) {
     searchIconBtn.style.cursor = "pointer";
     searchIconBtn.onclick = handleSearch;
 }
-
 // [중요] 드롭다운 태그(.search-tag) 클릭 시 검색창에 입력 및 검색 실행
 document.querySelectorAll(".search-tag").forEach(tagElement => {
     tagElement.addEventListener("click", () => {
@@ -374,14 +334,12 @@ document.querySelectorAll(".search-tag").forEach(tagElement => {
         }
     });
 });
-
 // 외부 클릭 시 드롭다운 닫기
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".search-container")) {
     if(searchDropdown) searchDropdown.classList.add("hidden");
   }
 });
-
 // X 버튼 클릭 시 초기화
 if (clearBtn) {
     clearBtn.addEventListener("click", () => {
@@ -391,7 +349,6 @@ if (clearBtn) {
         handleSearch(); // 전체 목록 다시 보여주기
     });
 }
-
 /**
  * --- 6. 초기 실행 ---
  */
@@ -401,14 +358,12 @@ window.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("article-grid")) renderArticles();
   updateFavoriteUI();
 });
-
 function scrollToContent() {
   const contentSection = document.getElementById("content");
   if (contentSection) {
     contentSection.scrollIntoView({ behavior: "smooth" });
   }
 }
-
 // 전역 노출
 window.toggleFilter = toggleFilter;
 window.toggleFavorite = toggleFavorite;

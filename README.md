@@ -9,9 +9,8 @@
 ### 2. 원격 저장소(GitHub) 연결
     git remote add origin https://github.com/사용자명/저장소명.git
     의미: "이 프로젝트의 서버 주소는 여기야."
-   
-   
-   
+<br />
+<br />
 ## 새 브랜치 만들고 동시에 이동
     git checkout -b 내-브랜치-이름
     의미: "기존 코드(보통 main)를 복사해서 '내-브랜치'라는 새 방을 만들고 바로 글로 갈게."

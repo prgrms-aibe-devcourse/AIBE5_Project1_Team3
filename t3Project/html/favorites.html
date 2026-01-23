@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>좋아요 목록 - 여기저기</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/mypage.css">
+</head>
+<body style="background-color: white;">
+
+    <!-- Header -->
+    <div style="position: fixed; top: 0; left: 0; width: 100%; background: white; z-index: 40; border-bottom: 1px solid var(--gray-100);">
+        <div style="max-width: 480px; margin: 0 auto; padding: 0 1rem; height: 64px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <a href="index.html" style="padding: 0.5rem; margin-left: -0.5rem; color: var(--gray-800);">
+                    <i data-lucide="arrow-left" width="24"></i>
+                </a>
+                <h1 style="font-weight: 700; font-size: 1.125rem;">좋아요 목록</h1>
+            </div>
+            <span id="fav-count-header" style="font-size: 0.875rem; font-weight: 700; color: var(--accent);">0개</span>
+        </div>
+    </div>
+
+    <!-- List -->
+    <div style="max-width: 480px; margin: 0 auto; padding-top: 5rem; padding-left: 1rem; padding-right: 1rem; padding-bottom: 3rem; min-height: 100vh;">
+        <div id="favorites-list" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Items injected by JS -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 0; color: var(--gray-400);">
+            <i data-lucide="heart" width="48" style="margin-bottom: 1rem; color: var(--gray-200);"></i>
+            <p style="text-align: center;">아직 저장한 여행지가 없습니다.<br>마음에 드는 곳을 찾아보세요!</p>
+            <a href="index.html" class="btn btn-primary" style="margin-top: 1.5rem; border-radius: 9999px; font-size: 0.875rem;">여행지 둘러보기</a>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        function renderFavorites() {
+            const list = document.getElementById('favorites-list');
+            const emptyState = document.getElementById('empty-state');
+            const favIds = getFavorites();
+            
+            document.getElementById('fav-count-header').textContent = `${favIds.length}개`;
+            list.innerHTML = '';
+
+            if (favIds.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.style.display = 'flex';
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.style.display = 'none';
+                
+                favIds.forEach(id => {
+                    const article = ARTICLES.find(a => a.id === id);
+                    if (!article) return;
+
+                    const item = document.createElement('div');
+                    item.className = 'list-card';
+                    item.onclick = (e) => {
+                        if(!e.target.closest('button')) location.href = `article.html?id=${article.id}`;
+                    };
+                    item.innerHTML = `
+                        <div class="list-thumb">
+                            <img src="${article.imageUrl}" class="object-cover w-full h-full">
+                        </div>
+                        <div class="list-info">
+                            <div>
+                                <span style="font-size: 0.75rem; color: var(--gray-500); font-weight: 500; display: block; margin-bottom: 0.25rem;">${article.category}</span>
+                                <h3 style="font-weight: 700; color: var(--gray-900); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.25;">${article.title}</h3>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                                <span style="font-size: 0.875rem; font-weight: 700; color: var(--gray-900);">${article.price || '가격 문의'}</span>
+                                <button onclick="removeFavorite('${article.id}')" style="color: var(--gray-300); padding: 0.25rem; z-index: 10;">
+                                    <i data-lucide="trash-2" width="18"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+                lucide.createIcons();
+            }
+        }
+
+        function removeFavorite(id) {
+            toggleFavorite(id); 
+            renderFavorites(); 
+        }
+
+        renderFavorites();
+    </script>
+</body>
+</html>

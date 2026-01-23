@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>여행지 룰렛 - 여기저기</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/roulette.css">
+</head>
+<body class="roulette-body">
+
+    <a href="index.html" class="back-btn-float">
+        <i data-lucide="arrow-left" width="24"></i>
+    </a>
+
+    <div class="roulette-title-area">
+        <h1 class="roulette-title">오늘 어디 갈까?</h1>
+        <p class="text-white" style="font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">고민하지 말고 운명에 맡겨보세요!</p>
+    </div>
+
+    <!-- Roulette Wheel -->
+    <div id="wheel" class="wheel-container">
+        <!-- Segments will be injected by JS -->
+    </div>
+    
+    <!-- Arrow -->
+    <div class="wheel-arrow"></div>
+
+    <!-- Controls -->
+    <div class="roulette-controls">
+        <button id="spin-btn" class="spin-btn">
+            START !
+        </button>
+        <p id="result-text" class="roulette-result"></p>
+    </div>
+
+    <!-- Particles Background -->
+    <div class="bg-particles"></div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spin-btn');
+        const resultText = document.getElementById('result-text');
+        
+        const segments = ARTICLES.slice(0, 6); 
+        const segmentAngle = 360 / segments.length;
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#FFCC5C'];
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 300;
+        canvas.height = 300;
+        wheel.innerHTML = '';
+        wheel.appendChild(canvas);
+        
+        const ctx = canvas.getContext('2d');
+        const centerX = 150;
+        const centerY = 150;
+        const radius = 150;
+
+        function drawWheel() {
+            segments.forEach((item, index) => {
+                const startAngle = (index * segmentAngle * Math.PI) / 180;
+                const endAngle = ((index + 1) * segmentAngle * Math.PI) / 180;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+                ctx.save();
+                
+                // Text
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + (segmentAngle * Math.PI / 360));
+                ctx.textAlign = "right";
+                ctx.fillStyle = "white";
+                ctx.font = "bold 12px Pretendard";
+                ctx.fillText(item.title.substring(0, 10) + '..', radius - 20, 5);
+                ctx.restore();
+            });
+        }
+        drawWheel();
+
+        let currentRotation = 0;
+
+        spinBtn.addEventListener('click', () => {
+            if (spinBtn.disabled) return;
+            spinBtn.disabled = true;
+            resultText.textContent = '두구두구...';
+            
+            const randomSegment = Math.floor(Math.random() * segments.length);
+            const extraDegrees = 360 * 5 + (360 - (randomSegment * segmentAngle) - (segmentAngle/2)); 
+            currentRotation += extraDegrees;
+            
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+            
+            setTimeout(() => {
+                const selected = segments[randomSegment];
+                resultText.textContent = `🎉 ${selected.title} 당첨!`;
+                spinBtn.textContent = '이동하기 >';
+                spinBtn.disabled = false;
+                
+                spinBtn.onclick = () => {
+                    location.href = `article.html?id=${selected.id}`;
+                };
+            }, 3000);
+        });
+        
+        // Button animation effect
+        spinBtn.onmousedown = () => spinBtn.style.transform = 'scale(0.95)';
+        spinBtn.onmouseup = () => spinBtn.style.transform = 'scale(1)';
+
+    </script>
+</body>
+</html>

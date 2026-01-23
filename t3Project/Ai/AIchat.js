@@ -26,6 +26,8 @@ renderer.link = (arg) => {
 marked.setOptions({ renderer: renderer });
 
 // [의도] 서버에서 관리하던 5개의 키를 클라이언트로 이동 (로테이션 관리)
+// node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
+// node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
     "AIzaSyBAzemH99kmlJWNHxMdo77eToqT48HBLIo",
     "AIzaSyB_UQO3yrYJgKf1GrrxN_eTIhL7mLusOxE",

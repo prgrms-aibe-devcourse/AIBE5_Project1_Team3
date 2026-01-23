@@ -85,6 +85,31 @@
     cursor: pointer;
 }
 
+/* 태그 더보기 CSS*/
+.tags-container {
+    max-height: 36px;   
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.tags-container.open {
+    max-height: 500px; 
+}
+
+.tag-toggle {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* advise-content */
+#advise-content {
+    display: flex;
+}
+
+
 /* Accordion */
 .accordion-wrapper {
     border-top: 1px solid var(--gray-100);

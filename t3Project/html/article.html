@@ -18,6 +18,10 @@
                 <a href="javascript:history.back()" class="nav-icon-btn">
                     <i data-lucide="chevron-left" width="24"></i>
                 </a>
+                <!-- 홈 버튼 -->
+                <a href="./index.html" class="nav-icon-btn">
+                    <i data-lucide="home" width="24"></i>
+                </a>
             </div>
             <div class="flex gap-2">
                 <button id="search-btn" class="nav-icon-btn">
@@ -53,6 +57,9 @@
 
         <!-- Tags -->
         <div id="d-tags" class="tags-container"></div>
+
+        <!-- 태그 더보기 버튼 추가 -->
+        <button id="tag-toggle-btn" class="tag-toggle">+ 더보기</button>
 
         <!-- Accordion Sections -->
         <div class="accordion-wrapper">
@@ -123,6 +130,42 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 추천 여행지 -->
+            <div class="accordion-item">
+                <button class="accordion-btn" onclick="toggleAccordion(this)">
+                    <span class="font-bold text-gray-900">📢 추천 여행지</span>
+                </button>
+                <div id="advise-content" class="accordion-content open"> 
+                    <div class="content-inner">
+                        컨텐트 1
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 2
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 3
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 4
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 5
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 6
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 7
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 8
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 9
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -182,6 +225,19 @@
             }
 
             const tagsContainer = document.getElementById('d-tags');
+            // 아티클 태그 더보기 로직 
+            const toggleBtn = document.getElementById('tag-toggle-btn');
+            const tagBox = document.getElementById('d-tags');
+
+            toggleBtn.addEventListener('click', () => {
+            tagBox.classList.toggle('open');
+
+            if (tagBox.classList.contains('open')) {
+                toggleBtn.textContent = '접기';
+            } else {
+                toggleBtn.textContent = '+ 더보기';
+            }
+            });
             art.tags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'tag cursor-pointer';

@@ -671,10 +671,6 @@ function openModal(article) {
     </div>
 
     <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-between shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div>
-            <p class="text-xs text-gray-500">예상 비용</p>
-            <p class="text-lg font-bold text-blue-600">${article.price}</p>
-        </div>
         <button onclick="window.location.href='article.html?id=${article.id}'" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
             자세히 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>

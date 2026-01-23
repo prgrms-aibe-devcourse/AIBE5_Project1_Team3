@@ -10,4 +10,4 @@
     </div>
 
 <!-- 챗봇 버튼 토글 작동용 소스 -->
-<script src="../Ai/Ai.js"></script>   
+<script src="../Ai/Aiflot.js"></script>   

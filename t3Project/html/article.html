@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/article.css">
 </head>
-<body style="padding-bottom: 8rem;">
+<body style="padding-bottom: 0rem;">
 
     <!-- Header Navigation -->
     <div id="article-nav" class="navbar" style="background: transparent;">
@@ -17,16 +17,20 @@
                 <a href="javascript:history.back()" class="nav-icon-btn">
                     <i data-lucide="chevron-left" width="24"></i>
                 </a>
-                <a href="index.html" class="nav-icon-btn">
-                    <i data-lucide="home" width="20"></i>
+                <!-- 홈 버튼 -->
+                <a href="./index.html" class="nav-icon-btn">
+                    <i data-lucide="home" width="24"></i>
                 </a>
             </div>
             <div class="flex gap-2">
+                <button id="search-btn" class="nav-icon-btn">
+                    <i data-lucide="search" width="20"></i>
+                </button>
                 <button class="nav-icon-btn">
                     <i data-lucide="share-2" width="20"></i>
                 </button>
-                <button class="nav-icon-btn">
-                    <i data-lucide="search" width="20"></i>
+                <button id="detail-like-btn" class="nav-icon-btn">
+                    <i data-lucide="heart" width="20"></i>
                 </button>
             </div>
         </div>
@@ -47,71 +51,19 @@
         </div>
     </div>
 
-    <!-- Host Info Bar -->
-    <div class="host-info-bar">
-        <div class="host-profile">
-            <div class="host-avatar">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Host" class="object-cover w-full h-full">
-            </div>
-            <div>
-                <p class="text-xs text-gray-500">Hosted by</p>
-                <p id="d-host" class="text-sm font-bold text-gray-900"></p>
-            </div>
-        </div>
-        <div class="host-rating">
-            <i data-lucide="star" width="16" fill="currentColor"></i>
-            <span id="d-rating"></span>
-        </div>
-    </div>
-
     <!-- Main Content -->
     <div class="article-container">
-        
-        <p id="d-desc" class="article-desc"></p>
 
         <!-- Tags -->
         <div id="d-tags" class="tags-container"></div>
 
+        <!-- 태그 더보기 버튼 추가 -->
+        <button id="tag-toggle-btn" class="tag-toggle">+ 더보기</button>
+
         <!-- Accordion Sections -->
         <div class="accordion-wrapper">
-            
-            <!-- Gemini AI Itinerary Generator -->
-            <div class="accordion-item ai-section">
-                <button class="accordion-btn" onclick="toggleAccordion(this)">
-                    <span class="font-bold" style="color: var(--indigo-600); display: flex; align-items: center; gap: 0.5rem;">
-                        <i data-lucide="sparkles" width="20"></i> AI 맞춤 여행 코스
-                    </span>
-                    <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
-                </button>
-                <div class="accordion-content">
-                    <div class="content-inner">
-                        <div id="ai-intro" class="text-center">
-                            <p class="text-sm text-gray-600" style="margin-bottom: 1rem;">
-                                여기저기가 <strong><span id="ai-destination-name"></span></strong> 여행을 위한 <br>
-                                최적의 3일 코스를 제안해 드립니다.
-                            </p>
-                            <button id="btn-generate-ai" class="btn btn-primary" style="background-color: var(--indigo-600); box-shadow: var(--shadow-md);">
-                                <i data-lucide="wand-2" width="18" style="margin-right: 0.5rem;"></i> 코스 생성하기
-                            </button>
-                        </div>
 
-                        <div id="ai-loading" class="hidden text-center" style="padding: 2rem 0;">
-                            <div class="ai-loading-spinner"></div>
-                            <p style="color: var(--indigo-600); font-weight: bold;">여기저기가 여행 계획을 짜고 있어요...</p>
-                            <p class="text-xs text-gray-400" style="margin-top: 0.5rem;">약 10~20초 정도 소요됩니다.</p>
-                        </div>
-
-                        <div id="ai-result" class="hidden">
-                            <div id="ai-content-box" style="background: white; padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--indigo-50); margin-bottom: 1rem; font-size: 0.875rem; line-height: 1.6;">
-                                <!-- Result injected here -->
-                            </div>
-                            <button id="btn-save-itinerary" class="btn w-full" style="background: white; border: 1px solid var(--indigo-600); color: var(--indigo-600);">
-                                <i data-lucide="bookmark" width="18" style="margin-right: 0.5rem;"></i> 마이페이지에 저장
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <p id="d-desc" style="text-align: center"></p>
 
             <!-- Program Info -->
             <div class="accordion-item">
@@ -119,7 +71,7 @@
                     <span class="font-bold text-gray-900">🗺️ 프로그램 소개</span>
                     <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
                 </button>
-                <div class="accordion-content">
+                <div class="accordion-content open">
                     <div class="content-inner" id="d-content">
                         <!-- Content Injected -->
                     </div>
@@ -129,19 +81,39 @@
             <!-- Course Info -->
             <div class="accordion-item">
                 <button class="accordion-btn" onclick="toggleAccordion(this)">
-                    <span class="font-bold text-gray-900">📍 코스 안내</span>
+                    <span class="font-bold text-gray-900">📍 장소 안내</span>
                     <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
                 </button>
-                <div class="accordion-content">
+                <div class="accordion-content open">
                     <div class="content-inner">
                          <div class="flex items-center" style="margin-bottom: 1rem;">
                             <i data-lucide="map-pin" class="text-accent" width="20" style="margin-right: 0.5rem;"></i>
-                            <span id="d-course" class="font-medium text-gray-800"></span>
+                            <span id="d-name" class="font-medium text-gray-800"></span>
                          </div>
-                         <div style="width: 100%; height: 200px; background-color: var(--gray-200); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--gray-500); font-size: 0.875rem;">
-                             Google Map Area
+                         <!-- Map Area with ID for JS injection -->
+                         <div id="d-map" style="width: 100%; height: 250px; background-color: var(--gray-200); border-radius: var(--radius-lg); overflow: hidden;">
+                             <!-- Iframe will be injected here -->
                          </div>
+                         <br>
+                         <span id="d-address" class="font-medium text-gray-800"></span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Host Info Bar -->
+            <div class="host-info-bar">
+                <div class="host-profile">
+                    <div class="host-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Host" class="object-cover w-full h-full">
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Hosted by</p>
+                        <p id="d-host" class="text-sm font-bold text-gray-900"></p>
+                    </div>
+                </div>
+                <div class="host-rating">
+                    <i data-lucide="star" width="16" fill="currentColor"></i>
+                    <span id="d-rating"></span>
                 </div>
             </div>
 
@@ -158,43 +130,65 @@
                 </div>
             </div>
 
-        </div>
-    </div>
-
-    <!-- Sticky Bottom Bar -->
-    <div class="bottom-bar">
-        <div>
-            <div class="flex items-center gap-1" style="margin-bottom: 0.125rem;">
-                <span id="d-price" class="price-tag"></span>
-                <span class="text-xs text-gray-400">/ 1인</span>
+            <!-- 추천 여행지 -->
+            <div class="accordion-item">
+                <button class="accordion-btn" onclick="toggleAccordion(this)">
+                    <span class="font-bold text-gray-900">📢 추천 여행지</span>
+                </button>
+                <div id="advise-content" class="accordion-content open"> 
+                    <div class="content-inner">
+                        컨텐트 1
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 2
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 3
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 4
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 5
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 6
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 7
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 8
+                    </div>
+                    <div class="content-inner">
+                        컨텐트 9
+                    </div>
+                </div>
             </div>
-            <p style="font-size: 0.625rem; color: var(--green-600); font-weight: bold;">즉시 예약 가능</p>
-        </div>
-        <div class="flex gap-2">
-            <button id="detail-like-btn" class="like-btn">
-                <i data-lucide="heart" width="24" style="color: var(--gray-400);"></i>
-            </button>
-            <button class="btn btn-reserve">
-                예약하기
-            </button>
         </div>
     </div>
 
+    <!-- Data Script Loaded Before Logic -->
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
+    
+    <!-- Main Logic using Global Variables -->
     <script>
-        // 아코디언 토글 함수
-        function toggleAccordion(btn) {
+        // Global function for Accordion (needs to be on window for onclick attribute)
+        window.toggleAccordion = function(btn) {
             const content = btn.nextElementSibling;
             content.classList.toggle('open');
         }
 
-        // 데이터 로드
+        // Load Data
         const urlParams = new URLSearchParams(window.location.search);
         const articleId = urlParams.get('id');
         window.currentArticle = null;
         
-        if(articleId) addToRecent(articleId);
+        // Use utility function from script.js if available
+        if(typeof addToRecent === 'function' && articleId) {
+            addToRecent(articleId);
+        }
 
         window.currentArticle = ARTICLES.find(a => a.id === articleId);
 
@@ -205,22 +199,48 @@
             const art = window.currentArticle;
             document.getElementById('d-image').src = art.imageUrl;
             document.getElementById('d-title').textContent = art.title;
-            document.getElementById('ai-destination-name').textContent = art.title;
             document.getElementById('d-subtitle').textContent = art.subtitle;
-            document.getElementById('d-category').textContent = art.category;
-            document.getElementById('d-season').textContent = art.season;
-            document.getElementById('d-host').textContent = art.host;
-            document.getElementById('d-rating').textContent = art.rating;
+
             document.getElementById('d-desc').textContent = art.description;
             document.getElementById('d-content').innerHTML = art.content;
-            document.getElementById('d-course').textContent = art.courseInfo;
-            document.getElementById('d-price').textContent = art.price;
-            
+
+            document.getElementById('d-name').textContent = art.name;
+            document.getElementById('d-address').textContent = art.address;
+
+            document.getElementById('d-host').textContent = art.host;
+            document.getElementById('d-rating').textContent = art.rating;
+
+            // --- Inject Map Iframe ---
+            const mapContainer = document.getElementById('d-map');
+            if(mapContainer) {
+                const mapFrame = document.createElement('iframe');
+                mapFrame.src = `map.html?mode=embed&id=${art.id}`;
+                mapFrame.style.width = '100%';
+                mapFrame.style.height = '100%';
+                mapFrame.style.border = 'none';
+                mapFrame.setAttribute('loading', 'lazy');
+                mapContainer.innerHTML = ''; 
+                mapContainer.appendChild(mapFrame);
+            }
+
             const tagsContainer = document.getElementById('d-tags');
+            // 아티클 태그 더보기 로직 
+            const toggleBtn = document.getElementById('tag-toggle-btn');
+            const tagBox = document.getElementById('d-tags');
+
+            toggleBtn.addEventListener('click', () => {
+            tagBox.classList.toggle('open');
+
+            if (tagBox.classList.contains('open')) {
+                toggleBtn.textContent = '접기';
+            } else {
+                toggleBtn.textContent = '+ 더보기';
+            }
+            });
             art.tags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'tag cursor-pointer';
-                btn.textContent = '#' + tag;
+                btn.textContent = tag;
                 btn.onclick = () => location.href = `index.html?tag=${encodeURIComponent(tag)}`;
                 tagsContainer.appendChild(btn);
             });
@@ -238,19 +258,33 @@
                                 <div style="width: 24px; height: 24px; background: var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: var(--gray-500);">${review.user[0]}</div>
                                 <span class="text-sm font-bold">${review.user}</span>
                             </div>
-                            <span class="text-xs text-gray-400">${review.date}</span>
+                            <span class="text-xs text-gray-400">
+                                <i data-lucide="star" width="16" height="16" fill="currentColor" style="vertical-align: middle; transform: translateY(-1px);"></i>
+                                ${review.rating}
+                                </span>
                         </div>
-                        <p class="text-sm text-gray-700">${review.text}</p>
+                        <p class="text-sm text-gray-700">${review.comment}</p>
                     `;
                     reviewContainer.appendChild(div);
                 });
             }
 
+            // Search button logic
+            const searchBtn = document.getElementById('search-btn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Like button logic
             const likeBtn = document.getElementById('detail-like-btn');
             const heartIcon = likeBtn.querySelector('i');
             likeBtn.dataset.id = articleId;
             
             function updateLikeState() {
+                if (typeof getFavorites !== 'function') return;
+
                 const favorites = getFavorites();
                 const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
                 if (!heartIcon) return;
@@ -261,17 +295,18 @@
                     heartIcon.style.color = 'white';
                     heartIcon.setAttribute('fill', 'currentColor');
                 } else {
-                    likeBtn.style.backgroundColor = 'white';
-                    likeBtn.style.borderColor = 'var(--gray-200)';
-                    heartIcon.style.color = 'var(--gray-400)';
                     heartIcon.setAttribute('fill', 'none');
                 }
             }
 
             likeBtn.onclick = () => {
-                toggleFavorite(articleId);
-                updateLikeState();
+                if (typeof toggleFavorite === 'function') {
+                    toggleFavorite(articleId);
+                    updateLikeState();
+                }
             };
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             updateLikeState();
         }
     </script>
@@ -289,8 +324,8 @@
 
     let generatedItineraryText = ""; 
 
-    // API Key
-    const API_KEY = ''; 
+    // API Key from environment
+    const API_KEY = process.env.API_KEY; 
 
     if (btnGenerate) {
         btnGenerate.addEventListener('click', async () => {
@@ -305,7 +340,6 @@
             
             try {
                 const genAI = new GoogleGenerativeAI(API_KEY);
-                // Updated to gemini-3-flash-preview as requested
                 const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
                 const prompt = `

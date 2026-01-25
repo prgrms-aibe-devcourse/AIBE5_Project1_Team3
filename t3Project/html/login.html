@@ -3,71 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인 - 여기저기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/auth.css">
-</head>
-<body class="auth-container">
+    <!-- Supabase 라이브러리 (필수) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <div class="auth-box animate-fade-in">
-        
-        <a href="index.html" style="position: absolute; top: 1.5rem; right: 1.5rem; color: var(--gray-400);">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#000', accent: '#FF385C' } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 h-screen flex items-center justify-center p-6">
+
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 md:p-10 animate-fade-in relative">
+        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black">
             <i data-lucide="x" width="24"></i>
         </a>
-
-        <div class="text-center" style="margin-bottom: 2.5rem;">
-            <h1 class="text-3xl font-black" style="margin-bottom: 0.5rem;">여기저기</h1>
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-black mb-2 tracking-tight">여기저기</h1>
             <p class="text-gray-500">나만의 여행 큐레이션을 시작해보세요.</p>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <!-- Social Login -->
-            <button onclick="loginSuccess()" class="social-btn social-google">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px; height: 20px;">
-                <span>Google로 시작하기</span>
-            </button>
-
-            <button onclick="loginSuccess()" class="social-btn social-kakao">
-                <i data-lucide="message-circle" style="color: #391B1B; width: 20px;"></i>
-                <span>카카오로 시작하기</span>
+        <div class="space-y-4">
+            <!-- type="button" 추가 (중요: 폼 제출 방지) -->
+            <button type="button" id="btn-google" class="w-full py-3.5 px-4 rounded-xl border border-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors relative">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5" />
+                <span class="font-bold text-gray-700">Google로 시작하기</span>
             </button>
             
-            <div class="divider">
-                <div class="divider-line"><hr></div>
-                <div class="divider-text"><span>또는 이메일로 로그인</span></div>
+            <div class="relative py-4">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
+                <div class="relative flex justify-center text-xs"><span class="px-2 bg-white text-gray-400">또는 이메일로 로그인</span></div>
             </div>
 
-            <!-- Email Form -->
-            <form onsubmit="event.preventDefault(); loginSuccess();" style="display: flex; flex-direction: column; gap: 1rem;">
-                <div>
-                    <input type="email" placeholder="이메일 주소" class="input-field" required>
-                </div>
-                <div>
-                    <input type="password" placeholder="비밀번호" class="input-field" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-full" style="background-color: var(--primary); box-shadow: var(--shadow-lg); width: 100%;">
-                    로그인
-                </button>
+            <form id="form-login" class="space-y-4">
+                <div><input id="input-email" type="email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-gray-100 border focus:border-black focus:bg-white focus:outline-none transition-colors text-sm" required></div>
+                <div><input id="input-password" type="password" placeholder="비밀번호" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-gray-100 border focus:border-black focus:bg-white focus:outline-none transition-colors text-sm" required></div>
+                <button type="submit" id="btn-submit" class="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 disabled:bg-gray-400">로그인</button>
             </form>
         </div>
-        
-        <div style="margin-top: 2rem; text-align: center; font-size: 0.75rem; color: var(--gray-400);">
-            <a href="#" style="text-decoration: underline;">아이디 찾기</a>
-            <span style="margin: 0 0.5rem;">|</span>
-            <a href="#" style="text-decoration: underline;">비밀번호 찾기</a>
-            <span style="margin: 0 0.5rem;">|</span>
-            <a href="#" style="text-decoration: underline;">회원가입</a>
+        <div class="mt-8 text-center text-xs text-gray-400">
+            <a href="#" class="underline hover:text-black">회원가입</a>
         </div>
     </div>
 
-    <script src="../js/script.js"></script>
+    <!-- script.js가 있으면 로드하되, 없어도 작동하게 분리 -->
+    <script src="script.js"></script>
+    
+    <!-- 기존 <script src="script.js"></script>가 있다면 지우거나 주석 처리해주세요 -->
+    <!-- <script src="script.js"></script> -->
+    
     <script>
-        function loginSuccess() {
-            localStorage.setItem('isLoggedIn', 'true');
-            alert('환영합니다!');
-            location.href = 'index.html';
+        // 아이콘 생성
+        if(window.lucide) lucide.createIcons();
+
+        // ------------------------------------------------------------------
+        // [진단 1] Supabase 라이브러리 로드 확인
+        // ------------------------------------------------------------------
+        if (typeof window.supabase === 'undefined') {
+            alert("🚨 치명적 오류: Supabase 라이브러리를 불러오지 못했습니다.");
+            throw new Error("Supabase Library Not Loaded");
         }
-        lucide.createIcons();
+
+        const SUPABASE_URL = 'https://ozhieovgrmnehaimuyni.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96aGllb3Zncm1uZWhhaW11eW5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NzgwODksImV4cCI6MjA4NDU1NDA4OX0.haULDDCnJXw4zwFeJSQKhS1Jun4CRFCziGgKQKVwmyY'; 
+        
+        // [수정] 변수 이름 충돌 방지를 위해 'supabase' -> 'supabaseClient'로 변경
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 요소 가져오기
+        const btnGoogle = document.getElementById('btn-google');
+        const btnKakao = document.getElementById('btn-kakao');
+
+        async function handleSocialLogin(provider) {
+            console.log(`[${provider}] 로그인 시도 중...`); 
+            
+            try {
+                // [수정] supabase -> supabaseClient 사용
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: provider,
+                    options: {
+                        // ▼ 주소창의 주소와 정확히 일치해야 합니다!
+                        redirectTo: 'http://127.0.0.1:8080/t3Project/html/index.html',
+                        queryParams: {
+                            access_type: 'offline',
+                            prompt: 'consent',
+                        },
+                    }
+                });
+
+                if (error) {
+                    console.error("Supabase 에러:", error);
+                    alert("로그인 실패: " + error.message); // 에러 발생 시 알림 띄움
+                    throw error;
+                }
+                
+                console.log("로그인 요청 성공! 리다이렉트 대기...", data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // 이벤트 리스너 연결
+        if(btnGoogle) {
+            btnGoogle.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleSocialLogin('google');
+            });
+        }
+        if(btnKakao) {
+            btnKakao.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleSocialLogin('kakao');
+            });
+        }
     </script>
 </body>
 </html>

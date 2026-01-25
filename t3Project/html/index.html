@@ -9,57 +9,44 @@
     <link rel="stylesheet" href="../css/index.css">
 </head>
 <body id="page-home">
-
-    <!-- Navbar -->
-    <nav id="navbar" class="navbar">
-        <div class="nav-inner">
-            <!-- Left: Logo & PC Menu -->
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="logo-text">여기저기</a>
-                
-                <div class="nav-links desktop-only">
-                    <a href="#content" class="nav-link">여행지</a>
-                    <a href="#" class="nav-link">카테고리</a>
-                    <a href="#" class="nav-link">특가상품</a>
-                    <a href="map.html" class="nav-link">지도</a>
-                    <a href="roulette.html" class="nav-link flex items-center gap-1">
-                        <i data-lucide="dices" width="16"></i> 룰렛
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right: Actions -->
-            <div class="flex items-center gap-2">
-                <button class="nav-icon-btn">
-                    <i data-lucide="search" width="20"></i>
-                </button>
-                
-                <a href="favorites.html" class="nav-icon-btn relative">
-                    <i data-lucide="heart" width="20"></i>
-                    <span id="favorite-count" class="hidden absolute top-0 right-0 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full" style="background-color: var(--red-500); position: absolute; top: 0; right: 0; width: 16px; height: 16px; font-size: 10px; border-radius: 50%;">0</span>
-                </a>
-                
-                <!-- Login/User -->
-                <a href="login.html" class="btn-login btn-login-trigger">
-                    로그인
-                </a>
-                <!-- User Avatar -->
-                <a href="mypage.html" class="user-avatar-display hidden w-8 h-8 rounded-full overflow-hidden cursor-pointer" style="width: 32px; height: 32px; border-radius: 50%;">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full object-cover" alt="User">
-                </a>
-
-                <!-- Mobile Menu Button -->
-                <button id="mobile-menu-btn" class="nav-icon-btn mobile-only">
-                    <i data-lucide="menu" width="24"></i>
-                </button>
+<nav id="navbar" class="navbar"><div class="nav-inner">
+        <div class="nav-left-group">
+            <a href="index.html" class="logo-text">여기저기</a>
+            <div class="nav-links desktop-only">
+                <a href="#content" class="nav-link">여행지</a>
+                <a href="#" class="nav-link">카테고리</a>
+                <a href="#" class="nav-link">특가상품</a>
+                <a href="map.html" class="nav-link">지도</a>
+                <a href="roulette.html" class="nav-link">룰렛</a>
             </div>
         </div>
-    </nav>
 
-    <!-- Mobile Drawer Menu -->
-    <div id="mobile-menu">
+        <div class="nav-right-group">
+            <button class="nav-icon-btn">
+                <i data-lucide="search" style="width:20px; height:20px;"></i>
+            </button>
+            
+           <a href="favorites.html" class="nav-icon-btn favorite-link-wrapper">
+    <i data-lucide="heart" style="width:20px; height:20px;"></i>
+    <span id="favorite-count" class="nav-badge" style="display: none;">0</span>
+</a>
+            
+            <a href="login.html" id="nav-login-btn" class="btn-login">로그인</a>
+
+            <a href="mypage.html" id="nav-user-avatar" class="user-avatar-display" style="display: none;">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+            </a>
+
+            <button id="mobile-menu-btn" class="nav-icon-btn mobile-only">
+                <i data-lucide="menu" style="width:24px; height:24px;"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+    <div id="mobile-menu" class="mobile-menu-drawer">
         <div class="mobile-menu-header">
-            <h2 class="text-xl font-bold">메뉴</h2>
+            <h2 class="mobile-menu-title">메뉴</h2>
             <button id="mobile-menu-close"><i data-lucide="x" width="24"></i></button>
         </div>
         <div class="mobile-menu-links">
@@ -69,116 +56,126 @@
             <a href="map.html" class="mobile-menu-link">지도로 보기</a>
             <a href="roulette.html" class="mobile-menu-link">여행지 룰렛 돌리기</a>
             <a href="favorites.html" class="mobile-menu-link">좋아요 목록</a>
-            <a href="mypage.html" class="mobile-menu-link user-avatar-display hidden" style="color: var(--indigo-600);">마이페이지</a>
+            <a href="mypage.html" class="mobile-menu-link user-avatar-display hidden">마이페이지</a>
         </div>
-        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--gray-100);">
-            <a href="login.html" class="btn btn-primary w-full btn-login-trigger">로그인 / 회원가입</a>
+        <div class="mobile-menu-footer">
+            <a href="login.html" class="btn">로그인 / 회원가입</a>
         </div>
     </div>
 
-    <!-- Hero Section -->
     <div class="hero-section">
-        <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe>
-        
+        <!-- <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe> -->
         <div class="hero-overlay">
             <div class="hero-content">
                 <h1 class="hero-title">
                     떠나고 싶은 순간,<br>
                     바로 여기에서.
                 </h1>
-                
                 <p class="hero-subtitle">
                     지친 일상에 쉼표가 필요하신가요? 당신의 취향에 딱 맞는 여행지를 찾아드립니다.
                 </p>
-
                 <div class="hero-actions">
-                    <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="btn btn-white" style="border-radius: 9999px; font-size: 1.125rem;">
+                    <button onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" class="btn-glass">
                         여행지 보기
                     </button>
-                    <a href="roulette.html" class="btn btn-glass">
+                    <a href="roulette.html" class="btn-glass">
                         랜덤 추천 받기
                     </a>
                 </div>
             </div>
         </div>
         
-        <div class="scroll-indicator">
-             <div class="scroll-indicator-icon" onclick="document.getElementById('content').scrollIntoView({behavior: 'smooth'})">
-                 <i data-lucide="chevron-down" width="32"></i>
-             </div>
+        <div class="scroll-btn-wrap">
+    <button class="scroll-down-btn" onclick="scrollToContent()" aria-label="아래로 스크롤">
+        <i data-lucide="chevron-down"></i>
+    </button>
+</div>
         </div>
     </div>
 
-    <!-- Main Content Section -->
-    <section id="content" class="container content-section">
-        
-        <!-- Filter Section -->
-        <div style="margin-bottom: 3rem;">
-            <div class="filter-header">
-                <div>
-                    <h2 class="text-3xl font-bold mb-2">어디로 떠나볼까요?</h2>
-                    <p class="text-gray-500">원하는 테마를 선택해 나만의 여행지를 찾아보세요.</p>
+  <section id="content" class="container content-section">
+    <div class="filter-section-wrap">
+        <div class="filter-header">
+            <div class="filter-title-group">
+                <h2 class="section-main-title">어디로 떠나볼까요?</h2>
+                <p class="section-sub-title">원하는 테마를 선택해 나만의 여행지를 찾아보세요.</p>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="main-search-input" placeholder="어디로 떠나고 싶으신가요?" autocomplete="off">
+                
+                <button id="search-clear-btn" class="search-clear-btn hidden">
+                    <i data-lucide="x"></i>
+                </button>
+                
+                <button class="search-btn-inside">검색</button>
+
+                <div id="search-dropdown" class="search-dropdown hidden">
+                    <div class="dropdown-section">
+                        <p class="dropdown-title">추천 태그</p>
+                        <div id="recommended-tags" class="tag-cloud">
+                            <span class="search-tag">#태국</span>
+                            <span class="search-tag">#불꽃축제</span>
+                            <span class="search-tag">#바다</span>
+                            <span class="search-tag">#캠핑</span>
+                        </div>
+                    </div>
+                    <div id="search-results" class="search-results-list"></div>
                 </div>
             </div>
-            
-            <!-- Filter Buttons -->
-            <div class="filter-group">
-                <button class="filter-btn active" data-id="all" onclick="toggleFilter('all')">전체</button>
-                <button class="filter-btn" data-id="domestic" onclick="toggleFilter('domestic')">🇰🇷 국내여행</button>
-                <button class="filter-btn" data-id="overseas" onclick="toggleFilter('overseas')">✈️ 해외여행</button>
-                <button class="filter-btn" data-id="nature" onclick="toggleFilter('nature')">🌿 자연/힐링</button>
-                <button class="filter-btn" data-id="city" onclick="toggleFilter('city')">🏙️ 도시/야경</button>
-            </div>
         </div>
 
-        <!-- Grid Container -->
-        <div id="article-grid" class="article-grid">
-            <!-- Articles injected by script.js -->
-        </div>
-        
-        <!-- Load More -->
-        <div class="text-center" style="margin-top: 4rem;">
-            <button class="btn btn-outline" style="border-radius: var(--radius-xl);">
-                더 많은 여행지 보기
-            </button>
-        </div>
-    </section>
-    
-    <!-- Floating Banner -->
-    <div id="floating-banner" class="floating-banner hidden">
-        <div class="flex justify-between items-center mb-2">
-            <span style="font-size: 10px; background: var(--gray-100); color: var(--gray-500); padding: 2px 6px; border-radius: 4px; font-weight: bold;">NOTICE</span>
-            <button onclick="document.getElementById('floating-banner').style.display='none'" class="text-gray-400"><i data-lucide="x" width="14"></i></button>
-        </div>
-        <div id="floban-content">
-            <!-- Content Injected by JS -->
+        <div class="filter-group">
+            <button class="filter-btn active" data-id="all" onclick="toggleFilter('all')">전체</button>
+            <button class="filter-btn" data-id="domestic" onclick="toggleFilter('domestic')">🇰🇷 국내여행</button>
+            <button class="filter-btn" data-id="overseas" onclick="toggleFilter('overseas')">✈️ 해외여행</button>
+            <button class="filter-btn" data-id="nature" onclick="toggleFilter('nature')">🌿 자연/힐링</button>
+            <button class="filter-btn" data-id="city" onclick="toggleFilter('city')">🏙️ 도시/야경</button>
+            <button class="filter-btn" data-id="place" onclick="toggleFilter('place')">�️ 명소/문화</button>
         </div>
     </div>
+     <div id="article-grid" class="article-grid">
+        </div>
+        
+        <div class="load-more-container">
+        <button class="btn-load-more" onclick="handleLoadMore()">더 많은 여행지 보기</button>
+    </div>
+</section>
+    
+    <div id="floating-banner" class="floating-banner">
+        <div class="floban-header">
+            <span class="floban-badge">NOTICE</span>
+            <button onclick="document.getElementById('floating-banner').style.display='none'" class="floban-close"><i data-lucide="x" width="14"></i></button>
+        </div>
+        <div id="floban-content"></div>
+    </div>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-grid">
-                <div>
-                    <h3 class="font-black text-xl mb-4">여기저기</h3>
-                    <p class="text-sm text-gray-500 mb-4">당신의 여정에 특별한 영감이 되기를 바랍니다.</p>
+                <div class="footer-brand">
+                    <h3 class="footer-logo">여기저기</h3>
+                    <p class="footer-desc">당신의 여정에 특별한 영감이 되기를 바랍니다.</p>
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">서비스</h4>
+                <div class="footer-nav-group">
+                    <h4 class="footer-heading">서비스</h4>
                     <div class="footer-links">
                         <a href="#">매거진</a>
                         <a href="#">예약</a>
                     </div>
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">고객지원</h4>
+                <div class="footer-nav-group">
+                    <h4 class="footer-heading">고객지원</h4>
                     <div class="footer-links">
                         <a href="#">공지사항</a>
                         <a href="#">1:1 문의</a>
                     </div>
                 </div>
-                <div>
-                    <p class="text-xs text-gray-400">© 2024 Yeogi Jeogi. All rights reserved.</p>
+                <div class="footer-copy-wrap">
+                    <p class="footer-copy">© 2024 Yeogi Jeogi. All rights reserved.</p>
                 </div>
             </div>
         </div>
@@ -186,5 +183,6 @@
 
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

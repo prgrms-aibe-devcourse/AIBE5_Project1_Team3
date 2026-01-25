@@ -4,246 +4,910 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 여기저기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/mypage.css">
-</head>
-<body style="background-color: var(--gray-50); padding-bottom: 5rem;">
-
-    <!-- Navbar -->
-    <nav class="navbar" style="position: sticky; top: 0; background: white; border-bottom: 1px solid var(--gray-100);">
-        <div class="nav-inner" style="max-width: 800px;">
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="nav-icon-btn" style="color: var(--gray-800); background: transparent;">
-                    <i data-lucide="arrow-left" width="24"></i>
-                </a>
-                <h1 class="font-bold text-lg">마이페이지</h1>
-            </div>
-            <button onclick="logout()" style="font-size: 0.75rem; color: var(--gray-500); text-decoration: underline;">
-                로그아웃
-            </button>
-        </div>
-    </nav>
-
-    <div class="container" style="max-width: 800px; padding-top: 2rem;">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000',
+                        accent: '#FF385C',
+                        ai: '#8B5CF6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-indicator { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .tab-content.active { display: block; }
+        .trip-card { transition: transform 0.2s; }
+        .trip-card:active { transform: scale(0.98); }
         
-        <!-- Profile Section -->
-        <div class="profile-card">
-            <div class="profile-img-wrap">
-                <div class="profile-img-inner">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="object-cover w-full h-full">
-                </div>
-            </div>
-            <div>
-                <h2 class="text-xl font-black text-gray-900" style="margin-bottom: 0.25rem;">여행자 님</h2>
-                <p class="text-sm text-gray-500" style="margin-bottom: 0.75rem;">오늘도 새로운 여행을 꿈꾸시나요?</p>
-                <div class="flex gap-2">
-                    <span class="card-badge" style="background: var(--gray-100); color: var(--gray-600); border:none;">Level 3. 탐험가</span>
-                </div>
-            </div>
-        </div>
+        /* Toggle Switch UI (Updated) */
+        .toggle-label {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #e5e7eb; /* gray-200 */
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .toggle-checkbox {
+            display: none; /* 숨김 처리 후 label로 제어 */
+        }
+        .toggle-circle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        /* 체크 상태일 때 */
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #000;
+        }
+        .toggle-checkbox:checked + .toggle-label .toggle-circle {
+            transform: translateX(1.5rem); /* 오른쪽으로 이동 */
+        }
+        
+        /* Star Rating */
+        .star-btn i { transition: all 0.2s; }
+        .star-btn.active i { fill: #FACC15; color: #FACC15; }
+        
+        /* Checkbox for Saved Items */
+        .custom-checkbox:checked {
+            background-color: #FF385C;
+            border-color: #FF385C;
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        }
 
-        <!-- Tabs -->
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('itinerary')">
-                AI 저장 코스
-            </button>
-            <button class="tab-btn" onclick="switchTab('favorites')">
-                좋아요 목록
-            </button>
-        </div>
+        /* Modal Scroll */
+        .modal-scroll::-webkit-scrollbar { width: 6px; }
+        .modal-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .modal-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        .modal-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+</head>
+<body class="bg-gray-50 pb-24">
 
-        <!-- Tab Content: AI Itineraries -->
-        <div id="tab-itinerary" class="tab-content animate-fade-in" style="display: flex; flex-direction: column; gap: 1rem;">
-            <!-- Injected by JS -->
+    <!-- Header -->
+    <div class="sticky top-0 left-0 w-full bg-white/90 backdrop-blur-md z-40 border-b border-gray-100 px-4 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-gray-800 hover:text-black transition-colors">
+                <i data-lucide="chevron-left" width="24"></i>
+            </a>
+            <h1 class="font-bold text-lg text-gray-900">마이페이지</h1>
         </div>
-
-        <!-- Tab Content: Favorites -->
-        <div id="tab-favorites" class="tab-content hidden animate-fade-in" style="display: flex; flex-direction: column; gap: 1rem;">
-            <!-- Injected by JS -->
-        </div>
-
+        <button onclick="openSettingsModal()" class="text-gray-500 hover:text-black">
+            <i data-lucide="settings" width="20"></i>
+        </button>
     </div>
 
-    <!-- Itinerary Modal -->
-    <div id="itinerary-modal" class="modal-overlay hidden">
-        <div onclick="closeModal()" class="absolute inset-0"></div>
+    <!-- Profile Section -->
+    <div class="bg-white px-6 py-8 mb-2">
+        <div class="flex items-center gap-4">
+            <div class="relative group cursor-pointer" onclick="openProfileModal()">
+                <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-accent to-purple-500">
+                    <img id="profile-img" src="" class="w-full h-full rounded-full border-2 border-white bg-gray-100 object-cover" alt="Profile">
+                </div>
+                <div class="absolute bottom-0 right-0 bg-white p-1 rounded-full border border-gray-100 shadow-sm">
+                    <i data-lucide="camera" width="12" class="text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1">
+                <h2 id="profile-name" class="text-xl font-black text-gray-900 leading-tight mb-1"></h2>
+                <p id="profile-email" class="text-xs text-gray-400 mb-2"></p>
+                <p id="profile-bio" class="text-sm text-gray-600 mb-3 line-clamp-1"></p>
+                <button onclick="openProfileModal()" class="px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 hover:border-black transition-all">
+                    프로필 편집
+                </button>
+            </div>
+        </div>
         
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 class="font-bold text-lg" id="modal-title">여행 코스 상세</h3>
-                <button onclick="closeModal()" style="padding: 0.5rem; background: var(--gray-100); border-radius: 50%;">
-                    <i data-lucide="x" width="20"></i>
+        <!-- Stats -->
+        <div class="flex justify-between mt-8 px-2">
+            <div class="text-center w-1/3 cursor-pointer border-r border-gray-100" onclick="switchTab('saved')">
+                <p class="text-xs text-gray-400 font-medium mb-1">찜한 여행</p>
+                <p class="text-lg font-black text-accent" id="stat-likes">0</p>
+            </div>
+            <div class="text-center w-1/3 border-r border-gray-100" onclick="switchTab('trips')">
+                <p class="text-xs text-gray-400 font-medium mb-1">다녀온 여행</p>
+                <p class="text-lg font-black text-gray-900" id="stat-trips">0</p>
+            </div>
+            <div class="text-center w-1/3 cursor-pointer" onclick="switchTab('reviews')">
+                <p class="text-xs text-gray-400 font-medium mb-1">나의 후기</p>
+                <p class="text-lg font-black text-gray-900" id="stat-reviews">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="sticky top-14 bg-white z-30 border-b border-gray-100">
+        <div class="flex relative">
+            <button onclick="switchTab('saved')" class="tab-btn w-1/3 py-3 text-sm font-bold text-gray-400 transition-colors data-[active=true]:text-black" data-tab="saved">
+                찜한 목록
+            </button>
+            <button onclick="switchTab('trips')" class="tab-btn w-1/3 py-3 text-sm font-bold text-gray-400 transition-colors data-[active=true]:text-black" data-tab="trips">
+                나의 여행
+            </button>
+            <button onclick="switchTab('reviews')" class="tab-btn w-1/3 py-3 text-sm font-bold text-gray-400 transition-colors data-[active=true]:text-black" data-tab="reviews">
+                나의 후기
+            </button>
+            <div id="tab-line" class="absolute bottom-0 h-[2px] bg-black transition-all duration-300 w-1/3 left-0"></div>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="max-w-3xl mx-auto px-4 py-6 min-h-[50vh]">
+
+        <!-- Tab 1: Saved -->
+        <div id="tab-saved" class="tab-content active">
+            <div class="flex justify-between items-center mb-4 sticky top-28 bg-gray-50/90 backdrop-blur z-20 p-2 rounded-xl border border-gray-100 shadow-sm">
+                <p class="text-xs text-gray-500 pl-2">가고 싶은 곳을 선택하세요.</p>
+                <button onclick="generateTripFromSelection()" class="bg-accent text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:bg-red-600 transition-colors flex items-center gap-1">
+                    <i data-lucide="calendar-plus" width="14"></i>
+                    일정 만들기
+                </button>
+            </div>
+            <div id="saved-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            <div id="saved-empty" class="hidden flex-col items-center justify-center py-20 text-gray-400">
+                <i data-lucide="heart-off" width="48" class="mb-4 text-gray-200"></i>
+                <p>아직 찜한 여행지가 없어요.</p>
+                <a href="index.html" class="mt-4 text-accent text-sm font-bold underline">여행지 둘러보기</a>
+            </div>
+        </div>
+
+        <!-- Tab 2: My Trips -->
+        <div id="tab-trips" class="tab-content space-y-6">
+            <div class="flex justify-between items-end mb-4 border-b border-gray-100 pb-2">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    다가오는 여행 <span class="text-accent text-sm" id="upcoming-count">0</span>
+                </h3>
+                <!-- [수정됨] openManualCreateModal() 호출 -->
+                <button onclick="openManualCreateModal()" class="flex items-center gap-1 px-3 py-1.5 bg-black text-white rounded-full text-xs font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200">
+                    <i data-lucide="plus" width="14"></i> 일정 추가
                 </button>
             </div>
             
-            <div class="modal-body">
-                <div id="modal-content"></div>
-            </div>
+            <div id="upcoming-list" class="space-y-4"></div>
 
-            <div class="modal-footer">
-                 <button id="btn-delete-itinerary" class="btn w-full" style="background: #fef2f2; color: #ef4444;">
-                     이 코스 삭제하기
-                 </button>
+            <div class="pt-6">
+                <h3 class="font-bold text-gray-400 text-sm mb-4">지난 여행</h3>
+                <div id="past-list" class="space-y-4 opacity-90"></div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Reviews -->
+        <div id="tab-reviews" class="tab-content">
+             <div class="bg-blue-50 p-4 rounded-xl mb-6 flex items-start gap-3">
+                <i data-lucide="info" class="text-blue-500 mt-0.5" width="16"></i>
+                <p class="text-xs text-blue-800 leading-relaxed">
+                    여행 후기를 작성하면 포인트가 적립됩니다.<br>
+                    별점과 함께 생생한 후기를 남겨주세요.
+                </p>
+            </div>
+            <div id="review-list" class="space-y-4"></div>
+             <div id="review-empty" class="hidden text-center py-20 text-gray-400">작성한 후기가 없습니다.</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+<!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeSettingsModal()"></div>
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 z-10 relative animate-slide-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black">설정</h3>
+                <button onclick="closeSettingsModal()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="x" width="20"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-gray-700">알림 설정</span>
+                    <!-- New Toggle Structure -->
+                    <div>
+                        <input type="checkbox" id="noti-toggle" class="toggle-checkbox" />
+                        <label for="noti-toggle" class="toggle-label block">
+                            <span class="toggle-circle"></span>
+                        </label>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="w-full py-4 text-red-500 font-bold bg-red-50 rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="log-out" width="18"></i> 로그아웃
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Profile Edit Modal -->
+    <div id="profile-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeProfileModal()"></div>
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 z-10 relative animate-slide-up max-h-[85vh] overflow-y-auto modal-scroll">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black">프로필 편집</h3>
+                <button onclick="closeProfileModal()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="x" width="20"></i></button>
+            </div>
+            <div class="flex flex-col items-center mb-6">
+                <div class="relative w-24 h-24 mb-3">
+                    <img id="edit-profile-img" src="" class="w-full h-full rounded-full bg-gray-100 object-cover border border-gray-200">
+                    <button type="button" onclick="refreshAvatar()" class="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full shadow-lg hover:bg-gray-800 transition-colors"><i data-lucide="refresh-cw" width="14"></i></button>
+                </div>
+                <p class="text-xs text-gray-400">주사위 버튼을 눌러 아바타를 변경해보세요.</p>
+            </div>
+            <form onsubmit="saveProfile(event)" class="space-y-4">
+                <div><label class="block text-xs font-bold text-gray-500 mb-1">닉네임</label><input type="text" id="edit-name" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:outline-none font-bold" required></div>
+                <div><label class="block text-xs font-bold text-gray-500 mb-1">한줄 소개</label><input type="text" id="edit-bio" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:outline-none"></div>
+                <div><label class="block text-xs font-bold text-gray-500 mb-1">이메일</label><input type="email" id="edit-email" class="w-full p-3 bg-gray-100 rounded-xl border border-transparent text-gray-400 cursor-not-allowed" readonly></div>
+                <button type="submit" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 mt-2">저장하기</button>
+            </form>
+        </div>
+    </div>
+
+<!-- Manual Create/Edit Modal (2-Column Layout) -->
+    <div id="create-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeCreateModal()"></div>
+        <!-- [Change] max-w-5xl로 너비 확장, 높이 고정 -->
+        <div class="bg-white w-full max-w-5xl rounded-3xl p-6 md:p-8 z-10 relative animate-slide-up h-[90vh] flex flex-col">
+            
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 flex-shrink-0">
+                <h3 class="text-2xl font-black text-gray-900" id="create-modal-title">새 일정 만들기</h3>
+                <button onclick="closeCreateModal()" class="p-2 hover:bg-gray-100 rounded-full transition-colors"><i data-lucide="x" width="24"></i></button>
+            </div>
+            
+            <!-- Body (Scrollable) -->
+            <form onsubmit="handleCreateOrUpdateTrip(event)" class="flex-1 overflow-hidden flex flex-col">
+                <input type="hidden" id="edit-trip-id">
+                
+                <div class="flex flex-col md:flex-row gap-8 h-full overflow-y-auto md:overflow-hidden">
+                    
+                    <!-- [Left Column] 입력 폼 & 선택 목록 -->
+                    <div class="flex-1 flex flex-col gap-5 overflow-y-auto pr-2 modal-scroll">
+                        
+                        <!-- 선택된 장소 리스트 (Hidden by default) -->
+                        <div id="selected-places-container" class="hidden">
+                            <label class="block text-xs font-bold text-gray-500 mb-2">선택된 여행지</label>
+                            <div id="selected-places-list" class="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                <!-- JS Injected -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">여행 이름</label>
+                            <input type="text" id="trip-title" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none font-bold transition-colors" placeholder="예: 삿포로 식도락 여행" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">대표 여행지</label>
+                                <input type="text" id="trip-location" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none transition-colors" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">예산 (만원)</label>
+                                <input type="number" id="trip-budget" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none transition-colors" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">시작일</label>
+                                <input type="date" id="trip-start" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none text-sm transition-colors" required>
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold text-gray-500 mb-1">종료일</label>
+                                <input type="date" id="trip-end" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none text-sm transition-colors" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">동행인</label>
+                            <input type="text" id="trip-companions" class="w-full p-3.5 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none transition-colors" placeholder="혼자, 가족, 연인 등">
+                        </div>
+                    </div>
+
+                    <!-- [Right Column] 상세 일정 (Full Height) -->
+                    <div class="flex-1 flex flex-col h-full min-h-[300px]">
+                        <label class="block text-xs font-bold text-gray-500 mb-2 flex justify-between">
+                            <span>상세 일정 계획 (자동 생성)</span>
+                            <span class="text-accent text-[10px]">AI 추천 일정 포함</span>
+                        </label>
+                        <textarea id="trip-memo" class="flex-1 w-full p-5 bg-gray-50 rounded-2xl border border-gray-200 focus:border-black focus:bg-white focus:outline-none resize-none text-sm leading-7 shadow-inner transition-colors modal-scroll" placeholder="여기에 상세 일정이 표시됩니다."></textarea>
+                    </div>
+                </div>
+
+                <!-- Footer Action -->
+                <div class="mt-6 pt-4 border-t border-gray-100 flex-shrink-0">
+                    <button type="submit" id="btn-save-trip" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all shadow-lg active:scale-[0.99]">
+                        일정 저장하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Review Write/Edit Modal -->
+    <div id="review-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 z-10 relative animate-fade-in">
+             <div class="flex justify-between items-center mb-4">
+                 <h3 class="text-lg font-bold" id="review-modal-title">후기 작성</h3>
+                 <button onclick="closeReviewModal()" class="text-gray-400 hover:text-black"><i data-lucide="x" width="20"></i></button>
+             </div>
+             
+             <!-- [New] Article Selection -->
+             <div class="mb-4">
+                 <label class="block text-xs text-gray-400 font-bold mb-1">어떤 장소에 대한 후기인가요?</label>
+                 <select id="review-article-select" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm focus:border-black focus:outline-none appearance-none cursor-pointer">
+                     <option value="">전체 여행에 대한 후기</option>
+                     <!-- Options injected by JS -->
+                 </select>
+             </div>
+
+             <!-- Star Rating -->
+             <div class="flex flex-col items-center mb-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                 <p class="text-xs text-gray-400 font-bold mb-2">별점을 선택해주세요</p>
+                 <div class="flex gap-2" id="star-container">
+                     <button type="button" onclick="setRating(1)" class="star-btn active text-gray-300"><i data-lucide="star" width="32" fill="currentColor"></i></button>
+                     <button type="button" onclick="setRating(2)" class="star-btn active text-gray-300"><i data-lucide="star" width="32" fill="currentColor"></i></button>
+                     <button type="button" onclick="setRating(3)" class="star-btn active text-gray-300"><i data-lucide="star" width="32" fill="currentColor"></i></button>
+                     <button type="button" onclick="setRating(4)" class="star-btn active text-gray-300"><i data-lucide="star" width="32" fill="currentColor"></i></button>
+                     <button type="button" onclick="setRating(5)" class="star-btn active text-gray-300"><i data-lucide="star" width="32" fill="currentColor"></i></button>
+                 </div>
+                 <p id="rating-text" class="text-xs font-bold text-accent mt-2">5점 - 최고였어요!</p>
+             </div>
+
+             <textarea id="review-text" class="w-full h-32 p-3 bg-gray-50 rounded-xl resize-none focus:outline-none mb-4 border border-gray-200" placeholder="여행의 생생한 후기를 남겨주세요."></textarea>
+             <button onclick="submitReview()" id="btn-save-review" class="w-full bg-black text-white py-3 rounded-xl font-bold">작성 완료</button>
+        </div>
+    </div>
+
+<!-- Trip Detail Modal (Updated: Matches Creation Modal Design) -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailModal()"></div>
+        <div class="bg-white w-full max-w-5xl rounded-3xl p-6 md:p-8 z-10 relative animate-fade-in h-[90vh] flex flex-col">
+             
+             <!-- Header -->
+             <div class="flex justify-between items-center mb-6 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-2xl font-black text-gray-900 leading-tight" id="view-title"></h3>
+                    <span id="view-badge" class="px-2 py-1 bg-gray-100 rounded text-[10px] font-bold text-gray-500"></span>
+                </div>
+                <button onclick="closeDetailModal()" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-full"><i data-lucide="x" width="24"></i></button>
+             </div>
+             
+             <!-- Body -->
+             <div class="flex flex-col md:flex-row gap-8 h-full overflow-hidden">
+                 
+                 <!-- Left: Info & Selected Places -->
+                 <div class="flex-1 space-y-6 overflow-y-auto pr-2 modal-scroll">
+                     
+                     <!-- [Updated] 선택된 여행지 목록 (디자인 통일) -->
+                     <div id="view-places-container" class="hidden">
+                        <label class="block text-xs font-bold text-gray-500 mb-2 flex items-center gap-1">
+                            <i data-lucide="map-pin" width="12"></i> 선택된 여행지
+                        </label>
+                        <div id="view-places-list" class="space-y-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <!-- JS로 주입됨 -->
+                        </div>
+                     </div>
+
+                     <!-- 날짜 -->
+                     <div class="flex items-center gap-3 text-gray-700 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                         <i data-lucide="calendar" width="20"></i>
+                         <span id="view-date" class="font-bold text-base"></span>
+                     </div>
+                     
+                     <!-- 상세 정보 그리드 -->
+                     <div class="space-y-4">
+                         <div class="p-4 rounded-2xl border border-gray-100">
+                             <p class="text-xs text-gray-400 font-bold mb-1">여행지</p>
+                             <p id="view-location" class="font-bold text-lg text-gray-900"></p>
+                         </div>
+                         <div class="grid grid-cols-2 gap-4">
+                             <div class="p-4 rounded-2xl border border-gray-100">
+                                 <p class="text-xs text-gray-400 font-bold mb-1">동행인</p>
+                                 <p id="view-companions" class="font-bold text-gray-800"></p>
+                             </div>
+                             <div class="p-4 rounded-2xl border border-gray-100">
+                                 <p class="text-xs text-gray-400 font-bold mb-1">예산</p>
+                                 <p id="view-budget" class="font-bold text-gray-800"></p>
+                             </div>
+                             <div class="p-4 rounded-2xl border border-gray-100">
+                                 <p class="text-xs text-gray-400 font-bold mb-1">여행 테마</p>
+                                 <p id="view-theme-text" class="font-bold text-gray-800"></p>
+                             </div>
+                             <div class="p-4 rounded-2xl border border-gray-100">
+                                 <p class="text-xs text-gray-400 font-bold mb-1">이동 수단</p>
+                                 <p id="view-transport-text" class="font-bold text-gray-800"></p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Right: Memo (Full Height) -->
+                 <div class="flex-1 flex flex-col h-full min-h-[300px]">
+                     <label class="block text-xs font-bold text-gray-500 mb-2">상세 일정 및 메모</label>
+                     <div id="view-memo" class="flex-1 bg-gray-50 p-5 rounded-2xl border border-gray-200 text-sm leading-7 text-gray-700 whitespace-pre-wrap overflow-y-auto modal-scroll shadow-inner"></div>
+                 </div>
+             </div>
+             
+             <div class="mt-6 pt-4 border-t border-gray-100 flex-shrink-0 text-right">
+                 <button onclick="closeDetailModal()" class="px-8 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors">닫기</button>
+             </div>
+        </div>
+    </div>
+
+    <!-- !!! 중요: 데이터 초기화 버튼 !!! -->
+    <button onclick="resetAllData()" class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg z-50 text-xs font-bold hover:bg-red-600 transition-colors">
+        데이터 초기화
+    </button>
 
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
     <script>
-        function logout() {
-            if(confirm('로그아웃 하시겠습니까?')) {
+        // --- 0. Data Reset Logic ---
+        function resetAllData() {
+            if(confirm('모든 찜한 목록과 여행 일정을 삭제하시겠습니까?\n(데이터 버전 불일치 해결용)')) {
+                localStorage.removeItem('myTrips');
+                localStorage.removeItem('myReviews');
+                localStorage.removeItem('favorites');
+                alert('초기화되었습니다. 다시 찜하기를 시도해주세요.');
+                location.reload();
+            }
+        }
+
+        // --- 1. Settings & Profile Logic ---
+        let currentAvatarSeed = 'Felix';
+        const defaultProfile = { name: '여행하는 김철수', email: 'traveler_kim@example.com', bio: '여행은 나를 찾는 여정', avatarSeed: 'Felix' };
+
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('userProfile')) || defaultProfile;
+            document.getElementById('profile-name').textContent = profile.name;
+            document.getElementById('profile-email').textContent = profile.email;
+            document.getElementById('profile-bio').textContent = profile.bio;
+            document.getElementById('profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatarSeed}`;
+            currentAvatarSeed = profile.avatarSeed;
+        }
+        function openProfileModal() {
+            const profile = JSON.parse(localStorage.getItem('userProfile')) || defaultProfile;
+            document.getElementById('edit-name').value = profile.name; document.getElementById('edit-email').value = profile.email; document.getElementById('edit-bio').value = profile.bio; document.getElementById('edit-profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatarSeed}`;
+            document.getElementById('profile-modal').classList.remove('hidden'); document.getElementById('profile-modal').classList.add('flex');
+        }
+        function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('profile-modal').classList.remove('flex'); }
+        function refreshAvatar() { currentAvatarSeed = Math.random().toString(36).substring(7); document.getElementById('edit-profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentAvatarSeed}`; }
+        function saveProfile(e) { e.preventDefault(); const newProfile = { name: document.getElementById('edit-name').value, email: document.getElementById('edit-email').value, bio: document.getElementById('edit-bio').value, avatarSeed: currentAvatarSeed }; localStorage.setItem('userProfile', JSON.stringify(newProfile)); loadProfile(); closeProfileModal(); alert('프로필이 저장되었습니다.'); }
+
+        function openSettingsModal() { 
+            const modal = document.getElementById('settings-modal');
+            const toggle = document.getElementById('noti-toggle');
+            const isNotiOn = localStorage.getItem('settings_notification') !== 'false'; 
+            if(toggle) {
+                toggle.checked = isNotiOn;
+                toggle.onchange = function() { localStorage.setItem('settings_notification', this.checked); };
+            }
+            modal.classList.remove('hidden'); modal.classList.add('flex'); 
+        }
+        function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); }
+        function handleLogout() {
+            if(confirm('정말 로그아웃 하시겠습니까?')) {
                 localStorage.removeItem('isLoggedIn');
-                location.href = 'index.html';
+                alert('로그아웃 되었습니다.');
+                location.href = 'login.html';
             }
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById(`tab-${tabName}`);
-            if(target) target.classList.remove('hidden');
-            
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(btn => btn.classList.remove('active'));
-            
-            const activeBtn = document.querySelector(`button[onclick="switchTab('${tabName}')"]`);
-            if(activeBtn) activeBtn.classList.add('active');
+        // --- 2. Tab Logic ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => { const isActive = btn.dataset.tab === tabId; btn.dataset.active = isActive; btn.classList.toggle('text-black', isActive); btn.classList.toggle('text-gray-400', !isActive); });
+            const line = document.getElementById('tab-line'); 
+            if(tabId === 'saved') line.style.left = '0%'; 
+            if(tabId === 'trips') line.style.left = '33.33%'; 
+            if(tabId === 'reviews') line.style.left = '66.66%';
+            document.querySelectorAll('.tab-content').forEach(content => { content.classList.remove('active'); }); document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        function renderItineraries() {
-            const container = document.getElementById('tab-itinerary');
-            const data = JSON.parse(localStorage.getItem('myItineraries') || '[]');
-
-            if (data.length === 0) {
-                container.innerHTML = `
-                    <div style="padding: 5rem 0; text-align: center; color: var(--gray-400);">
-                        <i data-lucide="sparkles" width="48" style="margin: 0 auto 0.75rem auto; color: var(--gray-200);"></i>
-                        <p>저장된 AI 여행 코스가 없습니다.<br>여행지 상세페이지에서 코스를 만들어보세요!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = '';
-            data.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'list-card';
-                card.onclick = () => openModal(index);
-                card.innerHTML = `
-                    <div class="list-thumb">
-                        <img src="${item.image}" class="object-cover w-full h-full">
-                    </div>
-                    <div class="list-info">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.25rem;">
-                            <h3 class="font-bold text-gray-900" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${item.title}</h3>
-                            <span class="ai-badge">AI 생성</span>
-                        </div>
-                        <p class="text-xs text-gray-400" style="margin-bottom: 0.75rem;">${item.date}</p>
-                        <span class="text-xs font-bold text-gray-500" style="text-decoration: underline;">코스 상세보기 ></span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        function renderMyFavorites() {
-            const container = document.getElementById('tab-favorites');
-            const favIds = typeof getFavorites === 'function' ? getFavorites() : JSON.parse(localStorage.getItem('favorites') || '[]');
+        // --- 3. Trips Logic ---
+        function getTrips() { return JSON.parse(localStorage.getItem('myTrips') || '[]'); }
+        
+        function renderTrips() {
+            const trips = getTrips(); const reviews = getMyReviews();
+            const upcomingList = document.getElementById('upcoming-list'); const pastList = document.getElementById('past-list');
+            upcomingList.innerHTML = ''; pastList.innerHTML = '';
             
-            if (favIds.length === 0) {
-                container.innerHTML = `
-                    <div style="padding: 5rem 0; text-align: center; color: var(--gray-400);">
-                        <i data-lucide="heart" width="48" style="margin: 0 auto 0.75rem auto; color: var(--gray-200);"></i>
-                        <p>아직 찜한 여행지가 없어요.</p>
-                    </div>
-                `;
-                return;
-            }
+            let upcomingCount = 0; let pastCount = 0;
 
-            container.innerHTML = '';
-            favIds.forEach(id => {
-                const article = ARTICLES.find(a => a.id === id);
-                if (!article) return;
+            if (trips.length === 0) { upcomingList.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm">등록된 여행 일정이 없습니다.</div>`; }
+            trips.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+            trips.forEach((trip, index) => {
+                const start = new Date(trip.startDate); 
+                const end = new Date(trip.endDate); 
+                end.setHours(23, 59, 59, 999); 
                 
-                const card = document.createElement('div');
-                card.className = 'list-card';
-                card.onclick = (e) => {
-                    if(!e.target.closest('button')) location.href = `article.html?id=${article.id}`;
-                };
-                card.innerHTML = `
-                    <div class="list-thumb">
-                        <img src="${article.imageUrl}" class="object-cover w-full h-full">
-                    </div>
-                    <div class="list-info">
-                        <div>
-                            <h3 class="font-bold text-gray-900" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</h3>
-                            <p class="text-xs text-gray-500">${article.category}</p>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                            <span class="text-sm font-bold">${article.price || '-'}</span>
-                             <button onclick="removeFav('${article.id}')" style="color: var(--gray-300); padding: 0.25rem;">
-                                <i data-lucide="trash-2" width="16"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+                const now = new Date();
+                const isPast = end < now; 
+                
+                const today = new Date(); today.setHours(0,0,0,0);
+                const dDay = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+                const hasReview = reviews.some(r => r.tripId === trip.id);
+                
+                let actionButtonHtml = '';
+                
+                if (isPast) {
+                    if (hasReview) {
+                        actionButtonHtml = `<span class="px-3 py-1.5 bg-gray-100 text-gray-400 text-xs font-bold rounded-lg border border-gray-200">후기 작성완료</span>`;
+                    } else {
+                        // [중요] 버튼 타입 명시 (form submit 방지) 및 버블링 방지
+                        actionButtonHtml = `<button type="button" onclick="event.stopPropagation(); openCreateReviewModal('${trip.id}')" class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-black transition-colors relative z-20 shadow-md">후기 쓰기</button>`;
+                    }
+                } else {
+                    actionButtonHtml = `<div class="flex gap-1 relative z-20"><button type="button" onclick="event.stopPropagation(); openEditModal('${trip.id}')" class="p-2 bg-gray-100 rounded-full text-gray-500 hover:text-black hover:bg-gray-200 transition-colors"><i data-lucide="pencil" width="16"></i></button><button type="button" onclick="event.stopPropagation(); deleteTrip(${index})" class="p-2 bg-gray-100 rounded-full text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors"><i data-lucide="trash-2" width="16"></i></button></div>`;
+                }
+                
+                const cardHtml = `<div onclick="openDetailModal('${trip.id}')" class="trip-card bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-between items-center group relative overflow-hidden cursor-pointer hover:shadow-md"><div class="relative z-10"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-bold px-2 py-0.5 rounded bg-${isPast ? 'gray-100 text-gray-400' : 'red-50 text-accent'}">${isPast ? '여행완료' : (dDay <= 0 ? (dDay === 0 ? 'D-Day' : '여행중') : `D-${dDay}`)}</span><span class="text-xs text-gray-400">${trip.startDate} ~ ${trip.endDate}</span></div><h4 class="font-bold text-lg text-gray-900 flex items-center gap-2">${trip.title} ${trip.isAI ? '<i data-lucide="sparkles" width="14" class="text-violet-500"></i>' : ''}</h4><p class="text-sm text-gray-500 flex items-center gap-1 mt-1"><i data-lucide="map-pin" width="12"></i> ${trip.location} <span class="text-xs text-gray-300">|</span> <span class="text-xs">${trip.companions || '동행 미정'}</span></p></div><div class="relative z-10 flex flex-col items-end gap-2">${actionButtonHtml}</div></div>`;
+                
+                if (isPast) { pastList.innerHTML += cardHtml; pastCount++; } else { upcomingList.innerHTML += cardHtml; upcomingCount++; }
             });
+            document.getElementById('upcoming-count').textContent = upcomingCount;
+            document.getElementById('stat-trips').textContent = pastCount;
             lucide.createIcons();
         }
 
-        function removeFav(id) {
-            if (typeof toggleFavorite === 'function') {
-                toggleFavorite(id);
-                renderMyFavorites();
+        // Modals & Trip Management (Selection Global Variable)
+        let currentSelectedPlaces = []; // 전역 변수
+
+        function openDetailModal(tripId) {
+            const trips = getTrips(); 
+            const trip = trips.find(t => t.id === tripId); 
+            if(!trip) return;
+
+            document.getElementById('view-title').textContent = trip.title;
+            document.getElementById('view-badge').textContent = trip.isAI ? 'AI 생성' : '직접 생성';
+            document.getElementById('view-date').textContent = `${trip.startDate} ~ ${trip.endDate}`; 
+            document.getElementById('view-location').textContent = trip.location; 
+            document.getElementById('view-companions').textContent = trip.companions || '-'; 
+            document.getElementById('view-budget').textContent = trip.budget ? `${trip.budget}만원` : '-'; 
+            document.getElementById('view-memo').textContent = trip.memo || '작성된 메모가 없습니다.';
+            document.getElementById('view-theme-text').textContent = trip.theme || '힐링';
+            document.getElementById('view-transport-text').textContent = trip.transport || '비행기';
+
+            const placesContainer = document.getElementById('view-places-container');
+            const placesList = document.getElementById('view-places-list');
+            
+            // 저장된 선택 장소 표시
+            if (trip.selectedPlaces && trip.selectedPlaces.length > 0) {
+                placesContainer.classList.remove('hidden');
+                placesList.innerHTML = '';
+                trip.selectedPlaces.forEach(item => {
+                    const title = item.title || item;
+                    const imgUrl = item.imageUrl || 'https://via.placeholder.com/40';
+                    const category = item.category || '장소';
+                    const address = item.address || '주소 정보 없음';
+
+                    placesList.innerHTML += `
+                        <div class="flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
+                            <img src="${imgUrl}" class="w-10 h-10 rounded-md object-cover flex-shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 rounded">${category}</span>
+                                    <p class="text-xs font-bold text-gray-900 truncate">${title}</p>
+                                </div>
+                                <p class="text-[10px] text-gray-400 truncate">${address}</p>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                placesContainer.classList.add('hidden');
+            }
+
+            document.getElementById('detail-modal').classList.remove('hidden'); 
+            document.getElementById('detail-modal').classList.add('flex');
+        }
+        function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); document.getElementById('detail-modal').classList.remove('flex'); }
+        
+        // [New] 수동 생성 버튼용 (초기화 포함)
+        function openManualCreateModal() {
+            currentSelectedPlaces = []; // 여기서만 초기화!
+            openCreateModal();
+        }
+
+        // [수정] 모달 열기 (초기화 로직 제거)
+        function openCreateModal() { 
+            document.getElementById('create-modal-title').textContent = '새 일정 만들기'; 
+            document.getElementById('btn-save-trip').textContent = '일정 저장하기'; 
+            document.getElementById('edit-trip-id').value = ''; 
+            document.querySelector('#create-modal form').reset(); 
+            
+            // 목록이 비어있으면 숨김
+            if (currentSelectedPlaces.length === 0) {
+                document.getElementById('selected-places-container').classList.add('hidden');
+            }
+            
+            document.getElementById('create-modal').classList.remove('hidden'); 
+            document.getElementById('create-modal').classList.add('flex'); 
+        }
+        
+        function openEditModal(tripId) {
+            const trips = getTrips(); const trip = trips.find(t => t.id === tripId); if(!trip) return;
+            document.getElementById('create-modal-title').textContent = '일정 수정하기'; 
+            document.getElementById('btn-save-trip').textContent = '수정완료'; 
+            document.getElementById('edit-trip-id').value = trip.id;
+            
+            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+            setVal('trip-title', trip.title); setVal('trip-location', trip.location); setVal('trip-start', trip.startDate); setVal('trip-end', trip.endDate); setVal('trip-budget', trip.budget || ''); setVal('trip-companions', trip.companions || ''); setVal('trip-memo', trip.memo || '');
+            setVal('trip-theme', trip.theme || '힐링'); setVal('trip-transport', trip.transport || '비행기');
+            
+            document.getElementById('selected-places-container').classList.add('hidden'); 
+            document.getElementById('create-modal').classList.remove('hidden'); document.getElementById('create-modal').classList.add('flex');
+        }
+        
+        function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); document.getElementById('create-modal').classList.remove('flex'); }
+        
+        // [수정] 저장 시 currentSelectedPlaces 사용
+        function handleCreateOrUpdateTrip(e) {
+            e.preventDefault(); 
+            let trips = getTrips(); 
+            
+            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+            const editId = getVal('edit-trip-id');
+            
+            const tripData = { 
+                title: getVal('trip-title'), 
+                location: getVal('trip-location'), 
+                startDate: getVal('trip-start'), 
+                endDate: getVal('trip-end'), 
+                budget: getVal('trip-budget'), 
+                companions: getVal('trip-companions'), 
+                memo: getVal('trip-memo'), 
+                theme: getVal('trip-theme') || '힐링',       
+                transport: getVal('trip-transport') || '비행기',
+                selectedPlaces: currentSelectedPlaces, // 현재 전역 변수 값 사용
+                isAI: false 
+            };
+
+            if(editId) { 
+                const index = trips.findIndex(t => t.id === editId); 
+                if(index !== -1) { 
+                    // 수정 시 선택된 장소가 날아가지 않도록 보존
+                    if (currentSelectedPlaces.length === 0 && trips[index].selectedPlaces) {
+                        tripData.selectedPlaces = trips[index].selectedPlaces;
+                    }
+                    trips[index] = { ...trips[index], ...tripData }; 
+                    alert('일정이 수정되었습니다.'); 
+                } 
+            } else { 
+                trips.push({ id: Date.now().toString(), ...tripData }); 
+            }
+            
+            localStorage.setItem('myTrips', JSON.stringify(trips)); 
+            closeCreateModal(); 
+            renderTrips(); 
+            e.target.reset();
+        }
+        function deleteTrip(index) { if(confirm('일정을 삭제하시겠습니까?')) { const trips = getTrips(); trips.splice(index, 1); localStorage.setItem('myTrips', JSON.stringify(trips)); renderTrips(); } }
+
+        // --- 4. Review & Star Rating Logic ---
+        function getMyReviews() { return JSON.parse(localStorage.getItem('myReviews') || '[]'); }
+        let currentRating = 5;
+
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('#star-container .star-btn');
+            const ratingTexts = ["", "1점 - 아쉬웠어요", "2점 - 그저 그랬어요", "3점 - 괜찮았어요", "4점 - 좋았어요!", "5점 - 최고였어요!"];
+            
+            const textEl = document.getElementById('rating-text');
+            if(textEl) textEl.textContent = ratingTexts[rating];
+            
+            stars.forEach((btn, index) => {
+                const icon = btn.querySelector('svg') || btn.querySelector('i'); // 안전하게 아이콘 찾기
+                if (index < rating) {
+                    btn.classList.add('active'); btn.classList.remove('text-gray-300');
+                    if(icon) { icon.classList.add('fill-yellow-400', 'text-yellow-400'); icon.classList.remove('text-gray-300'); }
+                } else {
+                    btn.classList.remove('active'); btn.classList.add('text-gray-300');
+                    if(icon) { icon.classList.remove('fill-yellow-400', 'text-yellow-400'); icon.classList.add('text-gray-300'); }
+                }
+            });
+        }
+
+        function renderReviews() {
+            const reviews = getMyReviews(); const list = document.getElementById('review-list'); const empty = document.getElementById('review-empty'); const statReviews = document.getElementById('stat-reviews');
+            statReviews.textContent = reviews.length; list.innerHTML = '';
+            if(reviews.length === 0) { empty.classList.remove('hidden'); } else { empty.classList.add('hidden'); 
+                reviews.forEach(review => { 
+                    let starsHtml = ''; for(let i=0; i<5; i++) { starsHtml += `<i data-lucide="star" width="12" class="${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}"></i>`; }
+                    const placeBadge = review.targetPlace ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded ml-2">📍 ${review.targetPlace}</span>` : '';
+                    list.innerHTML += `<div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm animate-fade-in relative group"><div class="flex justify-between items-start mb-2"><div><div class="flex items-center"><h4 class="font-bold text-sm text-gray-900">${review.tripTitle}</h4>${placeBadge}</div><div class="flex items-center gap-1 mt-1">${starsHtml}</div></div><div class="flex items-center gap-2"><span class="text-xs text-gray-400">${review.date}</span><div class="flex gap-1 pl-2 border-l border-gray-100"><button onclick="openEditReviewModal(${review.id})" class="p-1 text-gray-400 hover:text-blue-500 transition-colors"><i data-lucide="pencil" width="14"></i></button><button onclick="deleteReview(${review.id})" class="p-1 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" width="14"></i></button></div></div></div><p class="text-sm text-gray-600 line-clamp-3 leading-relaxed mt-2">${review.text}</p></div>`; 
+                }); lucide.createIcons(); 
             }
         }
-
-        // Modal Logic
-        const modal = document.getElementById('itinerary-modal');
-        const modalContent = document.getElementById('modal-content');
-        const modalTitle = document.getElementById('modal-title');
-        let currentItineraryIndex = -1;
-
-        function openModal(index) {
-            const data = JSON.parse(localStorage.getItem('myItineraries') || '[]');
-            const item = data[index];
-            if (!item) return;
-
-            currentItineraryIndex = index;
-            modalTitle.textContent = item.title;
-            modalContent.innerHTML = item.content;
+        function deleteReview(id) { if(confirm('정말 이 후기를 삭제하시겠습니까?')) { let reviews = getMyReviews(); reviews = reviews.filter(r => r.id !== id); localStorage.setItem('myReviews', JSON.stringify(reviews)); renderReviews(); renderTrips(); } }
+        let currentReviewTripId = null; let editingReviewId = null;
+        
+        function openCreateReviewModal(tripId) { 
+            currentReviewTripId = tripId; 
+            editingReviewId = null; 
+            document.getElementById('review-modal-title').textContent = '후기 작성'; 
+            document.getElementById('btn-save-review').textContent = '작성 완료'; 
+            document.getElementById('review-text').value = ''; 
             
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-
-            document.getElementById('btn-delete-itinerary').onclick = () => {
-                if(confirm('정말 삭제하시겠습니까?')) {
-                    const latestData = JSON.parse(localStorage.getItem('myItineraries') || '[]');
-                    latestData.splice(index, 1);
-                    localStorage.setItem('myItineraries', JSON.stringify(latestData));
-                    closeModal();
-                    renderItineraries();
+            const selectEl = document.getElementById('review-article-select');
+            if(selectEl) {
+                selectEl.innerHTML = '<option value="">전체 여행에 대한 후기</option>';
+                if(typeof ARTICLES !== 'undefined') {
+                    ARTICLES.forEach(art => { const opt = document.createElement('option'); opt.value = art.title; opt.textContent = art.title; selectEl.appendChild(opt); });
                 }
-            };
+            }
+            setRating(5); 
+            document.getElementById('review-modal').classList.remove('hidden'); 
+            document.getElementById('review-modal').classList.add('flex'); 
+        }
+        function openEditReviewModal(reviewId) { const reviews = getMyReviews(); const review = reviews.find(r => r.id === reviewId); if(!review) return; editingReviewId = reviewId; currentReviewTripId = review.tripId; document.getElementById('review-modal-title').textContent = '후기 수정'; document.getElementById('btn-save-review').textContent = '수정 완료'; document.getElementById('review-text').value = review.text; setRating(review.rating || 5); document.getElementById('review-modal').classList.remove('hidden'); document.getElementById('review-modal').classList.add('flex'); }
+        function closeReviewModal() { document.getElementById('review-modal').classList.add('hidden'); document.getElementById('review-modal').classList.remove('flex'); }
+        function submitReview() {
+            const text = document.getElementById('review-text').value; 
+            const targetPlace = document.getElementById('review-article-select').value;
+            if(!text) return alert('내용을 입력해주세요.');
+            let reviews = getMyReviews();
+            if (editingReviewId) { const index = reviews.findIndex(r => r.id === editingReviewId); if (index !== -1) { reviews[index].text = text; reviews[index].rating = currentRating; reviews[index].targetPlace = targetPlace; reviews[index].date = new Date().toLocaleDateString() + ' (수정됨)'; alert('후기가 수정되었습니다.'); } } else { const trips = getTrips(); const trip = trips.find(t => t.id === currentReviewTripId); reviews.unshift({ id: Date.now(), tripId: currentReviewTripId, tripTitle: trip ? trip.title : '삭제된 여행', text: text, rating: currentRating, targetPlace: targetPlace, date: new Date().toLocaleDateString() }); }
+            localStorage.setItem('myReviews', JSON.stringify(reviews)); closeReviewModal(); renderReviews(); renderTrips();
         }
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            modal.style.display = 'none';
+        // --- 5. Favorites with Smart Generator ---
+        function generateTripFromSelection() {
+            const checkboxes = document.querySelectorAll('.saved-item-checkbox:checked');
+            if(checkboxes.length === 0) { alert('일정에 추가할 장소를 최소 1개 이상 선택해주세요.'); return; }
+
+            const selectedIds = Array.from(checkboxes).map(cb => cb.dataset.id);
+            const selectedArticles = [];
+            const locationKeywords = [];
+            let themeCounts = { '맛집': 0, '휴양': 0, '관광': 0, '액티비티': 0 };
+
+            selectedIds.forEach(id => {
+                if (typeof ARTICLES !== 'undefined') {
+                    const article = ARTICLES.find(a => a.id === id);
+                    if (article) {
+                        selectedArticles.push(article);
+                        const text = (article.title + (article.address || '')).toLowerCase();
+                        if (text.includes('강릉')) locationKeywords.push('강릉');
+                        else if (text.includes('가평')) locationKeywords.push('가평');
+                        else if (text.includes('방콕')) locationKeywords.push('방콕');
+                        else if (text.includes('코사무이')) locationKeywords.push('코사무이');
+                        else if (text.includes('오사카')) locationKeywords.push('오사카');
+                        else if (text.includes('경주')) locationKeywords.push('경주');
+                        else if (text.includes('괌')) locationKeywords.push('괌');
+                        else if (text.includes('제주')) locationKeywords.push('제주');
+
+                        const tags = (article.mainTags || []).concat(article.tags || []).join('');
+                        if(tags.match(/맛집|식당|카페/)) themeCounts['맛집']++;
+                        if(tags.match(/숙소|호텔|리조트|휴양|힐링/)) themeCounts['휴양']++;
+                        if(tags.match(/관광|명소|유적/)) themeCounts['관광']++;
+                        if(tags.match(/액티비티|서핑|트레킹/)) themeCounts['액티비티']++;
+                    }
+                }
+            });
+
+            let mainLocation = '나만의';
+            if (locationKeywords.length > 0) {
+                const counts = {};
+                locationKeywords.forEach(loc => { counts[loc] = (counts[loc] || 0) + 1; });
+                mainLocation = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+            }
+
+            let mainTheme = Object.keys(themeCounts).reduce((a, b) => themeCounts[a] > themeCounts[b] ? a : b);
+            let themeValue = '힐링';
+            if(mainTheme === '맛집') themeValue = '맛집';
+            if(mainTheme === '관광') themeValue = '관광';
+            if(mainTheme === '액티비티') themeValue = '액티비티';
+
+            const stays = []; const foods = []; const spots = [];
+            selectedArticles.forEach(item => {
+                const tags = (item.mainTags || []).concat(item.tags || []).join(' ');
+                if (tags.match(/숙소|호텔|리조트|펜션|스테이|풀빌라/)) stays.push(item);
+                else if (tags.match(/맛집|식당|카페|음식점|베이커리|브런치|레스토랑/)) foods.push(item);
+                else spots.push(item);
+            });
+
+            // [핵심] 선택된 장소 데이터 채우기 (전역 변수 업데이트)
+            currentSelectedPlaces = selectedArticles.map(item => {
+                const isStay = stays.includes(item);
+                const isFood = foods.includes(item);
+                return {
+                    id: item.id,
+                    title: item.name || item.title,
+                    imageUrl: item.imageUrl,
+                    category: isStay ? '🏡 숙소' : (isFood ? '🍽️ 맛집' : '📸 관광'),
+                    address: item.address || '주소 정보 없음'
+                };
+            });
+
+            // UI 표시
+            const placesContainer = document.getElementById('selected-places-container');
+            const placesList = document.getElementById('selected-places-list');
+            if(placesContainer) placesContainer.classList.remove('hidden');
+            if(placesList) {
+                placesList.innerHTML = '';
+                currentSelectedPlaces.forEach(item => {
+                    placesList.innerHTML += `
+                        <div class="flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
+                            <img src="${item.imageUrl}" class="w-10 h-10 rounded-md object-cover flex-shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 rounded">${item.category}</span>
+                                    <p class="text-xs font-bold text-gray-900 truncate">${item.title}</p>
+                                </div>
+                                <p class="text-[10px] text-gray-400 truncate">${item.address}</p>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            let memo = `✨ [${mainLocation}] ${mainTheme} 여행 계획서 ✨\n\n`;
+            memo += `📋 선택한 장소 정보\n`;
+            if(stays.length > 0) { memo += `[🏡 숙소]\n`; stays.forEach(item => memo += `- ${item.name || item.title} (★${item.rating})\n  📍 ${item.address || '위치 정보 없음'}\n`); }
+            if(foods.length > 0) { memo += `\n[🍽️ 맛집 & 카페]\n`; foods.forEach(item => memo += `- ${item.name || item.title}\n  💡 팁: ${item.description || '현지인 추천'}\n`); }
+            if(spots.length > 0) { memo += `\n[📸 관광 & 액티비티]\n`; spots.forEach(item => memo += `- ${item.name || item.title}\n  👀 포인트: ${(item.tags || []).slice(0, 3).join(', ')}\n`); }
+
+            memo += `\n🗓️ 추천 일정 (Draft)\n-------------------\n`;
+            const stayName = stays.length > 0 ? stays[0].name || stays[0].title : '숙소';
+            const allActivities = [...spots, ...foods];
+
+            memo += `1일차:\n- 도착 및 ${stayName} 체크인\n`;
+            if (allActivities.length > 0) memo += `- ${allActivities[0].name || allActivities[0].title} 방문\n`;
+            if (allActivities.length > 1) memo += `- 저녁식사: ${allActivities[1].name || allActivities[1].title}\n`;
+            
+            memo += `\n2일차:\n`;
+            if (allActivities.length > 2) memo += `- 오전: ${allActivities[2].name || allActivities[2].title}\n`;
+            if (allActivities.length > 3) memo += `- 오후: ${allActivities[3].name || allActivities[3].title}\n`;
+            else memo += `- 오후: 자유 일정 (주변 탐방)\n`;
+            
+            memo += `\n3일차:\n- 조식 후 체크아웃\n`;
+
+            openCreateModal(); // 호출 시 선택 목록이 지워지지 않음
+            
+            const setVal = (id, val) => { if(document.getElementById(id)) document.getElementById(id).value = val; };
+            setVal('trip-title', `${mainLocation} ${mainTheme} 여행`);
+            setVal('trip-location', mainLocation);
+            setVal('trip-theme', themeValue);
+            setVal('trip-transport', '비행기');
+            setVal('trip-companions', '가족/연인');
+            setVal('trip-budget', '100');
+            setVal('trip-memo', memo);
+            
+            const today = new Date();
+            const start = new Date(today); start.setDate(today.getDate() + 7);
+            const end = new Date(start); end.setDate(start.getDate() + 2);
+            setVal('trip-start', start.toISOString().split('T')[0]);
+            setVal('trip-end', end.toISOString().split('T')[0]);
         }
+
+        function renderSaved() {
+            const favIds = JSON.parse(localStorage.getItem('favorites') || '[]'); const grid = document.getElementById('saved-grid'); const empty = document.getElementById('saved-empty'); const statLikes = document.getElementById('stat-likes'); statLikes.textContent = favIds.length; grid.innerHTML = '';
+            const savedArticles = []; favIds.forEach(id => { if(typeof ARTICLES !== 'undefined') { const article = ARTICLES.find(a => a.id === id); if(article) savedArticles.push(article); } });
+
+            if (savedArticles.length === 0) { empty.classList.remove('hidden'); empty.classList.add('flex'); } else { empty.classList.add('hidden'); empty.classList.remove('flex'); 
+                savedArticles.forEach(item => { 
+                    let category = '여행'; const allTags = (item.mainTags || []).concat(item.tags || []); if (allTags.some(t => t.match(/숙소|호텔|리조트|펜션/))) category = '숙소'; else if (allTags.some(t => t.match(/맛집|식당|카페|음식점/))) category = '맛집'; else if (allTags.some(t => t.match(/관광|명소|투어|액티비티/))) category = '관광';
+                    grid.innerHTML += `<div class="group relative rounded-xl overflow-hidden aspect-[4/3] cursor-pointer shadow-sm border border-gray-100"><div class="absolute top-2 left-2 z-20" onclick="event.stopPropagation();"><input type="checkbox" class="saved-item-checkbox custom-checkbox w-6 h-6 rounded border-2 border-white bg-black/30 checked:bg-accent checked:border-accent cursor-pointer transition-all shadow-sm" data-id="${item.id}"></div><div onclick="location.href='article.html?id=${item.id}'" class="w-full h-full relative"><img src="${item.imageUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div><div class="absolute top-2 right-2 z-20"><button onclick="event.stopPropagation(); removeFavoriteFromMyPage('${item.id}')" class="bg-white/20 backdrop-blur p-1.5 rounded-full text-white hover:bg-red-500 hover:text-white transition-colors"><i data-lucide="x" width="16"></i></button></div><div class="absolute bottom-4 left-4 right-4 text-white"><span class="inline-block px-2 py-0.5 rounded-md bg-black/30 backdrop-blur-sm text-[10px] font-bold mb-1 border border-white/20">${category}</span><h4 class="font-bold text-sm leading-tight line-clamp-2 drop-shadow-md">${item.title}</h4></div></div></div>`; 
+                }); lucide.createIcons();
+            }
+        }
+        function removeFavoriteFromMyPage(id) { toggleFavorite(id); renderSaved(); }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('isLoggedIn') !== 'true') {
-                alert('로그인이 필요합니다.');
-                location.href = 'login.html';
-                return;
-            }
-            renderItineraries();
-            renderMyFavorites();
-            lucide.createIcons();
+            if (localStorage.getItem('isLoggedIn') !== 'true') { alert('로그인이 필요한 서비스입니다.'); location.href = 'login.html'; return; }
+            loadProfile(); renderTrips(); renderSaved(); renderReviews(); lucide.createIcons(); setRating(5); 
+            const hash = window.location.hash.replace('#', ''); if(['trips', 'saved', 'reviews'].includes(hash)) switchTab(hash); else switchTab('saved');
         });
     </script>
 </body>

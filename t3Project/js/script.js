@@ -539,12 +539,6 @@ function scrollToContent() {
     contentSection.scrollIntoView({ behavior: "smooth" });
   }
 }
-function scrollToContent() {
-  const contentSection = document.getElementById("content");
-  if (contentSection) {
-    contentSection.scrollIntoView({ behavior: "smooth" });
-  }
-}
 
 
 // 전역 노출

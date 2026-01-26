@@ -5,10 +5,9 @@
     <title>로그인 - 여기저기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Supabase 라이브러리 (필수) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- <link rel="stylesheet" href="../css/style.css" /> -->
+    <link rel="stylesheet" href="../css/global.css">
     <script>
         tailwind.config = {
             theme: { extend: { colors: { primary: '#000', accent: '#FF385C' } } }
@@ -23,11 +22,10 @@
         </a>
         <div class="text-center mb-10">
             <h1 class="text-3xl font-black mb-2 tracking-tight">여기저기</h1>
-            <p class="text-gray-500">나만의 여행 큐레이션을 시작해보세요.</p>
+            <p id="auth-desc" class="text-gray-500">나만의 여행 큐레이션을 시작해보세요.</p>
         </div>
 
         <div class="space-y-4">
-            <!-- type="button" 추가 (중요: 폼 제출 방지) -->
             <button type="button" id="btn-google" class="w-full py-3.5 px-4 rounded-xl border border-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors relative">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5" />
                 <span class="font-bold text-gray-700">Google로 시작하기</span>
@@ -35,32 +33,47 @@
             
             <div class="relative py-4">
                 <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
-                <div class="relative flex justify-center text-xs"><span class="px-2 bg-white text-gray-400">또는 이메일로 로그인</span></div>
+                <div class="relative flex justify-center text-xs"><span id="divider-text" class="px-2 bg-white text-gray-400">또는 이메일로 로그인</span></div>
             </div>
 
-            <form id="form-login" class="space-y-4">
+            <form id="form-auth" class="space-y-4">
                 <div><input id="input-email" type="email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-gray-100 border focus:border-black focus:bg-white focus:outline-none transition-colors text-sm" required></div>
                 <div><input id="input-password" type="password" placeholder="비밀번호" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-gray-100 border focus:border-black focus:bg-white focus:outline-none transition-colors text-sm" required></div>
+                
+                <div id="confirm-password-group" class="hidden">
+                    <input id="input-confirm-password" type="password" placeholder="비밀번호 확인" class="w-full px-4 py-3 rounded-xl bg-gray-50 border-gray-100 border focus:border-black focus:bg-white focus:outline-none transition-colors text-sm">
+                </div>
+
                 <button type="submit" id="btn-submit" class="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 disabled:bg-gray-400">로그인</button>
             </form>
         </div>
+
         <div class="mt-8 text-center text-xs text-gray-400">
-            <a href="#" class="underline hover:text-black">회원가입</a>
+            <span id="switch-label">계정이 없으신가요?</span>
+            <a href="#" id="btn-switch-mode" class="underline hover:text-black ml-1">회원가입</a>
         </div>
     </div>
 
-    <!-- script.js가 있으면 로드하되, 없어도 작동하게 분리 -->
-    <script src="script.js"></script>
-    
-    <!-- 기존 <script src="script.js"></script>가 있다면 지우거나 주석 처리해주세요 -->
-    <!-- <script src="script.js"></script> -->
+    <script src="../js/script.js"></script>
     
     <script>
-        // 아이콘 생성
-        if(window.lucide) lucide.createIcons();
+        const supabaseClient = window.supabaseClient;
+
+        // --- 요소 선택 ---
+        const btnGoogle = document.getElementById('btn-google');
+        const authForm = document.getElementById('form-auth');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnSwitchMode = document.getElementById('btn-switch-mode');
+        const confirmGroup = document.getElementById('confirm-password-group');
+        const confirmInput = document.getElementById('input-confirm-password');
+        const authDesc = document.getElementById('auth-desc');
+        const dividerText = document.getElementById('divider-text');
+        const switchLabel = document.getElementById('switch-label');
+
+        let isSignUpMode = false; // [추가] 현재 로그인/회원가입 모드 상태 관리
 
         // ------------------------------------------------------------------
-        // [진단 1] Supabase 라이브러리 로드 확인
+        // [추가] 로그인 <-> 회원가입 모드 전환 함수
         // ------------------------------------------------------------------
         btnSwitchMode.addEventListener('click', (e) => {
             e.preventDefault();

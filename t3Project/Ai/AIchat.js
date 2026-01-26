@@ -29,7 +29,12 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
-
+"AIzaSyDT-ej6C_sJ9yuUc5un-apjcfJTQ4PdLH8",
+"AIzaSyAsXryaB_yDSsM7-Y1WFaDopvVR7cWSN9c",
+"AIzaSyDtawl_wW_cFjZvTsSXyhg-A0XjQEXXONs",
+"AIzaSyDOdPKbHqtSEDuW3prfHq_f58voDj2sQm0",
+"AIzaSyAvj4v6_gRzFcRTIRLZRmNlb7zxVBeEVmw",
+"AIzaSyDyKp3CUI1RbqLAX6hjiXfExugcpj0j6hs",
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -54,7 +59,8 @@ The response must strictly follow this schema:
     "memo": "string",
     "theme": "string",
     "transport": "string",
-    "selectedPlaces": []
+    "selectedPlaces": [
+    ]
   }
 }
 
@@ -64,6 +70,42 @@ Rules:
 - In ui_text, include links using markdown format:
   [PlaceName](http://127.0.0.1:5500/html/article.html?id={id}
 - startDate must always be tomorrow's date based on current date
+- selectedPlaces must be an array of objects with this exact structure:
+{
+  "id": "string",
+  "title": "string",
+  "imageUrl": "string",
+  "category": "🏡 숙소 | 🍽️ 맛집 | 📸 관광",
+  "address": "string"
+}
+- imageUrl rule:
+  Use the exact imageUrl field from ARTICLES if available.
+  If no imageUrl exists, use "".
+  Example:
+  "https://example.com/images/place_01.jpg"
+- category rule:
+  숙소/호텔/리조트 관련 → "🏡 숙소"
+  맛집/식당/카페 관련 → "🍽️ 맛집"
+  그 외 관광지 → "📸 관광"
+- address rule:
+  Use the exact address field from ARTICLES if available.
+  If no address exists, use "주소 정보 없음".
+  Example:
+  "169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국"
+- budget rule:
+  Budget must be a number in units of 10,000 KRW.
+  Output only the numeric value.
+  Example:
+  100만원 → "100"
+  50만원 → "50"
+  235만원 → "235"
+- memo rule:
+  Write a detailed itinerary in natural Korean.
+  Use emoji and line breaks for readability.
+  Include daily schedule format:
+  1일차, 2일차, 3일차 ...
+  Only use places from selectedPlaces.
+  Do not invent new locations.
 `;
 
 
@@ -74,6 +116,16 @@ const chatContainer = document.getElementById('chat-container');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 const inputContainer = document.getElementById('input-container');
+
+const loadingSpinner = document.getElementById('loading-spinner');
+
+function showSpinner() {
+    loadingSpinner.style.display = 'inline-block';
+}
+
+function hideSpinner() {
+    loadingSpinner.style.display = 'none';
+}
 
 // =========================================================
 // 2. [MAIN LOOP] - 사용자 요청 및 이벤트 처리 루프
@@ -96,26 +148,65 @@ async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
 
-    // 1) UI 업데이트: 사용자 메시지 즉시 표시 및 입력창 초기화
+    // 1) UI 업데이트: 사용자 메시지 즉시 표시
     addMessage('user', message);
     userInput.value = '';
     setLoading(true);
+    showSpinner();
 
     try {
+        // 2) 프롬프트 생성
         const finalPrompt = buildPrompt(message, localKnowledge);
+
+        // 3) AI 호출
         const aiResponse = await getAiWithFailover(finalPrompt);
 
-        const data = JSON.parse(aiResponse)
+        // 4) 혹시 AI가 앞뒤에 쓰레기 텍스트 붙였을 경우 대비
+        // JSON 시작/끝만 잘라냄
+        const pureJson = aiResponse.substring(
+            aiResponse.indexOf('{'),
+            aiResponse.lastIndexOf('}') + 1
+        );
+
+        // 5) 최소 구조 검증 (ui_text, tripData 없으면 바로 에러)
+        if (!pureJson.includes('"ui_text"') || !pureJson.includes('"tripData"')) {
+            throw new Error("AI JSON 구조 불일치");
+        }
+
+        // 6) JSON 파싱
+        const data = JSON.parse(pureJson);
+
+        // 7) tripData 방어 로직 (필드 빠져도 안 터지게)
+        const safeTripData = {
+            title: data.tripData?.title || '',
+            location: data.tripData?.location || '',
+            startDate: data.tripData?.startDate || '',
+            endDate: data.tripData?.endDate || '',
+            budget: data.tripData?.budget || '',
+            companions: data.tripData?.companions || '',
+            memo: data.tripData?.memo || '',
+            theme: data.tripData?.theme || '힐링',
+            transport: data.tripData?.transport || '비행기',
+            selectedPlaces: Array.isArray(data.tripData?.selectedPlaces)
+                ? data.tripData.selectedPlaces
+                : []
+        };
+
+        // 8) UI 출력은 ui_text만
         addMessage('ai', data.ui_text);
-        handleExtraction(data.tripData);
+
+        // 9) 저장 버튼용 데이터 넘김
+        handleExtraction(safeTripData);
 
     } catch (error) {
         console.error("최종 통신 실패:", error);
         addMessage('ai', "모든 API 키가 만료되었거나 네트워크 연결에 문제가 있습니다.");
     } finally {
+        hideSpinner();
         setLoading(false);
     }
 }
+
 
 // =========================================================
 // 3. [FUNCTION DECLARATION] - 핵심 로직 및 보조 함수들

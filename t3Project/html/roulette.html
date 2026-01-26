@@ -2,118 +2,171 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>여행지 룰렛 - 여기저기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 여행 룰렛 - 여기저기</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!--supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="../css/global.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/roulette.css">
 </head>
-<body class="roulette-body">
+<body class="bg-gradient-to-b from-white via-white to-blue-100 h-screen flex flex-col overflow-hidden font-inter text-slate-800 selection:bg-purple-500 selection:text-white">
+    <!-- Header -->
+    <!-- Z-Index increased to 50 to ensure button is clickable over the setup view -->
+    <header class="absolute top-0 left-0 w-full p-4 z-50 flex justify-between items-center">
+        <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full hover:bg-white transition-all border border-gray-200 text-sm font-bold text-slate-600 shadow-sm hover:shadow-md">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> 메인페이지 돌아가기
+        </a>
+        <h1 class="text-xl font-bold tracking-tight text-slate-800 w-40">여기저기</h1>
+        <div class="w-24"></div> <!-- Spacer -->
+    </header>
 
-    <a href="index.html" class="back-btn-float">
-        <i data-lucide="arrow-left" width="24"></i>
-    </a>
+    <!-- SETUP VIEW (Visible Initially) -->
+    <div id="setup-view" class="flex-1 flex flex-col items-center justify-center relative w-full h-full z-30 transition-all duration-500">
+        
+        <!-- 모드 선택 -->
+        <div id="step-mode" class="max-w-4xl w-full px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-black mb-2 text-slate-900">룰렛으로 선택하기</h2>
+            <p class="text-slate-500 mb-10">원하는 게임 방식을 선택해주세요!</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Mode 1: 등록된 아티클에서 고르는 모드 -->
+                <button onclick="setMode('preset')" class="group relative bg-white border border-gray-100 hover:border-purple-500/30 rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(139,92,246,0.1)]">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity"></div>
+                    <div class="relative z-10 flex flex-col items-center gap-4">
+                        <div class="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                            <i data-lucide="map" class="w-10 h-10 text-purple-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800">여행지로 플레이<h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            등록된 추천 여행지들 중에서<br>랜덤으로 선택합니다.
+                        </p>
+                    </div>
+                </button>
 
-    <div class="roulette-title-area">
-        <h1 class="roulette-title">오늘 어디 갈까?</h1>
-        <p class="text-white" style="font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">고민하지 말고 운명에 맡겨보세요!</p>
+                <!-- Mode 2: 직접 입력하는 모드 -->
+                <button onclick="setMode('custom')" class="group relative bg-white border border-gray-100 hover:border-pink-500/30 rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(236,72,153,0.1)]">
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity"></div>
+                    <div class="relative z-10 flex flex-col items-center gap-4">
+                        <div class="w-20 h-20 rounded-full bg-pink-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                            <i data-lucide="pen-tool" class="w-10 h-10 text-pink-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800">찜한 목록에서 플레이</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">
+                            찜한 목록에서<br>랜덤으로 뽑아보세요!
+                        </p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: 직접 입력하는 모드 내부 구현-->
+        <div id="step-input" class="hidden max-w-lg w-full px-6 flex flex-col h-[80vh]">
+            <div class="text-center mb-6 shrink-0">
+                <h2 class="text-2xl font-bold mb-1 text-slate-900">게임 설정</h2>
+                <p class="text-slate-500 text-sm">선택지를 입력해주세요 (최소 2개)</p>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-gray-200 p-6 flex flex-col flex-1 overflow-hidden shadow-2xl">
+                <div class="flex justify-between items-center mb-4 shrink-0">
+                    <span class="text-sm font-bold text-purple-600">선택지 목록 (<span id="input-count">2</span>)</span>
+                    <button onclick="addInputRow()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 text-slate-600">
+                        <i data-lucide="plus" class="w-3 h-3"></i> 추가
+                    </button>
+                </div>
+
+                <div id="input-list" class="space-y-3 overflow-y-auto custom-scrollbar flex-1 pr-2">
+                    <!-- Inputs injected by JS -->
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3 shrink-0">
+                    <button onclick="goBackToMode()" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-slate-600 rounded-xl font-bold transition-all text-sm">
+                        이전으로
+                    </button>
+                    <button onclick="startGameWithCustom()" class="flex-[2] py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl font-bold transition-all shadow-lg text-sm shadow-purple-200">
+                        게임 시작하기
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Roulette Wheel -->
-    <div id="wheel" class="wheel-container">
-        <!-- Segments will be injected by JS -->
-    </div>
-    
-    <!-- Arrow -->
-    <div class="wheel-arrow"></div>
+    <!-- 게임 플레이 뷰 -->
+    <div id="game-view" class="hidden flex-1 flex flex-col items-center justify-center relative w-full h-full opacity-0 transition-opacity duration-500">
+        
+        <!-- 휠 구현 -->
+        <div class="wheel-wrapper relative mt-10 scale-90 md:scale-100 transition-transform">
+            <div class="wheel-pointer"></div>
+            <canvas id="rouletteCanvas" width="500" height="500"></canvas>
+            <div class="wheel-center">
+                <i data-lucide="map-pin" class="w-8 h-8 text-purple-600"></i>
+            </div>
+        </div>
 
-    <!-- Controls -->
-    <div class="roulette-controls">
-        <button id="spin-btn" class="spin-btn">
-            START !
-        </button>
-        <p id="result-text" class="roulette-result"></p>
+        <!-- 버튼 -->
+        <div class="mt-8 flex flex-col items-center gap-4 z-10">
+            <button id="spinBtn" class="spin-button group border-4 border-purple-50">
+                <span class="relative z-10 flex items-center gap-2">
+                    SPIN! <i data-lucide="refresh-cw" class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-100 to-pink-100 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </button>
+            <button onclick="goBackToMode()" class="text-slate-400 text-sm hover:text-purple-600 transition-colors underline decoration-dashed underline-offset-4">
+                다른 게임 하기
+            </button>
+        </div>
     </div>
 
-    <!-- Particles Background -->
-    <div class="bg-particles"></div>
+    <!-- Background Elements -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-200/40 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    </div>
+
+    <!-- Winner Modal -->
+    <div id="winnerModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-1 max-w-sm w-full mx-4 shadow-2xl transform scale-90 transition-transform duration-300 relative overflow-hidden" id="modalContent">
+            
+            <div class="relative bg-white rounded-[20px] overflow-hidden">
+                <!-- Image / Icon Header -->
+                <div class="h-48 relative bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <img id="winnerImage" src="" alt="Winner" class="w-full h-full object-cover hidden">
+                    <div id="winnerIconPlaceholder" class="flex flex-col items-center justify-center gap-2">
+                        <i data-lucide="crown" class="w-16 h-16 text-yellow-500 fill-yellow-500"></i>
+                    </div>
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white w-full pr-8">
+                        <span class="text-xs font-bold bg-yellow-400 text-black px-2 py-1 rounded-md mb-1 inline-block">WINNER!</span>
+                        <h2 id="winnerTitle" class="text-2xl font-black leading-tight shadow-sm text-shadow break-keep"></h2>
+                    </div>
+                    <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/20 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors z-20">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-6 text-center space-y-4">
+                    <p class="text-gray-600 text-sm leading-relaxed" id="winnerDesc"></p>
+                    
+                    <div class="flex flex-col gap-2">
+                        <!-- Link Button (Only for Preset Mode) -->
+                        <a id="winnerLink" href="#" class="hidden w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-200 flex items-center justify-center gap-2">
+                            상세 정보 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                        <!-- Restart Button -->
+                        <button onclick="closeModal()" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-all">
+                            다시 돌리기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/data.js"></script>
-    <script src="../js/script.js"></script>
-    <script>
-        const wheel = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spin-btn');
-        const resultText = document.getElementById('result-text');
-        
-        const segments = ARTICLES.slice(0, 6); 
-        const segmentAngle = 360 / segments.length;
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#FFCC5C'];
-
-        const canvas = document.createElement('canvas');
-        canvas.width = 300;
-        canvas.height = 300;
-        wheel.innerHTML = '';
-        wheel.appendChild(canvas);
-        
-        const ctx = canvas.getContext('2d');
-        const centerX = 150;
-        const centerY = 150;
-        const radius = 150;
-
-        function drawWheel() {
-            segments.forEach((item, index) => {
-                const startAngle = (index * segmentAngle * Math.PI) / 180;
-                const endAngle = ((index + 1) * segmentAngle * Math.PI) / 180;
-                
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.fillStyle = colors[index % colors.length];
-                ctx.fill();
-                ctx.save();
-                
-                // Text
-                ctx.translate(centerX, centerY);
-                ctx.rotate(startAngle + (segmentAngle * Math.PI / 360));
-                ctx.textAlign = "right";
-                ctx.fillStyle = "white";
-                ctx.font = "bold 12px Pretendard";
-                ctx.fillText(item.title.substring(0, 10) + '..', radius - 20, 5);
-                ctx.restore();
-            });
-        }
-        drawWheel();
-
-        let currentRotation = 0;
-
-        spinBtn.addEventListener('click', () => {
-            if (spinBtn.disabled) return;
-            spinBtn.disabled = true;
-            resultText.textContent = '두구두구...';
-            
-            const randomSegment = Math.floor(Math.random() * segments.length);
-            const extraDegrees = 360 * 5 + (360 - (randomSegment * segmentAngle) - (segmentAngle/2)); 
-            currentRotation += extraDegrees;
-            
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
-            
-            setTimeout(() => {
-                const selected = segments[randomSegment];
-                resultText.textContent = `🎉 ${selected.title} 당첨!`;
-                spinBtn.textContent = '이동하기 >';
-                spinBtn.disabled = false;
-                
-                spinBtn.onclick = () => {
-                    location.href = `article.html?id=${selected.id}`;
-                };
-            }, 3000);
-        });
-        
-        // Button animation effect
-        spinBtn.onmousedown = () => spinBtn.style.transform = 'scale(0.95)';
-        spinBtn.onmouseup = () => spinBtn.style.transform = 'scale(1)';
-
-    </script>
+    <script src="../js/roulette.js"></script>
 </body>
 </html>

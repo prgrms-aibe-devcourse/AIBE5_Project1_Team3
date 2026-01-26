@@ -37,7 +37,7 @@
     </div>
 
     <!-- Hero Media -->
-    <div class="hero-header">
+    <div id="hero-header"class="hero-header">
         <img id="d-image" src="" alt="Hero">
         <div class="hero-gradient"></div>
         
@@ -58,7 +58,11 @@
         <div id="d-tags" class="tags-container"></div>
 
         <!-- 태그 더보기 버튼 추가 -->
-        <button id="tag-toggle-btn" class="tag-toggle">+ 더보기</button>
+        <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+            <button id="tag-toggle-btn" class="tag-toggle">
+                <i data-lucide="chevron-down" width="20" height="20"></i>
+            </button>
+        </div>
 
         <!-- Accordion Sections -->
         <div class="accordion-wrapper">
@@ -67,10 +71,9 @@
 
             <!-- Program Info -->
             <div class="accordion-item">
-                <button class="accordion-btn" onclick="toggleAccordion(this)">
-                    <span class="font-bold text-gray-900">🗺️ 프로그램 소개</span>
-                    <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
-                </button>
+                <div class="accordion-btn">
+                    <span class="font-bold text-gray-900">🗺️ 소개</span>
+                </div>
                 <div class="accordion-content open">
                     <div class="content-inner" id="d-content">
                         <!-- Content Injected -->
@@ -80,10 +83,9 @@
 
             <!-- Course Info -->
             <div class="accordion-item">
-                <button class="accordion-btn" onclick="toggleAccordion(this)">
-                    <span class="font-bold text-gray-900">📍 장소 안내</span>
-                    <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
-                </button>
+                <div class="accordion-btn">
+                    <span class="font-bold text-gray-900">📍 장소</span>
+                </div>
                 <div class="accordion-content open">
                     <div class="content-inner">
                          <div class="flex items-center" style="margin-bottom: 1rem;">
@@ -119,10 +121,9 @@
 
             <!-- Reviews -->
             <div class="accordion-item">
-                <button class="accordion-btn" onclick="toggleAccordion(this)">
-                    <span class="font-bold text-gray-900">💬 생생 후기</span>
-                    <i data-lucide="chevron-down" width="20" class="text-gray-400"></i>
-                </button>
+                <div class="accordion-btn">
+                    <span class="font-bold text-gray-900">💬 후기</span>
+                </div>
                 <div class="accordion-content open"> <!-- Default Open -->
                     <div id="d-reviews" class="content-inner" style="display: flex; flex-direction: column; gap: 1rem;">
                         <!-- Reviews Injected -->
@@ -132,9 +133,9 @@
 
             <!-- 추천 여행지 (carousel: 3 items visible) -->
             <div class="accordion-item">
-                <button class="accordion-btn" onclick="toggleAccordion(this)">
+                <div class="accordion-btn">
                     <span class="font-bold text-gray-900">📢 추천 여행지</span>
-                </button>
+                </div>
                 <div class="accordion-content open">
                     <div class="advise-carousel">
                         <button class="advise-prev" aria-label="Previous">
@@ -168,12 +169,6 @@
     
     <!-- Main Logic using Global Variables -->
     <script>
-        // Global function for Accordion (needs to be on window for onclick attribute)
-        window.toggleAccordion = function(btn) {
-            const content = btn.nextElementSibling;
-            content.classList.toggle('open');
-        }
-
         // Load Data
         const urlParams = new URLSearchParams(window.location.search);
         const articleId = urlParams.get('id');
@@ -195,7 +190,6 @@
             document.getElementById('d-title').textContent = art.title;
             document.getElementById('d-subtitle').textContent = art.subtitle;
 
-            document.getElementById('d-desc').textContent = art.description;
             document.getElementById('d-content').innerHTML = art.content;
 
             document.getElementById('d-name').textContent = art.name;
@@ -224,12 +218,15 @@
 
             toggleBtn.addEventListener('click', () => {
             tagBox.classList.toggle('open');
-
+            
+            const icon = toggleBtn.querySelector('i');
             if (tagBox.classList.contains('open')) {
-                toggleBtn.textContent = '접기';
+                icon.setAttribute('data-lucide', 'chevron-up');
             } else {
-                toggleBtn.textContent = '+ 더보기';
+                icon.setAttribute('data-lucide', 'chevron-down');
             }
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             });
             art.tags.forEach(tag => {
                 const btn = document.createElement('button');
@@ -399,6 +396,27 @@
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
             updateLikeState();
+
+            // article-nav 스크롤 배경 제어 로직
+            const articleNav = document.getElementById('article-nav');
+            const heroHeader = document.getElementById('hero-header');
+
+            function updateNavBackground() {
+                if (!articleNav || !heroHeader) return;
+                
+                const heroHeight = heroHeader.offsetHeight;
+                
+                // hero-header를 벗어났으면 background 추가, 아니면 제거
+                if (window.scrollY > heroHeight) {
+                    articleNav.classList.add('scrolled');
+                } else {
+                    articleNav.classList.remove('scrolled');
+                }
+            }
+
+            window.addEventListener('scroll', updateNavBackground);
+            updateNavBackground(); // 초기 실행
+            // article-nav 스크롤 배경 제어 로직 끝
         }
     </script>
 

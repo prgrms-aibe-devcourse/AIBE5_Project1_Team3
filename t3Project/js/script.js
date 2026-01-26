@@ -1,3 +1,14 @@
+// [script.js 최상단에 추가]
+// 1. Supabase 클라이언트 초기화 (모든 페이지 공통)
+const SUPABASE_URL = 'https://ozhieovgrmnehaimuyni.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96aGllb3Zncm1uZWhhaW11eW5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NzgwODksImV4cCI6MjA4NDU1NDA4OX0.haULDDCnJXw4zwFeJSQKhS1Jun4CRFCziGgKQKVwmyY';
+
+// window 객체에 할당하여 어디서든 접근 가능하게 함
+if (typeof supabase !== 'undefined') {
+    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    console.error("Supabase SDK가 로드되지 않았습니다. HTML <head>를 확인하세요.");
+}
 /***********************************************
  * [전역 설정]
  * Lucide 아이콘 초기화 및 전역 변수 설정
@@ -66,26 +77,87 @@ if (mobileMenuBtn) mobileMenuBtn.onclick = () => mobileMenu.classList.add("open"
 if (mobileMenuClose) mobileMenuClose.onclick = () => mobileMenu.classList.remove("open");
 
 /**
- * --- 2. 로그인 및 최근 본 상품 관리 ---
+ * --- 2. 로그인 및 실제 Supabase 세션 관리 ---
  */
-function checkLoginStatus() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+/**
+ * --- 2. 로그인 및 실제 Supabase 세션 관리 ---
+ */
+
+// [수정] UI 업데이트 로직을 별도 함수로 분리하여 재사용성 높임
+function updateAuthUI(session) {
+  const isLoggedIn = !!session;
   const loginBtn = document.getElementById("nav-login-btn");
   const userAvatar = document.getElementById("nav-user-avatar");
-  if (loginBtn && userAvatar) {
-    if (isLoggedIn) {
-      loginBtn.style.display = "none";
-      userAvatar.style.display = "block";
-    } else {
-      loginBtn.style.display = "inline-flex";
-      userAvatar.style.display = "none";
-    }
-  }
   const otherTriggers = document.querySelectorAll(".btn-login-trigger");
-  otherTriggers.forEach((btn) => {
-    btn.style.display = isLoggedIn ? "none" : "block";
+  const mobileUserLink = document.querySelector('.mobile-menu-link.user-avatar-display');
+
+  if (isLoggedIn) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (userAvatar) {
+      userAvatar.style.display = "block";
+      const img = userAvatar.querySelector('img');
+      // 구글 등 소셜 로그인 메타데이터 우선 참조
+      const avatarUrl = session.user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.id}`;
+      if (img) img.src = avatarUrl;
+    }
+    if (mobileUserLink) mobileUserLink.classList.remove('hidden');
+    otherTriggers.forEach((btn) => btn.style.display = "none");
+    localStorage.setItem("isLoggedIn", "true");
+  } else {
+    if (loginBtn) loginBtn.style.display = "inline-flex";
+    if (userAvatar) {
+      userAvatar.style.display = "none";
+      const img = userAvatar.querySelector('img');
+      if (img) img.src = ""; 
+    }
+    if (mobileUserLink) mobileUserLink.classList.add('hidden');
+    otherTriggers.forEach((btn) => btn.style.display = "block");
+    localStorage.setItem("isLoggedIn", "false");
+  }
+}
+
+// [수정] 실시간 감시(onAuthStateChange)를 포함한 상태 체크
+async function checkLoginStatus() {
+  const supabase = window.supabaseClient;
+  if (!supabase) {
+    console.error("Supabase 클라이언트를 찾을 수 없습니다.");
+    return;
+  }
+
+  // 1. 초기 세션 확인
+  const { data: { session } } = await supabase.auth.getSession();
+  updateAuthUI(session);
+
+  // 2. [중요] 상태 변경 실시간 감지 (로그인/로그아웃 즉시 반응)
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log("인증 이벤트:", event);
+    updateAuthUI(session);
+    if (event === 'SIGNED_OUT') {
+      localStorage.removeItem('userProfile');
+      updateFavoriteUI();
+    }
   });
 }
+
+// [수정] 로그아웃 함수를 전역에서 사용 가능하도록 window 객체에 할당
+async function handleLogout() {
+  const supabase = window.supabaseClient;
+  if (!supabase) return;
+
+  if (!confirm('정말 로그아웃 하시겠습니까?')) return;
+
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    alert('로그아웃 중 오류: ' + error.message);
+  } else {
+    localStorage.setItem('isLoggedIn', 'false');
+    localStorage.removeItem('userProfile');
+    alert('로그아웃 되었습니다.');
+    location.href = 'index.html'; 
+  }
+}
+// 전역 함수로 등록 (mypage.html 등에서 호출 가능하게)
+window.handleLogout = handleLogout;
 
 function addToRecent(articleId) {
   let recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
@@ -376,9 +448,9 @@ if (clearBtn) {
 /**
  * --- 6. 초기 실행 및 탭 전환 ---
  */
-window.addEventListener("DOMContentLoaded", () => {
-  checkLoginStatus();
-  renderFloatingBanner();
+// [수정] 비동기 함수로 감싸서 실행 순서 보장
+window.addEventListener("DOMContentLoaded", async () => {
+  await checkLoginStatus(); // 로그인 상태 확인 먼저!
   if (document.getElementById("article-grid")) renderArticles();
   updateFavoriteUI();
    if (window.currentArticle) {

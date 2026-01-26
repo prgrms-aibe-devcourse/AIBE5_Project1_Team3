@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상세 정보 - 여기저기</title>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!--supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/article.css">
 </head>
@@ -132,38 +130,32 @@
                 </div>
             </div>
 
-            <!-- 추천 여행지 -->
+            <!-- 추천 여행지 (carousel: 3 items visible) -->
             <div class="accordion-item">
                 <button class="accordion-btn" onclick="toggleAccordion(this)">
                     <span class="font-bold text-gray-900">📢 추천 여행지</span>
                 </button>
-                <div id="advise-content" class="accordion-content open"> 
-                    <div class="content-inner">
-                        컨텐트 1
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 2
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 3
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 4
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 5
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 6
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 7
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 8
-                    </div>
-                    <div class="content-inner">
-                        컨텐트 9
+                <div class="accordion-content open">
+                    <div class="advise-carousel">
+                        <button class="advise-prev" aria-label="Previous">
+                            <i data-lucide="chevron-left" width="20"></i>
+                        </button>
+                        <div class="advise-viewport">
+                            <div id="advise-content" class="advise-track">
+                                <div class="content-inner">컨텐트 1</div>
+                                <div class="content-inner">컨텐트 2</div>
+                                <div class="content-inner">컨텐트 3</div>
+                                <div class="content-inner">컨텐트 4</div>
+                                <div class="content-inner">컨텐트 5</div>
+                                <div class="content-inner">컨텐트 6</div>
+                                <div class="content-inner">컨텐트 7</div>
+                                <div class="content-inner">컨텐트 8</div>
+                                <div class="content-inner">컨텐트 9</div>
+                            </div>
+                        </div>
+                        <button class="advise-next" aria-label="Next">
+                            <i data-lucide="chevron-right" width="20"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -246,6 +238,79 @@
                 btn.onclick = () => location.href = `index.html?tag=${encodeURIComponent(tag)}`;
                 tagsContainer.appendChild(btn);
             });
+
+            // Populate 추천 여행지 cards (randomized, exclude current)
+            (function populateAdviseCards(){
+                const track = document.getElementById('advise-content');
+                if (!track) return;
+                if (typeof ARTICLES === 'undefined') {
+                    console.warn('ARTICLES not found; ensure ../js/data.js is loaded');
+                    return;
+                }
+                // build pool excluding current
+                const pool = ARTICLES.filter(a => a.id !== articleId && a.imageUrl);
+                // shuffle
+                for (let i = pool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [pool[i], pool[j]] = [pool[j], pool[i]];
+                }
+                const picks = pool.slice(0, Math.min(pool.length, 9));
+                track.innerHTML = '';
+                picks.forEach(item => {
+                    const card = document.createElement('a');
+                    card.className = 'content-inner';
+                    card.href = `article.html?id=${encodeURIComponent(item.id)}`;
+                    card.setAttribute('aria-label', item.title);
+                    card.style.backgroundImage = `url('${item.imageUrl}')`;
+                    const shortDesc = (item.description || '').replace(/\s+/g,' ').trim().slice(0,80);
+                    // store full text on dataset so we can produce truncated display without losing original
+                    card.dataset.fullTitle = item.title || '';
+                    card.dataset.fullSubtitle = (item.subtitle || shortDesc || '') + '';
+                    card.innerHTML = `
+                        <div class="advise-card-overlay"></div>
+                        <div class="advise-card-info">
+                            <h4></h4>
+                            <p></p>
+                        </div>
+                    `;
+                    track.appendChild(card);
+                });
+
+                function escapeHtml(s){
+                    return String(s || '').replace(/[&<>\"']/g, function(c){
+                        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];
+                    });
+                }
+            })();
+
+            // Truncate title/subtitle by character count and show ellipsis (preserve full text in aria-label)
+            function truncateCardTexts(titleLimit = 36, subtitleLimit = 56){
+                const cards = document.querySelectorAll('#advise-content .content-inner');
+                if(!cards || cards.length === 0) return;
+                cards.forEach(card => {
+                    const h = card.querySelector('h4');
+                    const p = card.querySelector('p');
+                    const fullTitle = card.dataset.fullTitle || '';
+                    const fullSubtitle = card.dataset.fullSubtitle || '';
+                    if(h){
+                        h.textContent = truncateString(fullTitle, titleLimit);
+                        h.title = fullTitle;
+                    }
+                    if(p){
+                        p.textContent = truncateString(fullSubtitle, subtitleLimit);
+                        p.title = fullSubtitle;
+                    }
+                });
+
+                function truncateString(s, max){
+                    if(!s) return '';
+                    if(s.length <= max) return s;
+                    return s.slice(0, max - 1).trim() + '…';
+                }
+            }
+
+            // run after populate and layout stabilizes
+            setTimeout(()=>{ truncateCardTexts(); }, 80);
 
             const reviewContainer = document.getElementById('d-reviews');
             if (art.reviews) {
@@ -336,6 +401,66 @@
             updateLikeState();
         }
     </script>
+
+            <!-- 추천 여행지 좌우 버튼 / 슬라이드 로직 -->
+            <script>
+            (function(){
+                const track = document.getElementById('advise-content');
+                const prev = document.querySelector('.advise-prev');
+                const next = document.querySelector('.advise-next');
+                if (!track || !prev || !next) return;
+
+                let index = 0;
+                const items = () => track.querySelectorAll('.content-inner');
+
+                function getGapPx(){
+                    const list = items();
+                    if (list.length < 2) return 0;
+                    const a = list[0].getBoundingClientRect();
+                    const b = list[1].getBoundingClientRect();
+                    return Math.max(0, b.left - a.right);
+                }
+
+                function getVisibleCount(){
+                    return 2; // force two cards visible to avoid partial third card
+                }
+
+                function updateButtons(){
+                    const vc = getVisibleCount();
+                    const maxIndex = Math.max(0, items().length - vc);
+                    prev.disabled = index <= 0;
+                    next.disabled = index >= maxIndex;
+                    prev.style.opacity = prev.disabled ? '0.45' : '1';
+                    next.style.opacity = next.disabled ? '0.45' : '1';
+                }
+
+                function slide(){
+                    const it = items()[0];
+                    if(!it) return;
+                    const gap = getGapPx();
+                    const shift = index * (it.getBoundingClientRect().width + gap);
+                    track.style.transform = `translateX(-${shift}px)`;
+                    updateButtons();
+                }
+
+                next.addEventListener('click', ()=>{
+                    const vc = getVisibleCount();
+                    const maxIndex = Math.max(0, items().length - vc);
+                    index = Math.min(maxIndex, index + 1);
+                    slide();
+                });
+                prev.addEventListener('click', ()=>{ index = Math.max(0, index - 1); slide(); });
+
+                window.addEventListener('resize', ()=>{
+                    index = Math.min(index, Math.max(0, items().length - getVisibleCount()));
+                    slide();
+                    truncateCardTexts();
+                });
+
+                // initial render after layout
+                setTimeout(()=>{ if(window.lucide) window.lucide.createIcons(); slide(); truncateCardTexts(); }, 60);
+            })();
+            </script>
 
    <!-- Gemini AI Logic -->
 <script type="module">

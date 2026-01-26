@@ -563,332 +563,86 @@
             lucide.createIcons();
         }
 
-        // Modals & Trip Management (Selection Global Variable)
-        let currentSelectedPlaces = []; // 전역 변수
-
-        function openDetailModal(tripId) {
-            const trips = getTrips(); 
-            const trip = trips.find(t => t.id === tripId); 
-            if(!trip) return;
-
-            document.getElementById('view-title').textContent = trip.title;
-            document.getElementById('view-badge').textContent = trip.isAI ? 'AI 생성' : '직접 생성';
-            document.getElementById('view-date').textContent = `${trip.startDate} ~ ${trip.endDate}`; 
-            document.getElementById('view-location').textContent = trip.location; 
-            document.getElementById('view-companions').textContent = trip.companions || '-'; 
-            document.getElementById('view-budget').textContent = trip.budget ? `${trip.budget}만원` : '-'; 
-            document.getElementById('view-memo').textContent = trip.memo || '작성된 메모가 없습니다.';
-            document.getElementById('view-theme-text').textContent = trip.theme || '힐링';
-            document.getElementById('view-transport-text').textContent = trip.transport || '비행기';
-
-            const placesContainer = document.getElementById('view-places-container');
-            const placesList = document.getElementById('view-places-list');
+        function renderMyFavorites() {
+            const container = document.getElementById('tab-favorites');
+            const favIds = typeof getFavorites === 'function' ? getFavorites() : JSON.parse(localStorage.getItem('favorites') || '[]');
             
-            // 저장된 선택 장소 표시
-            if (trip.selectedPlaces && trip.selectedPlaces.length > 0) {
-                placesContainer.classList.remove('hidden');
-                placesList.innerHTML = '';
-                trip.selectedPlaces.forEach(item => {
-                    const title = item.title || item;
-                    const imgUrl = item.imageUrl || 'https://via.placeholder.com/40';
-                    const category = item.category || '장소';
-                    const address = item.address || '주소 정보 없음';
-
-                    placesList.innerHTML += `
-                        <div class="flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                            <img src="${imgUrl}" class="w-10 h-10 rounded-md object-cover flex-shrink-0">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 rounded">${category}</span>
-                                    <p class="text-xs font-bold text-gray-900 truncate">${title}</p>
-                                </div>
-                                <p class="text-[10px] text-gray-400 truncate">${address}</p>
-                            </div>
-                        </div>`;
-                });
-            } else {
-                placesContainer.classList.add('hidden');
+            if (favIds.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 5rem 0; text-align: center; color: var(--gray-400);">
+                        <i data-lucide="heart" width="48" style="margin: 0 auto 0.75rem auto; color: var(--gray-200);"></i>
+                        <p>아직 찜한 여행지가 없어요.</p>
+                    </div>
+                `;
+                return;
             }
 
-            document.getElementById('detail-modal').classList.remove('hidden'); 
-            document.getElementById('detail-modal').classList.add('flex');
-        }
-        function closeDetailModal() { document.getElementById('detail-modal').classList.add('hidden'); document.getElementById('detail-modal').classList.remove('flex'); }
-        
-        // [New] 수동 생성 버튼용 (초기화 포함)
-        function openManualCreateModal() {
-            currentSelectedPlaces = []; // 여기서만 초기화!
-            openCreateModal();
-        }
-
-        // [수정] 모달 열기 (초기화 로직 제거)
-        function openCreateModal() { 
-            document.getElementById('create-modal-title').textContent = '새 일정 만들기'; 
-            document.getElementById('btn-save-trip').textContent = '일정 저장하기'; 
-            document.getElementById('edit-trip-id').value = ''; 
-            document.querySelector('#create-modal form').reset(); 
-            
-            // 목록이 비어있으면 숨김
-            if (currentSelectedPlaces.length === 0) {
-                document.getElementById('selected-places-container').classList.add('hidden');
-            }
-            
-            document.getElementById('create-modal').classList.remove('hidden'); 
-            document.getElementById('create-modal').classList.add('flex'); 
-        }
-        
-        function openEditModal(tripId) {
-            const trips = getTrips(); const trip = trips.find(t => t.id === tripId); if(!trip) return;
-            document.getElementById('create-modal-title').textContent = '일정 수정하기'; 
-            document.getElementById('btn-save-trip').textContent = '수정완료'; 
-            document.getElementById('edit-trip-id').value = trip.id;
-            
-            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-            setVal('trip-title', trip.title); setVal('trip-location', trip.location); setVal('trip-start', trip.startDate); setVal('trip-end', trip.endDate); setVal('trip-budget', trip.budget || ''); setVal('trip-companions', trip.companions || ''); setVal('trip-memo', trip.memo || '');
-            setVal('trip-theme', trip.theme || '힐링'); setVal('trip-transport', trip.transport || '비행기');
-            
-            document.getElementById('selected-places-container').classList.add('hidden'); 
-            document.getElementById('create-modal').classList.remove('hidden'); document.getElementById('create-modal').classList.add('flex');
-        }
-        
-        function closeCreateModal() { document.getElementById('create-modal').classList.add('hidden'); document.getElementById('create-modal').classList.remove('flex'); }
-        
-        // [수정] 저장 시 currentSelectedPlaces 사용
-        function handleCreateOrUpdateTrip(e) {
-            e.preventDefault(); 
-            let trips = getTrips(); 
-            
-            const getVal = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
-            const editId = getVal('edit-trip-id');
-            
-            const tripData = { 
-                title: getVal('trip-title'), 
-                location: getVal('trip-location'), 
-                startDate: getVal('trip-start'), 
-                endDate: getVal('trip-end'), 
-                budget: getVal('trip-budget'), 
-                companions: getVal('trip-companions'), 
-                memo: getVal('trip-memo'), 
-                theme: getVal('trip-theme') || '힐링',       
-                transport: getVal('trip-transport') || '비행기',
-                selectedPlaces: currentSelectedPlaces, // 현재 전역 변수 값 사용
-                isAI: false 
-            };
-
-            if(editId) { 
-                const index = trips.findIndex(t => t.id === editId); 
-                if(index !== -1) { 
-                    // 수정 시 선택된 장소가 날아가지 않도록 보존
-                    if (currentSelectedPlaces.length === 0 && trips[index].selectedPlaces) {
-                        tripData.selectedPlaces = trips[index].selectedPlaces;
-                    }
-                    trips[index] = { ...trips[index], ...tripData }; 
-                    alert('일정이 수정되었습니다.'); 
-                } 
-            } else { 
-                trips.push({ id: Date.now().toString(), ...tripData }); 
-            }
-            
-            localStorage.setItem('myTrips', JSON.stringify(trips)); 
-            closeCreateModal(); 
-            renderTrips(); 
-            e.target.reset();
-        }
-        function deleteTrip(index) { if(confirm('일정을 삭제하시겠습니까?')) { const trips = getTrips(); trips.splice(index, 1); localStorage.setItem('myTrips', JSON.stringify(trips)); renderTrips(); } }
-
-        // --- 4. Review & Star Rating Logic ---
-        function getMyReviews() { return JSON.parse(localStorage.getItem('myReviews') || '[]'); }
-        let currentRating = 5;
-
-        function setRating(rating) {
-            currentRating = rating;
-            const stars = document.querySelectorAll('#star-container .star-btn');
-            const ratingTexts = ["", "1점 - 아쉬웠어요", "2점 - 그저 그랬어요", "3점 - 괜찮았어요", "4점 - 좋았어요!", "5점 - 최고였어요!"];
-            
-            const textEl = document.getElementById('rating-text');
-            if(textEl) textEl.textContent = ratingTexts[rating];
-            
-            stars.forEach((btn, index) => {
-                const icon = btn.querySelector('svg') || btn.querySelector('i'); // 안전하게 아이콘 찾기
-                if (index < rating) {
-                    btn.classList.add('active'); btn.classList.remove('text-gray-300');
-                    if(icon) { icon.classList.add('fill-yellow-400', 'text-yellow-400'); icon.classList.remove('text-gray-300'); }
-                } else {
-                    btn.classList.remove('active'); btn.classList.add('text-gray-300');
-                    if(icon) { icon.classList.remove('fill-yellow-400', 'text-yellow-400'); icon.classList.add('text-gray-300'); }
-                }
-            });
-        }
-
-        function renderReviews() {
-            const reviews = getMyReviews(); const list = document.getElementById('review-list'); const empty = document.getElementById('review-empty'); const statReviews = document.getElementById('stat-reviews');
-            statReviews.textContent = reviews.length; list.innerHTML = '';
-            if(reviews.length === 0) { empty.classList.remove('hidden'); } else { empty.classList.add('hidden'); 
-                reviews.forEach(review => { 
-                    let starsHtml = ''; for(let i=0; i<5; i++) { starsHtml += `<i data-lucide="star" width="12" class="${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}"></i>`; }
-                    const placeBadge = review.targetPlace ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded ml-2">📍 ${review.targetPlace}</span>` : '';
-                    list.innerHTML += `<div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm animate-fade-in relative group"><div class="flex justify-between items-start mb-2"><div><div class="flex items-center"><h4 class="font-bold text-sm text-gray-900">${review.tripTitle}</h4>${placeBadge}</div><div class="flex items-center gap-1 mt-1">${starsHtml}</div></div><div class="flex items-center gap-2"><span class="text-xs text-gray-400">${review.date}</span><div class="flex gap-1 pl-2 border-l border-gray-100"><button onclick="openEditReviewModal(${review.id})" class="p-1 text-gray-400 hover:text-blue-500 transition-colors"><i data-lucide="pencil" width="14"></i></button><button onclick="deleteReview(${review.id})" class="p-1 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" width="14"></i></button></div></div></div><p class="text-sm text-gray-600 line-clamp-3 leading-relaxed mt-2">${review.text}</p></div>`; 
-                }); lucide.createIcons(); 
-            }
-        }
-        function deleteReview(id) { if(confirm('정말 이 후기를 삭제하시겠습니까?')) { let reviews = getMyReviews(); reviews = reviews.filter(r => r.id !== id); localStorage.setItem('myReviews', JSON.stringify(reviews)); renderReviews(); renderTrips(); } }
-        let currentReviewTripId = null; let editingReviewId = null;
-        
-        function openCreateReviewModal(tripId) { 
-            currentReviewTripId = tripId; 
-            editingReviewId = null; 
-            document.getElementById('review-modal-title').textContent = '후기 작성'; 
-            document.getElementById('btn-save-review').textContent = '작성 완료'; 
-            document.getElementById('review-text').value = ''; 
-            
-            const selectEl = document.getElementById('review-article-select');
-            if(selectEl) {
-                selectEl.innerHTML = '<option value="">전체 여행에 대한 후기</option>';
-                if(typeof ARTICLES !== 'undefined') {
-                    ARTICLES.forEach(art => { const opt = document.createElement('option'); opt.value = art.title; opt.textContent = art.title; selectEl.appendChild(opt); });
-                }
-            }
-            setRating(5); 
-            document.getElementById('review-modal').classList.remove('hidden'); 
-            document.getElementById('review-modal').classList.add('flex'); 
-        }
-        function openEditReviewModal(reviewId) { const reviews = getMyReviews(); const review = reviews.find(r => r.id === reviewId); if(!review) return; editingReviewId = reviewId; currentReviewTripId = review.tripId; document.getElementById('review-modal-title').textContent = '후기 수정'; document.getElementById('btn-save-review').textContent = '수정 완료'; document.getElementById('review-text').value = review.text; setRating(review.rating || 5); document.getElementById('review-modal').classList.remove('hidden'); document.getElementById('review-modal').classList.add('flex'); }
-        function closeReviewModal() { document.getElementById('review-modal').classList.add('hidden'); document.getElementById('review-modal').classList.remove('flex'); }
-        function submitReview() {
-            const text = document.getElementById('review-text').value; 
-            const targetPlace = document.getElementById('review-article-select').value;
-            if(!text) return alert('내용을 입력해주세요.');
-            let reviews = getMyReviews();
-            if (editingReviewId) { const index = reviews.findIndex(r => r.id === editingReviewId); if (index !== -1) { reviews[index].text = text; reviews[index].rating = currentRating; reviews[index].targetPlace = targetPlace; reviews[index].date = new Date().toLocaleDateString() + ' (수정됨)'; alert('후기가 수정되었습니다.'); } } else { const trips = getTrips(); const trip = trips.find(t => t.id === currentReviewTripId); reviews.unshift({ id: Date.now(), tripId: currentReviewTripId, tripTitle: trip ? trip.title : '삭제된 여행', text: text, rating: currentRating, targetPlace: targetPlace, date: new Date().toLocaleDateString() }); }
-            localStorage.setItem('myReviews', JSON.stringify(reviews)); closeReviewModal(); renderReviews(); renderTrips();
-        }
-
-        // --- 5. Favorites with Smart Generator ---
-        function generateTripFromSelection() {
-            const checkboxes = document.querySelectorAll('.saved-item-checkbox:checked');
-            if(checkboxes.length === 0) { alert('일정에 추가할 장소를 최소 1개 이상 선택해주세요.'); return; }
-
-            const selectedIds = Array.from(checkboxes).map(cb => cb.dataset.id);
-            const selectedArticles = [];
-            const locationKeywords = [];
-            let themeCounts = { '맛집': 0, '휴양': 0, '관광': 0, '액티비티': 0 };
-
-            selectedIds.forEach(id => {
-                if (typeof ARTICLES !== 'undefined') {
-                    const article = ARTICLES.find(a => a.id === id);
-                    if (article) {
-                        selectedArticles.push(article);
-                        const text = (article.title + (article.address || '')).toLowerCase();
-                        if (text.includes('강릉')) locationKeywords.push('강릉');
-                        else if (text.includes('가평')) locationKeywords.push('가평');
-                        else if (text.includes('방콕')) locationKeywords.push('방콕');
-                        else if (text.includes('코사무이')) locationKeywords.push('코사무이');
-                        else if (text.includes('오사카')) locationKeywords.push('오사카');
-                        else if (text.includes('경주')) locationKeywords.push('경주');
-                        else if (text.includes('괌')) locationKeywords.push('괌');
-                        else if (text.includes('제주')) locationKeywords.push('제주');
-
-                        const tags = (article.mainTags || []).concat(article.tags || []).join('');
-                        if(tags.match(/맛집|식당|카페/)) themeCounts['맛집']++;
-                        if(tags.match(/숙소|호텔|리조트|휴양|힐링/)) themeCounts['휴양']++;
-                        if(tags.match(/관광|명소|유적/)) themeCounts['관광']++;
-                        if(tags.match(/액티비티|서핑|트레킹/)) themeCounts['액티비티']++;
-                    }
-                }
-            });
-
-            let mainLocation = '나만의';
-            if (locationKeywords.length > 0) {
-                const counts = {};
-                locationKeywords.forEach(loc => { counts[loc] = (counts[loc] || 0) + 1; });
-                mainLocation = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
-            }
-
-            let mainTheme = Object.keys(themeCounts).reduce((a, b) => themeCounts[a] > themeCounts[b] ? a : b);
-            let themeValue = '힐링';
-            if(mainTheme === '맛집') themeValue = '맛집';
-            if(mainTheme === '관광') themeValue = '관광';
-            if(mainTheme === '액티비티') themeValue = '액티비티';
-
-            const stays = []; const foods = []; const spots = [];
-            selectedArticles.forEach(item => {
-                const tags = (item.mainTags || []).concat(item.tags || []).join(' ');
-                if (tags.match(/숙소|호텔|리조트|펜션|스테이|풀빌라/)) stays.push(item);
-                else if (tags.match(/맛집|식당|카페|음식점|베이커리|브런치|레스토랑/)) foods.push(item);
-                else spots.push(item);
-            });
-
-            // [핵심] 선택된 장소 데이터 채우기 (전역 변수 업데이트)
-            currentSelectedPlaces = selectedArticles.map(item => {
-                const isStay = stays.includes(item);
-                const isFood = foods.includes(item);
-                return {
-                    id: item.id,
-                    title: item.name || item.title,
-                    imageUrl: item.imageUrl,
-                    category: isStay ? '🏡 숙소' : (isFood ? '🍽️ 맛집' : '📸 관광'),
-                    address: item.address || '주소 정보 없음'
+            container.innerHTML = '';
+            favIds.forEach(id => {
+                const article = ARTICLES.find(a => a.id === id);
+                if (!article) return;
+                
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                card.onclick = (e) => {
+                    if(!e.target.closest('button')) location.href = `article.html?id=${article.id}`;
                 };
+                card.innerHTML = `
+                    <div class="list-thumb">
+                        <img src="${article.imageUrl}" class="object-cover w-full h-full">
+                    </div>
+                    <div class="list-info">
+                        <div>
+                            <h3 class="font-bold text-gray-900" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</h3>
+                            <p class="text-xs text-gray-500">${article.category}</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                            <span class="text-sm font-bold">${article.price || '-'}</span>
+                             <button onclick="removeFav('${article.id}')" style="color: var(--gray-300); padding: 0.25rem;">
+                                <i data-lucide="trash-2" width="16"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
             });
+            lucide.createIcons();
+        }
 
-            // UI 표시
-            const placesContainer = document.getElementById('selected-places-container');
-            const placesList = document.getElementById('selected-places-list');
-            if(placesContainer) placesContainer.classList.remove('hidden');
-            if(placesList) {
-                placesList.innerHTML = '';
-                currentSelectedPlaces.forEach(item => {
-                    placesList.innerHTML += `
-                        <div class="flex items-center gap-3 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                            <img src="${item.imageUrl}" class="w-10 h-10 rounded-md object-cover flex-shrink-0">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-1.5 rounded">${item.category}</span>
-                                    <p class="text-xs font-bold text-gray-900 truncate">${item.title}</p>
-                                </div>
-                                <p class="text-[10px] text-gray-400 truncate">${item.address}</p>
-                            </div>
-                        </div>`;
-                });
+        function removeFav(id) {
+            if (typeof toggleFavorite === 'function') {
+                toggleFavorite(id);
+                renderMyFavorites();
             }
+        }
 
-            let memo = `✨ [${mainLocation}] ${mainTheme} 여행 계획서 ✨\n\n`;
-            memo += `📋 선택한 장소 정보\n`;
-            if(stays.length > 0) { memo += `[🏡 숙소]\n`; stays.forEach(item => memo += `- ${item.name || item.title} (★${item.rating})\n  📍 ${item.address || '위치 정보 없음'}\n`); }
-            if(foods.length > 0) { memo += `\n[🍽️ 맛집 & 카페]\n`; foods.forEach(item => memo += `- ${item.name || item.title}\n  💡 팁: ${item.description || '현지인 추천'}\n`); }
-            if(spots.length > 0) { memo += `\n[📸 관광 & 액티비티]\n`; spots.forEach(item => memo += `- ${item.name || item.title}\n  👀 포인트: ${(item.tags || []).slice(0, 3).join(', ')}\n`); }
+        // Modal Logic
+        const modal = document.getElementById('itinerary-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalTitle = document.getElementById('modal-title');
+        let currentItineraryIndex = -1;
 
-            memo += `\n🗓️ 추천 일정 (Draft)\n-------------------\n`;
-            const stayName = stays.length > 0 ? stays[0].name || stays[0].title : '숙소';
-            const allActivities = [...spots, ...foods];
+        function openModal(index) {
+            const data = JSON.parse(localStorage.getItem('myItineraries') || '[]');
+            const item = data[index];
+            if (!item) return;
 
-            memo += `1일차:\n- 도착 및 ${stayName} 체크인\n`;
-            if (allActivities.length > 0) memo += `- ${allActivities[0].name || allActivities[0].title} 방문\n`;
-            if (allActivities.length > 1) memo += `- 저녁식사: ${allActivities[1].name || allActivities[1].title}\n`;
+            currentItineraryIndex = index;
+            modalTitle.textContent = item.title;
+            modalContent.innerHTML = item.content;
             
-            memo += `\n2일차:\n`;
-            if (allActivities.length > 2) memo += `- 오전: ${allActivities[2].name || allActivities[2].title}\n`;
-            if (allActivities.length > 3) memo += `- 오후: ${allActivities[3].name || allActivities[3].title}\n`;
-            else memo += `- 오후: 자유 일정 (주변 탐방)\n`;
-            
-            memo += `\n3일차:\n- 조식 후 체크아웃\n`;
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
 
-            openCreateModal(); // 호출 시 선택 목록이 지워지지 않음
-            
-            const setVal = (id, val) => { if(document.getElementById(id)) document.getElementById(id).value = val; };
-            setVal('trip-title', `${mainLocation} ${mainTheme} 여행`);
-            setVal('trip-location', mainLocation);
-            setVal('trip-theme', themeValue);
-            setVal('trip-transport', '비행기');
-            setVal('trip-companions', '가족/연인');
-            setVal('trip-budget', '100');
-            setVal('trip-memo', memo);
-            
-            const today = new Date();
-            const start = new Date(today); start.setDate(today.getDate() + 7);
-            const end = new Date(start); end.setDate(start.getDate() + 2);
-            setVal('trip-start', start.toISOString().split('T')[0]);
-            setVal('trip-end', end.toISOString().split('T')[0]);
+            document.getElementById('btn-delete-itinerary').onclick = () => {
+                if(confirm('정말 삭제하시겠습니까?')) {
+                    const latestData = JSON.parse(localStorage.getItem('myItineraries') || '[]');
+                    latestData.splice(index, 1);
+                    localStorage.setItem('myItineraries', JSON.stringify(latestData));
+                    closeModal();
+                    renderItineraries();
+                }
+            };
         }
 
         function renderSaved() {

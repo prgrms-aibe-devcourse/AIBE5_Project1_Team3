@@ -205,7 +205,7 @@ function renderArticles() {
       matchesSearch = inTitle || inSubtitle || inTags || inMainTags;
     }
 
-    return matchesFilter && matchesSearch;
+    return matchesFilter || matchesSearch;
   });
 
   // 2. 결과 없음 처리
@@ -408,6 +408,30 @@ function scrollToContent() {
     contentSection.scrollIntoView({ behavior: "smooth" });
   }
 }
+// --- 7. URL 파라미터에 따른 탭 전환 기능 추가 ---
+window.addEventListener('DOMContentLoaded', () => {
+    // 1. URL에서 파라미터를 읽어옵니다.
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabName = urlParams.get('tab');
+
+    // 2. 만약 tab 파라미터가 'favorites'라면 해당 탭을 엽니다.
+    if (tabName === 'favorites') {
+        switchTab('favorites');
+    }
+});
+
+// 기존 switchTab 함수 (이미 작성되어 있을 함수)
+function switchTab(tabId) {
+    // 모든 탭 버튼에서 active 클래스 제거
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // 클릭된 버튼 혹은 지정된 버튼에 active 클래스 추가
+    // (이 부분은 실제 버튼의 text나 index를 활용해 추가 로직이 필요할 수 있습니다)
+    
+    // 실제 탭 내용(컨텐츠)을 보여주는 로직...
+    console.log(tabId + " 탭으로 전환됨");
+}
+
 
 // 전역 노출
 window.toggleFilter = toggleFilter;

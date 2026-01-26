@@ -74,18 +74,16 @@ Rules:
 }
 - imageUrl rule:
   Use the exact imageUrl field from ARTICLES if available.
+  Example: "https://example.com/images/place_01.jpg"
   If no imageUrl exists, use "".
-  Example:
-  "https://example.com/images/place_01.jpg"
 - category rule:
   숙소/호텔/리조트 관련 → "🏡 숙소"
   맛집/식당/카페 관련 → "🍽️ 맛집"
   그 외 관광지 → "📸 관광"
 - address rule:
   Use the exact address field from ARTICLES if available.
+  Example: "169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국"
   If no address exists, use "주소 정보 없음".
-  Example:
-  "169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국"
 - budget rule:
   Budget must be a number in units of 10,000 KRW.
   Output only the numeric value.
@@ -245,7 +243,9 @@ function buildPrompt(msg, articles) {
         id: a.id, 
         title: a.title, 
         tags: a.tags, 
-        desc: a.description 
+        desc: a.description,
+        address: a.address,
+        imageUrl: a.imageUrl,
     })));
 
     return `

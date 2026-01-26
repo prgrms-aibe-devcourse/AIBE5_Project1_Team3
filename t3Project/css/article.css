@@ -82,18 +82,48 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--gray-600);
-    cursor: pointer;
+
+    pointer-events: none; /* 상세 페이지에서 클릭 비활성화 */
+    cursor: default;
 }
 
-/* 태그 더보기 CSS*/
+/* 태그 더보기 CSS (2줄 + 하단 그라데이션 블러) */
 .tags-container {
-    max-height: 36px;   
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    max-height: 4.2em; /* 약 2줄 */
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: max-height 0.35s ease;
 }
 
+/* 하단 그라데이션 마스크 */
+.tags-container::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2em;
+    pointer-events: none;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.6) 60%,
+        rgba(255,255,255,1) 100%
+    );
+}
+
+/* 펼친 상태 */
 .tags-container.open {
-    max-height: 500px; 
+    max-height: 500px;
+}
+
+.tags-container.open::after {
+    display: none;
 }
 
 .tag-toggle {
@@ -101,7 +131,24 @@
     border: none;
     color: var(--accent);
     font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
+
+    transform: translateY(-1.2rem); /* margin 한계 회피: 실제 위치 이동 */
+    opacity: 0;
+    animation: tagToggleFadeIn 0.35s ease forwards;
+}
+
+/* fade-in 애니메이션 */
+@keyframes tagToggleFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.6rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-1.2rem);
+    }
 }
 
 /* advise-content */

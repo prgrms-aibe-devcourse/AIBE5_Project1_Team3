@@ -82,7 +82,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--gray-600);
-    cursor: pointer;
+
+    pointer-events: none; /* 상세 페이지에서 클릭 비활성화 */
+    cursor: default;
 }
 
 /* 태그 더보기 CSS (2줄 + 하단 그라데이션 블러) */

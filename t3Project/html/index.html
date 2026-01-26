@@ -27,8 +27,7 @@
             <i data-lucide="dices" class="nav-icon"></i>
             <span class="nav-label">룰렛</span>
           </a>
-
-          <a href="mypage.html" class="nav-item favorite-wrapper">
+<a href="javascript:void(0)" onclick="handleFavoriteClick()" class="nav-item favorite-wrapper">
   <div class="icon-rel">
     <i data-lucide="heart" class="nav-icon"></i>
     <span id="favorite-count" class="nav-badge" style="display: none">0</span>
@@ -83,9 +82,9 @@
     </div>
 
     <div class="hero-section">
-      <div class="spline-mask">
+     
         <!-- <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe> -->
-      </div>
+     
 
       <div class="hero-overlay">
         <div class="hero-content">
@@ -155,10 +154,14 @@
               <div class="dropdown-section">
                 <p class="dropdown-title">추천 태그</p>
                 <div id="recommended-tags" class="tag-cloud">
-                  <span class="search-tag">#태국</span>
-                  <span class="search-tag">#불꽃축제</span>
+                  <span class="search-tag">#가족</span>
+                  <span class="search-tag">#가성비</span>
+                  <span class="search-tag">#커플</span>
                   <span class="search-tag">#바다</span>
-                  <span class="search-tag">#캠핑</span>
+                  <span class="search-tag">#명소</span>
+                  <span class="search-tag">#펜션</span>
+                  <span class="search-tag">#태국</span>
+                  <span class="search-tag">#일본</span>        
                 </div>
               </div>
               <div id="search-results" class="search-results-list"></div>
@@ -174,13 +177,14 @@
           >
             전체
           </button>
-          <button
-            class="filter-btn"
-            data-id="domestic"
-            onclick="toggleFilter('domestic')"
-          >
-            🇰🇷 국내여행
-          </button>
+          <button class="filter-btn" data-id="domestic" onclick="toggleFilter('domestic')">
+  <img 
+    src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" 
+    alt="태극기" 
+    class="flag-icon"
+  >
+  국내여행
+</button>
           <button
             class="filter-btn"
             data-id="overseas"
@@ -204,11 +208,12 @@
           </button>
           <button
             class="filter-btn"
-            data-id="place"
-            onclick="toggleFilter('place')"
+            data-id="food"
+            onclick="toggleFilter('food')"
           >
-            �️ 명소/문화
+            🍕 맛집/카페
           </button>
+        
         </div>
       </div>
       <div id="article-grid" class="article-grid"></div>
@@ -219,8 +224,8 @@
         </button>
       </div>
     </section>
-
-    <div id="floating-banner" class="floating-banner">
+<!-- 플러팅 배너 제거 할 예정 혹시 몰라 -->
+    <!-- <div id="floating-banner" class="floating-banner">
       <div class="floban-header">
         <span class="floban-badge">NOTICE</span>
         <button
@@ -233,7 +238,7 @@
         </button>
       </div>
       <div id="floban-content"></div>
-    </div>
+    </div> -->
 
     <footer>
       <div style="text-align: center">2026 copy right team3 박치기 공룡</div>

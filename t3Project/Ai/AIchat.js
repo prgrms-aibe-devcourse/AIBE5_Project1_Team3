@@ -27,7 +27,7 @@ marked.setOptions({ renderer: renderer });
 
 // [의도] 서버에서 관리하던 5개의 키를 클라이언트로 이동 (로테이션 관리)
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
-// node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
+// node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 꽤나 필요
 const API_KEYS = [
 ]
 
@@ -73,7 +73,7 @@ Rules:
 }
 - imageUrl rule:
   Use the exact imageUrl field from ARTICLES if available.
-  Example: "https://example.com/images/place_01.jpg"
+  Example: "https://example.com/images/place_01.jpg" or "https://images.unsplash.com/photo-1544923246-77307dd654ca?auto=format&fit=crop&q=80&w=1000"
   If no imageUrl exists, use "".
 - category rule:
   숙소/호텔/리조트 관련 → "🏡 숙소"
@@ -334,6 +334,7 @@ function dispatchPlanToParent(tripData) {
     localStorage.setItem("myTrips", JSON.stringify(trips));
 
     alert("[AI] 마이페이지에 저장 완료");
+    console.log("[AI] 일정 저장완료 :", data)
 }
 
 // memo 생성 로직

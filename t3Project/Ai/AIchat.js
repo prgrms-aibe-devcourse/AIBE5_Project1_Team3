@@ -29,6 +29,7 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
+
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -93,9 +94,23 @@ Rules:
   235만원 → "235"
 - memo rule:
   Write a detailed itinerary in natural Korean.
-  Use emoji and line breaks for readability.
-  Include daily schedule format:
-  1일차, 2일차, 3일차 ...
+  Do NOT use markdown or any markup symbols.
+  Do NOT use '-', '*', '#', '>' or numbered markdown lists.
+  Use only plain text with emoji and line breaks.
+  Format must be:
+
+  1일차:
+  오전 :
+  오후 :
+  야간 :
+
+  n일차:
+  오전 :
+  오후 :
+  야간 :
+
+  집에가는날:
+
   Only use places from selectedPlaces.
   Do not invent new locations.
 `;
@@ -155,10 +170,9 @@ async function sendMessage() {
 
         // 4) 혹시 AI가 앞뒤에 쓰레기 텍스트 붙였을 경우 대비
         // JSON 시작/끝만 잘라냄
-        const pureJson = aiResponse.substring(
-            aiResponse.indexOf('{'),
-            aiResponse.lastIndexOf('}') + 1
-        );
+        const jsonStart = aiResponse.indexOf('{');
+        const jsonEnd = aiResponse.lastIndexOf('}') + 1;
+        const pureJson = aiResponse.slice(jsonStart, jsonEnd);
 
         // 5) 최소 구조 검증 (ui_text, tripData 없으면 바로 에러)
         if (!pureJson.includes('"ui_text"') || !pureJson.includes('"tripData"')) {
@@ -305,7 +319,9 @@ function showSaveButton() {
     const btn = document.createElement("button");
     btn.innerText = "마이페이지에 저장하기";
     btn.className = "save-btn";
-    btn.onclick = () => dispatchPlanToParent(window.latestTripData);
+    btn.onclick = () => {
+        dispatchPlanToParent(window.latestTripData);
+    };
     chatContainer.appendChild(btn);
 }
 

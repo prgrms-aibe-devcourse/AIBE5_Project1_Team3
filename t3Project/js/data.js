@@ -981,5 +981,5 @@ const FILTERS = [
   { id: 'overseas', name: '해외여행' },
   { id: 'nature', name: '자연/힐링' },
   { id: 'city', name: '도시/야경' },
-  { id: 'activity', name: '액티비티' },
+  { id: 'food', name: '맛집/카페' },
 ];

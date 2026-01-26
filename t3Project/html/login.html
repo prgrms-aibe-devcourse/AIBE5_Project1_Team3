@@ -157,22 +157,33 @@
             }
         });
 
-        // --- 소셜 로그인 함수 (기존 유지) ---
-        async function handleSocialLogin(provider) {
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                    provider: provider,
-                    options: {
-                        redirectTo: 'https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html',
-                    }
-                });
-                if (error) throw error;
-            } catch (error) {
-                console.error(error);
-                alert("소셜 로그인 에러: " + error.message);
-            }
-        }
+      // --- 소셜 로그인 함수 (개선 버전) ---
+    async function handleSocialLogin(provider) {
+        try {
+            // 1. 현재 접속한 환경의 프로토콜+도메인+포트번호를 자동으로 가져옵니다.
+            // (예: 로컬은 http://127.0.0.1:5500, 배포 후엔 https://prgrms-aibe-devcourse.github.io)
+            const currentOrigin = window.location.origin;
 
+            // 2. 레포지토리 이름을 포함한 공통 경로 설정
+            // GitHub Pages 배포 환경인지 로컬 환경인지 체크하여 경로를 맞춥니다.
+            const redirectPath = window.location.hostname.includes('github.io')
+                ? '/AIBE5_Project1_Team3/t3Project/html/index.html' // 배포 환경
+                : '/t3Project/html/index.html';                     // 로컬 환경
+
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: provider,
+                options: {
+                    // 두 값을 합쳐서 리다이렉트 주소 생성
+                    redirectTo: currentOrigin + redirectPath,
+                }
+            });
+
+            if (error) throw error;
+        } catch (error) {
+            console.error(error);
+            alert("소셜 로그인 에러: " + error.message);
+        }
+    }
         if(btnGoogle) btnGoogle.addEventListener('click', () => handleSocialLogin('google'));
     </script>
 </body>

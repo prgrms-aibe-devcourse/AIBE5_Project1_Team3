@@ -29,13 +29,7 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
-    "AIzaSyCTQVXTZIEx6n3VZW45LhlfHtD969acigg",
-    "AIzaSyAZpjdlPsxE01tTDOPsUIGqjrIIPxKx89s",
-    "AIzaSyBGC0EhLiQHhcdzlKx8CfsVoqS5qJBoTC4",
-    "AIzaSyCdi4Kkc1rnMHprARvuA5bQZxjq1InhAmk",
-    "AIzaSyBiOajm7EHxr5NPgfITmQhEQY3NpshXAuM",
-    "AIzaSyAO5O8BnzT-W_lRJiy2Wa8REIo7dw9S6jA",
-    "AIzaSyDYNDho5OHevdYZ1ppAZ5kczXiTxbECbgk"
+
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -212,10 +206,17 @@ function setLoading(isLoading) {
 
 function handleExtraction(tripData) {
     window.latestTripData = tripData; // 임시 보관
-    showSaveButton();
+    if(tripData.title !== ""){
+        showSaveButton();
+    }
+ 
 }
 
 function showSaveButton() {
+    // 기존 버튼 있으면 제거
+    const existing = document.querySelector(".save-btn");
+    if (existing) existing.remove();
+
     const btn = document.createElement("button");
     btn.innerText = "마이페이지에 저장하기";
     btn.className = "save-btn";

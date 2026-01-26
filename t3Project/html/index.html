@@ -27,13 +27,19 @@
             <i data-lucide="dices" class="nav-icon"></i>
             <span class="nav-label">룰렛</span>
           </a>
-<a href="javascript:void(0)" onclick="handleFavoriteClick()" class="nav-item favorite-wrapper">
-  <div class="icon-rel">
-    <i data-lucide="heart" class="nav-icon"></i>
-    <span id="favorite-count" class="nav-badge" style="display: none">0</span>
-  </div>
-  <span class="nav-label">찜</span>
-</a>
+          <a
+            href="javascript:void(0)"
+            onclick="handleFavoriteClick()"
+            class="nav-item favorite-wrapper"
+          >
+            <div class="icon-rel">
+              <i data-lucide="heart" class="nav-icon"></i>
+              <span id="favorite-count" class="nav-badge" style="display: none"
+                >0</span
+              >
+            </div>
+            <span class="nav-label">찜</span>
+          </a>
 
           <a href="login.html" id="nav-login-btn" class="btn-login">로그인</a>
 
@@ -82,9 +88,7 @@
     </div>
 
     <div class="hero-section">
-     
-        <!-- <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe> -->
-     
+      <!-- <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe> -->
 
       <div class="hero-overlay">
         <div class="hero-content">
@@ -93,11 +97,12 @@
             바로 여기에서.
           </h1>
           <p class="hero-subtitle">
-            지친 일상에 쉼표가 필요하신가요? 당신의 취향에 딱 맞는 여행지를
-            찾아드립니다.
+            지친 일상에 쉼표가 필요하신가요? <br>
+            당신의 취향에 딱 맞는 여행지를
+            찾아드립니다!
           </p>
           <div class="hero-actions">
-            <button
+            <!-- <button
               onclick="
                 document
                   .getElementById('content')
@@ -107,7 +112,7 @@
             >
               여행지 보기
             </button>
-            <a href="roulette.html" class="btn-glass"> 랜덤 추천 받기 </a>
+            <a href="roulette.html" class="btn-glass"> 랜덤 추천 받기 </a> -->
           </div>
         </div>
       </div>
@@ -156,12 +161,12 @@
                 <div id="recommended-tags" class="tag-cloud">
                   <span class="search-tag">#가족</span>
                   <span class="search-tag">#가성비</span>
-                  <span class="search-tag">#커플</span>
-                  <span class="search-tag">#바다</span>
                   <span class="search-tag">#명소</span>
-                  <span class="search-tag">#펜션</span>
+                  <span class="search-tag">#바다</span>
+                       <span class="search-tag">#일본</span>   
+                  <span class="search-tag">#커플</span>
                   <span class="search-tag">#태국</span>
-                  <span class="search-tag">#일본</span>        
+                  <span class="search-tag">#펜션</span>
                 </div>
               </div>
               <div id="search-results" class="search-results-list"></div>
@@ -177,14 +182,18 @@
           >
             전체
           </button>
-          <button class="filter-btn" data-id="domestic" onclick="toggleFilter('domestic')">
-  <img 
-    src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" 
-    alt="태극기" 
-    class="flag-icon"
-  >
-  국내여행
-</button>
+          <button
+            class="filter-btn"
+            data-id="domestic"
+            onclick="toggleFilter('domestic')"
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg"
+              alt="태극기"
+              class="flag-icon"
+            />
+            국내여행
+          </button>
           <button
             class="filter-btn"
             data-id="overseas"
@@ -213,7 +222,6 @@
           >
             🍕 맛집/카페
           </button>
-        
         </div>
       </div>
       <div id="article-grid" class="article-grid"></div>
@@ -224,7 +232,7 @@
         </button>
       </div>
     </section>
-<!-- 플러팅 배너 제거 할 예정 혹시 몰라 -->
+    <!-- 플러팅 배너 제거 할 예정 혹시 몰라 -->
     <!-- <div id="floating-banner" class="floating-banner">
       <div class="floban-header">
         <span class="floban-badge">NOTICE</span>
@@ -241,7 +249,7 @@
     </div> -->
 
     <footer>
-      <div style="text-align: center">2026 copy right team3 박치기 공룡</div>
+      <div style="text-align: center">Copyright © 2026 Team3 박치기공룡. All rights reserved.</div>
       <!-- <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">

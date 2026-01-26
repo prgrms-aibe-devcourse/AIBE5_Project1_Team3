@@ -29,53 +29,49 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
-    "AIzaSyBAzemH99kmlJWNHxMdo77eToqT48HBLIo",
-    "AIzaSyB_UQO3yrYJgKf1GrrxN_eTIhL7mLusOxE",
-    "AIzaSyB3UZbwSdKMyLDPD4V4qQJXkcsYp2FL93A",
-    "AIzaSyARP9esQe-nx_Bzbm4fTqtLHMXTrcAV4e0",
-    "AIzaSyANKs0xet8h2n_OeAFgYM_5sW0iJ_E-C_8",
-    "AIzaSyA2atjqOxFuUqHLrLP1WIhSJtyOTfCtKuc",
-    "AIzaSyCpfLqJL3dYhcVDZRgDM1OLd96owqsPTyQ",
-    "AIzaSyCDRLh6NFQdO-DpIQHCn4Bai3_bxrCLTX8",
-    "AIzaSyCvhbtC-MsyIJ_WYYr5RiCrtWJJVTaSetE",
-    "AIzaSyA2atjqOxFuUqHLrLP1WIhSJtyOTfCtKuc"
-];
+    "AIzaSyCTQVXTZIEx6n3VZW45LhlfHtD969acigg",
+    "AIzaSyAZpjdlPsxE01tTDOPsUIGqjrIIPxKx89s",
+    "AIzaSyBGC0EhLiQHhcdzlKx8CfsVoqS5qJBoTC4",
+    "AIzaSyCdi4Kkc1rnMHprARvuA5bQZxjq1InhAmk",
+    "AIzaSyBiOajm7EHxr5NPgfITmQhEQY3NpshXAuM",
+    "AIzaSyAO5O8BnzT-W_lRJiy2Wa8REIo7dw9S6jA",
+    "AIzaSyDYNDho5OHevdYZ1ppAZ5kczXiTxbECbgk"
+]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
 
 const SYSTEM_INSTRUCTION = `
-너는 전문 여행 플래너야. 모든 답변은 반드시 아래의 JSON 형식 하나만 출력해라. 텍스트를 따로 섞지 마.
-반드시 제공된 [여행지 데이터] 목록에 있는 장소만을 추천해야 해.
-데이터에 없는 장소에 대해 물으면 모른다고 답하거나 데이터 내의 유사한 곳을 제안해.
-추천 장소를 언급할 때는 반드시 아래 링크 형식을 사용해.
-ui_text : 에 hidden_data에 대한 내용을 모두 설명해줘 그리고 여행지를 추천할때는 아래 형식으로 링크를 포함해줘
-형식: [장소이름](http://127.0.0.1:5500/t3Project/html/article.html?id=장소ID)
+You are a travel recommendation API.
+You must return only one valid JSON object.
+Do not include any text outside JSON.
+Do not use code blocks.
+
+The response must strictly follow this schema:
+
 {
-  "ui_text": "사용자에게 보여줄 친절한 설명 (마크다운 포함 가능)",
-  "hidden_data": {
-    "title": "여행 제목",
-    "location": "장소명",
-    "date": "일정",
-    "budget": "예산",
-    "companion": "동행",
-    "theme": "테마",
-    "schedule": "상세 코스 요약",
-    "tip": "꿀팁"
+  "ui_text": "string (markdown allowed)",
+  "tripData": {
+    "title": "string",
+    "location": "string",
+    "startDate": "2026-MM-DD",
+    "endDate": "2026-MM-DD",
+    "budget": "string",
+    "companions": "string",
+    "memo": "string",
+    "theme": "string",
+    "transport": "string",
+    "selectedPlaces": []
   }
 }
+
+Rules:
+- Use only places from provided ARTICLES.
+- If not found, respond with empty values.
+- In ui_text, include links using markdown format:
+  [PlaceName](http://127.0.0.1:5500/html/article.html?id={id}
+- startDate must always be tomorrow's date based on current date
 `;
 
-/* [의도] 팝업 UI의 ID와 hidden_data의 키값을 매칭함 [cite: 2025-11-17] */
-const POPUP_MAPPING = {
-    'pop-title': 'title',
-    'pop-loc': 'location',
-    'pop-date': 'date',
-    'pop-budget': 'budget',
-    'pop-comp': 'companion',
-    'pop-theme': 'theme',
-    'pop-schedule': 'schedule', // 마크다운 렌더링 필요
-    'pop-tip': 'tip'            // 마크다운 렌더링 필요
-};
 
 // [인자 출처: HTML 상단 data.js에서 로드된 전역 변수 ARTICLES]
 const localKnowledge = ARTICLES || []; 
@@ -112,15 +108,12 @@ async function sendMessage() {
     setLoading(true);
 
     try {
-        // 2) 프롬프트 빌드 (함수 선언부 참조)
         const finalPrompt = buildPrompt(message, localKnowledge);
-
-        // 3) AI 응답 획득 (키 로테이션 로직 포함 함수 호출)
         const aiResponse = await getAiWithFailover(finalPrompt);
-        
-        // 4) UI 업데이트: AI 답장 표시 및 JSON 데이터 추출
-        addMessage('ai', aiResponse);
-        handleExtraction(aiResponse);
+
+        const data = JSON.parse(aiResponse)
+        addMessage('ai', data.ui_text);
+        handleExtraction(data.tripData);
 
     } catch (error) {
         console.error("최종 통신 실패:", error);
@@ -206,23 +199,6 @@ function addMessage(sender, text) {
 }
 
 /**
- * [의도] AI 답변 텍스트에서 JSON 데이터를 골라내어 처리함
- * @param {string} rawText - [인자 출처: AI가 뱉은 전체 텍스트 aiResponse]
- */
-function handleExtraction(rawText) {
-    try {
-        const match = rawText.match(/\{[\s\S]*\}/);
-        if (match) {
-            const data = JSON.parse(match[0]);
-            console.log("[추출된 데이터]:", data);
-            // [의도] 향후 마이페이지 저장 등의 로직을 여기에 연결함 [cite: 2025-11-17]
-        }
-    } catch (e) {
-        console.warn("JSON 데이터 추출 불가");
-    }
-}
-
-/**
  * [의도] 전송 상태에 따라 버튼과 입력창 UI를 제어함
  * @param {boolean} isLoading - [인자 출처: sendMessage 내 호출]
  */
@@ -232,4 +208,41 @@ function setLoading(isLoading) {
         isLoading ? inputContainer.classList.add('loading') : inputContainer.classList.remove('loading');
     }
     if (!isLoading) userInput.focus();
+}
+
+function handleExtraction(tripData) {
+    window.latestTripData = tripData; // 임시 보관
+    showSaveButton();
+}
+
+function showSaveButton() {
+    const btn = document.createElement("button");
+    btn.innerText = "마이페이지에 저장하기";
+    btn.className = "save-btn";
+    btn.onclick = () => dispatchPlanToParent(window.latestTripData);
+    chatContainer.appendChild(btn);
+}
+
+function dispatchPlanToParent(tripData) {
+    const trips = JSON.parse(localStorage.getItem("myTrips")) || [];
+
+    const data = {
+        id: Date.now().toString(),
+        title: tripData.title,
+        location: tripData.location,
+        startDate: tripData.startDate,
+        endDate: tripData.endDate,
+        budget: tripData.budget,
+        companions: tripData.companions,
+        memo: tripData.memo,
+        theme: tripData.theme,
+        transport: tripData.transport,
+        selectedPlaces: tripData.selectedPlaces || [],
+        isAI: true
+    };
+
+    trips.push(data);
+    localStorage.setItem("myTrips", JSON.stringify(trips));
+
+    console.log("[AI] mypage 저장 완료", data);
 }

@@ -90,10 +90,10 @@ body {
     white-space: nowrap;
 }
 
-/* 로딩 애니메이션 */
+/* 로딩 애니메이션 혹시나 싶어 만들어둠 */
 .loading-spinner {
     border: 3px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #007bff;
+    border-left-color: #9510b6;
     border-radius: 50%;
     width: 16px;
     height: 16px;

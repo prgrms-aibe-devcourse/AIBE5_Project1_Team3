@@ -1,7 +1,7 @@
-/**
+/***********************************************
  * [전역 설정]
  * Lucide 아이콘 초기화 및 전역 변수 설정
- */
+ ***********************************************/
 if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
@@ -235,6 +235,7 @@ function toggleFavorite(id) {
   index === -1 ? favorites.push(id) : favorites.splice(index, 1);
   localStorage.setItem("favorites", JSON.stringify(favorites));
   updateFavoriteUI();
+  updateDetailLikeUI(id);
 }
 function updateFavoriteUI() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -270,6 +271,35 @@ function updateFavoriteUI() {
       }
     }
   });
+}
+/* 상세 페이지 전용 좋아요 UI 업데이트 */
+function updateDetailLikeUI(articleId) {
+  const likeBtn = document.getElementById("detail-like-btn");
+  if (!likeBtn) return;
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const favorites = isLoggedIn
+    ? JSON.parse(localStorage.getItem("favorites") || "[]")
+    : [];
+
+  const isFav = favorites.includes(articleId);
+  const icon = likeBtn.querySelector("svg");
+
+  if (isFav) {
+    likeBtn.style.backgroundColor = "var(--red-500)";
+    likeBtn.style.borderColor = "var(--red-500)";
+    if (icon) {
+      icon.style.fill = "white";
+      icon.style.stroke = "white";
+    }
+  } else {
+    likeBtn.style.backgroundColor = "";
+    likeBtn.style.borderColor = "";
+    if (icon) {
+      icon.style.fill = "none";
+      icon.style.stroke = "currentColor";
+    }
+  }
 }
 /**
  * --- 5. 검색 및 이벤트 핸들링 (수정된 부분) ---
@@ -357,6 +387,9 @@ window.addEventListener("DOMContentLoaded", () => {
   renderFloatingBanner();
   if (document.getElementById("article-grid")) renderArticles();
   updateFavoriteUI();
+  if (window.currentArticle) {
+    updateDetailLikeUI(window.currentArticle.id);
+  }
 });
 function scrollToContent() {
   const contentSection = document.getElementById("content");

@@ -29,7 +29,6 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
 const API_KEYS = [
-
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -43,7 +42,7 @@ Do not use code blocks.
 The response must strictly follow this schema:
 
 {
-  "ui_text": "string (markdown allowed)",
+  "ui_text": "string (markdown use, 3~4day)",
   "tripData": {
     "title": "string",
     "location": "string",
@@ -51,7 +50,6 @@ The response must strictly follow this schema:
     "endDate": "2026-MM-DD",
     "budget": "string",
     "companions": "string",
-    "memo": "string",
     "theme": "string",
     "transport": "string",
     "selectedPlaces": [
@@ -64,7 +62,7 @@ Rules:
 - If not found, respond with empty values.
 - In ui_text, include links using markdown format:
   [PlaceName](http://127.0.0.1:5500/html/article.html?id={id}
-- startDate must always be tomorrow's date based on current date
+- startDate must always be "tomorrow's" date based on current date
 - selectedPlaces must be an array of objects with this exact structure:
 {
   "id": "string",
@@ -92,27 +90,6 @@ Rules:
   100만원 → "100"
   50만원 → "50"
   235만원 → "235"
-- memo rule:
-  Write a detailed itinerary in natural Korean.
-  Do NOT use markdown or any markup symbols.
-  Do NOT use '-', '*', '#', '>' or numbered markdown lists.
-  Use only plain text with emoji and line breaks.
-  Format must be:
-
-  1일차:
-  오전 :
-  오후 :
-  야간 :
-
-  n일차:
-  오전 :
-  오후 :
-  야간 :
-
-  집에가는날:
-
-  Only use places from selectedPlaces.
-  Do not invent new locations.
 `;
 
 
@@ -172,9 +149,13 @@ async function sendMessage() {
         // JSON 시작/끝만 잘라냄
         const jsonStart = aiResponse.indexOf('{');
         const jsonEnd = aiResponse.lastIndexOf('}') + 1;
-        const pureJson = aiResponse.slice(jsonStart, jsonEnd);
 
         // 5) 최소 구조 검증 (ui_text, tripData 없으면 바로 에러)
+        const match = aiResponse.match(/\{[\s\S]*\}/);
+        if (!match) {
+            throw new Error("JSON 형식 응답 없음");
+        }
+        const pureJson = match[0];
         if (!pureJson.includes('"ui_text"') || !pureJson.includes('"tripData"')) {
             throw new Error("AI JSON 구조 불일치");
         }
@@ -188,8 +169,8 @@ async function sendMessage() {
             location: data.tripData?.location || '',
             startDate: data.tripData?.startDate || '',
             endDate: data.tripData?.endDate || '',
-            budget: data.tripData?.budget || '',
-            companions: data.tripData?.companions || '',
+            budget: data.tripData?.budget || '200',
+            companions: data.tripData?.companions || '친구/가족과 같이',
             memo: data.tripData?.memo || '',
             theme: data.tripData?.theme || '힐링',
             transport: data.tripData?.transport || '비행기',
@@ -327,6 +308,12 @@ function showSaveButton() {
 
 function dispatchPlanToParent(tripData) {
     const trips = JSON.parse(localStorage.getItem("myTrips")) || [];
+    const memo = updateTripMemo(
+        tripData.location,
+        tripData.theme,
+        tripData.selectedPlaces
+    );
+
 
     const data = {
         id: Date.now().toString(),
@@ -336,7 +323,7 @@ function dispatchPlanToParent(tripData) {
         endDate: tripData.endDate,
         budget: tripData.budget,
         companions: tripData.companions,
-        memo: tripData.memo,
+        memo: memo,
         theme: tripData.theme,
         transport: tripData.transport,
         selectedPlaces: tripData.selectedPlaces || [],
@@ -346,5 +333,53 @@ function dispatchPlanToParent(tripData) {
     trips.push(data);
     localStorage.setItem("myTrips", JSON.stringify(trips));
 
-    console.log("[AI] mypage 저장 완료", data);
+    alert("[AI] 마이페이지에 저장 완료");
 }
+
+// memo 생성 로직
+function updateTripMemo(location, theme, selectedPlaces) {
+    let memo = `✨ [${location}] ${theme} 여행 계획서 ✨\n\n`;
+    memo += `📋 선택한 장소 (방문 순서)\n`;
+    
+    selectedPlaces.forEach((item, index) => {
+        const icon = item.category === '숙소' ? '🏠' : (item.category === '맛집' ? '🍽️' : '📸');
+        memo += `${index + 1}. ${icon} ${item.title}\n   📍 ${item.address}\n`;
+    });
+
+    memo += `\n🗓️ 추천 일정 (동선 최적화)\n-------------------\n`;
+
+    if (selectedPlaces.length === 0) {
+        memo += "장소를 선택하면 일정이 생성됩니다.";
+    } else {
+        const itemsPerDay = 3;
+        let dayCount = 1;
+        memo += `1일차:\n`;
+        memo += `- ${location} 도착\n`;
+
+        selectedPlaces.forEach((item, index) => {
+            if (index > 0 && index % itemsPerDay === 0) {
+                dayCount++;
+                memo += `\n${dayCount}일차:\n`;
+            }
+            const seq = index % itemsPerDay;
+            let timeLabel = "";
+            if (seq === 0) timeLabel = "[오전/이동]";
+            else if (seq === 1) timeLabel = "[오후]";
+            else if (seq === 2) timeLabel = "[저녁]";
+
+            let action = "방문";
+            if (item.category === '숙소') {
+                action = "체크인 및 휴식";
+                timeLabel = "[숙소]"; 
+            } else if (item.category === '맛집') {
+                action = "식사";
+            }
+
+            memo += `- ${timeLabel} ${item.title} (${action})\n`;
+        });
+        memo += `\n${dayCount + 1}일차:\n- 체크아웃 및 귀가\n`;
+    }
+
+    return memo;
+}
+

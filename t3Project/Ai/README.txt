@@ -8,6 +8,6 @@
     <div id="chat-frame-container">
         <iframe src="../Ai/AiChatbot.html" style="width:100%; height:100%; border:none;" scrolling="no"></iframe>
     </div>
+    <!-- 챗봇 버튼 토글 작동용 소스 -->
+    <script src="../Ai/Aiflot.js"></script>   
 
-<!-- 챗봇 버튼 토글 작동용 소스 -->
-<script src="../Ai/Aiflot.js"></script>   

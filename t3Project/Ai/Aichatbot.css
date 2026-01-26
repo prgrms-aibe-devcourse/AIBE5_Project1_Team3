@@ -13,7 +13,7 @@
     right: 30px;     /* 오른쪽에서의 거리 */
     width: 60px;
     height: 60px;
-    background-color: #791fcecd;
+    background-color: #3686e2cd;
     color: white;
     border-radius: 50%;
     border: none;
@@ -60,4 +60,30 @@
         right: 5%;     /* 중앙 정렬 느낌 */
         height: 70%;   /* 세로 길이는 70% */
     }
+}
+
+/* 마이페이지에 저장하기 버튼 css */
+.save-btn {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #6fa8ff, #4f7cff);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(79, 124, 255, 0.25);
+    transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(79, 124, 255, 0.35);
+    background: linear-gradient(135deg, #7fb3ff, #5b8dff);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(79, 124, 255, 0.2);
 }

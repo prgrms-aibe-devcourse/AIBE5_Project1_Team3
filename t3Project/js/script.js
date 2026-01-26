@@ -15,6 +15,7 @@ let searchQuery = ''; // [중요] 검색어 저장 변수
  * --- 1. 네비게이션 & 스크롤 UI ---
  */
 const nav = document.getElementById("navbar");
+const articlenav = document.getElementById("article-nav");
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileMenu = document.getElementById("mobile-menu");
 const mobileMenuClose = document.getElementById("mobile-menu-close");
@@ -26,6 +27,15 @@ window.addEventListener("scroll", () => {
       nav.classList.add("scrolled");
     } else if (document.body.id === "page-home") {
       nav.classList.remove("scrolled");
+    }
+  }
+
+  // 네비게이션 아티클 페이지 버전
+  if (articlenav) {
+    if (window.scrollY > 20) {
+      articlenav.classList.add("scrolled");
+    } else if (document.body.id === "hero-header") {
+      articlenav.classList.remove("scrolled");
     }
   }
 

@@ -22,6 +22,14 @@
     color: var(--white);
 }
 
+/* 스크롤 시 스타일 (JS로 .scrolled 클래스 추가 필요) */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Host Info */
 .host-info-bar {
     padding: 1rem 1.5rem;
@@ -130,10 +138,12 @@
     background: none;
     border: none;
     color: var(--accent);
-    font-size: 0.85rem;
     cursor: pointer;
-
-    transform: translateY(-1.2rem); /* margin 한계 회피: 실제 위치 이동 */
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s ease;
     opacity: 0;
     animation: tagToggleFadeIn 0.35s ease forwards;
 }

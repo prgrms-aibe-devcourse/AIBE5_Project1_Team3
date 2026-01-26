@@ -39,7 +39,7 @@ const ARTICLES = [
     lat: 13.7538,
     lng: 100.4991,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.5,
     reviews: [
       { user: '김철수', comment: '게살 오믈렛은 진짜 전설입니다. 꼭 드세요.', rating: 5 },
@@ -61,7 +61,7 @@ const ARTICLES = [
     lat: 13.7602,
     lng: 100.4855,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '여행자A', comment: '조용히 쉬기에 최고의 장소입니다. 뷰가 너무 예뻐요.', rating: 5 },
@@ -83,7 +83,7 @@ const ARTICLES = [
     lat: 13.7214,
     lng: 100.5238,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.9,
     reviews: [
       { user: '힐링매니아', comment: '시설이 정말 아름답고 마사지 압도 딱 적당했어요.', rating: 5 },
@@ -105,7 +105,7 @@ const ARTICLES = [
     lat: 13.7801,
     lng: 100.5445,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '국수러버', comment: '육수가 정말 진해요. 방콕에서 먹은 국수 중 1등!', rating: 5 },
@@ -127,7 +127,7 @@ const ARTICLES = [
     lat: 13.7805,
     lng: 100.5448,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.4,
     reviews: [
       { user: '사진작가', comment: '색감이 너무 예뻐서 사진 찍기 정말 좋아요.', rating: 5 },
@@ -149,7 +149,7 @@ const ARTICLES = [
     lat: 13.7335,
     lng: 100.5284,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '쇼핑왕', comment: '터널에서 사진 찍으면 정말 잘 나와요. 쇼핑하기도 굿!', rating: 5 },
@@ -171,7 +171,7 @@ const ARTICLES = [
     lat: 13.7302,
     lng: 100.5678,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '마사지광', comment: '허벌볼 마사지는 처음인데 너무 시원하고 향도 좋네요.', rating: 5 },
@@ -193,7 +193,7 @@ const ARTICLES = [
     lat: 13.7248,
     lng: 100.5785,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '커피마니아', comment: '커피 향이 너무 좋고 브런치 메뉴도 다 맛있어요.', rating: 5 },
@@ -215,7 +215,7 @@ const ARTICLES = [
     lat: 13.7999,
     lng: 100.5502,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.5,
     reviews: [
       { user: '쇼핑홀릭', comment: '정말 넓어요! 예쁜 소품들이 너무 많아서 지갑 조심해야 함.', rating: 5 },
@@ -237,7 +237,7 @@ const ARTICLES = [
     lat: 13.7465,
     lng: 100.4933,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '역사덕후', comment: '와불상의 크기에 압도당했습니다. 정말 화려해요.', rating: 5 },
@@ -259,7 +259,7 @@ const ARTICLES = [
     lat: 13.7286,
     lng: 100.5348,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.3,
     reviews: [
       { user: '쇼퍼', comment: '역이랑 연결돼서 너무 편해요. 브랜드도 꽤 많습니다.', rating: 4 },
@@ -281,7 +281,7 @@ const ARTICLES = [
     lat: 13.7382,
     lng: 100.5592,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '한식파', comment: '외국에서 먹는 한식 치고 퀄리티가 정말 높습니다.', rating: 5 },
@@ -303,7 +303,7 @@ const ARTICLES = [
     lat: 13.7278,
     lng: 100.5695,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.5,
     reviews: [
       { user: '면돌이', comment: '짬뽕 국물이 정말 진하고 맛있어요. 해장에 최고!', rating: 5 },
@@ -325,7 +325,7 @@ const ARTICLES = [
     lat: 9.5583,
     lng: 100.0305,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '바다사랑', comment: '뷰가 다 했습니다. 음식 맛도 훌륭하고 분위기 최고예요.', rating: 5 },
@@ -347,7 +347,7 @@ const ARTICLES = [
     lat: 9.4312,
     lng: 99.9928,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '휴양객', comment: '조용하게 쉬기에 이보다 좋은 곳은 없을 거예요.', rating: 5 },
@@ -369,7 +369,7 @@ const ARTICLES = [
     lat: 9.4795,
     lng: 100.0632,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.9,
     reviews: [
       { user: '미식가G', comment: '음식 맛은 물론이고 뷰가 정말 미쳤습니다. 꼭 가보세요.', rating: 5 },
@@ -391,7 +391,7 @@ const ARTICLES = [
     lat: 9.5592,
     lng: 100.0321,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '시장러버', comment: '먹거리 종류가 어마어마해요. 팟타이랑 꼬치 최고!', rating: 5 },
@@ -413,7 +413,7 @@ const ARTICLES = [
     lat: 9.4712,
     lng: 100.0485,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.4,
     reviews: [
       { user: '카페덕후', comment: '병이 너무 귀여워서 종류별로 다 사고 싶었어요!', rating: 5 },
@@ -435,7 +435,7 @@ const ARTICLES = [
     lat: 9.5315,
     lng: 100.0618,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '핫플러', comment: '인테리어가 너무 세련됐고 분위기가 정말 힙해요.', rating: 5 },
@@ -457,7 +457,7 @@ const ARTICLES = [
     lat: 9.1124,
     lng: 99.2158,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.5,
     reviews: [
       { user: '편안함', comment: '진짜 집처럼 아늑해요. 커피 맛도 기대 이상입니다.', rating: 5 },
@@ -479,7 +479,7 @@ const ARTICLES = [
     lat: 8.9145,
     lng: 98.5312,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '자연주의', comment: '숙소에서 보이는 바위산 뷰가 정말 압권입니다.', rating: 5 },
@@ -501,7 +501,7 @@ const ARTICLES = [
     lat: 8.9128,
     lng: 98.5295,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '먹방요정', comment: '팟타이가 진짜 맛있어요. 로컬 맛집 인정!', rating: 5 },
@@ -523,7 +523,7 @@ const ARTICLES = [
     lat: 8.9168,
     lng: 98.5155,
     category: '해외여행',
-    host: '지구오락실 제작진',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '탐험가', comment: '정글 속을 걷는 기분이 너무 상쾌하고 폭포도 멋져요.', rating: 5 },
@@ -551,7 +551,7 @@ const ARTICLES = [
     lat: 37.712852,
     lng: 127.487123,
     category: '국내여행',
-    host: '지락실팬',
+    host: '최준영',
     rating: 4.9,
     reviews: [
       { user: '안유진팬', comment: '지락실 보고 왔는데 고양이들이 너무 귀엽고 한옥이 정말 예뻐요.', rating: 5 },
@@ -579,7 +579,7 @@ const ARTICLES = [
     lat: 37.668541,
     lng: 127.561234,
     category: '국내여행',
-    host: '미식가K',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '나물귀신', comment: '나물 종류가 정말 다양하고 신선해서 한 그릇 뚝딱 비웠어요.', rating: 5 },
@@ -607,7 +607,7 @@ const ARTICLES = [
     lat: 37.711234,
     lng: 127.456789,
     category: '국내여행',
-    host: '여행작가L',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '맘카페회원', comment: '아이들이 너무 좋아해요. 양들도 순하고 카페 빵도 맛있습니다.', rating: 5 },
@@ -635,7 +635,7 @@ const ARTICLES = [
     lat: 37.712345,
     lng: 127.421234,
     category: '국내여행',
-    host: '먹보지망생',
+    host: '최준영',
     rating: 4.6,
     reviews: [
       { user: '닭갈비러버', comment: '철판 크기에 한 번 놀라고 맛에 두 번 놀랐어요. 진짜 불맛 대박!', rating: 5 },
@@ -663,7 +663,7 @@ const ARTICLES = [
     lat: 37.868752,
     lng: 127.712345,
     category: '국내여행',
-    host: '휴식전문가M',
+    host: '최준영',
     rating: 4.9,
     reviews: [
       { user: '사우나마니아', comment: '시설이 정말 깨끗하고 나무 향이 예술입니다. 부모님이 너무 좋아하셨어요.', rating: 5 },
@@ -691,7 +691,7 @@ const ARTICLES = [
     lat: 37.754321,
     lng: 127.356789,
     category: '국내여행',
-    host: '숙소큐레이터P',
+    host: '최준영',
     rating: 4.8,
     reviews: [
       { user: '여행에미치다', comment: '숙소 인테리어가 미쳤어요. 어디서 찍어도 인생샷입니다.', rating: 5 },
@@ -719,7 +719,7 @@ const ARTICLES = [
     lat: 37.756789,
     lng: 127.361234,
     category: '국내여행',
-    host: '카페투어러H',
+    host: '최준영',
     rating: 4.7,
     reviews: [
       { user: '커피러버', comment: '커피 원두 선택지도 넓고 빵이 정말 맛있어요. 소금빵 강추!', rating: 5 },
@@ -764,7 +764,7 @@ const ARTICLES = [
     lat: 37.8920571,
     lng: 128.8298918,
     category: '국내여행',
-    host: '강릉 여행객',
+    host: '홍가현',
     rating: 4.7,
     reviews: [
       { user: '다혜', comment: '해산물이 정말 싱싱해요.', rating: 5 },
@@ -788,7 +788,7 @@ const ARTICLES = [
     lat: 37.7563022,
     lng: 128.8990843,
     category: '국내여행',
-    host: '먹방여행가',
+    host: '홍가현',
     rating: 4.5,
     reviews: [
       { user: '세진', comment: '달콤하고 중독성 있어요!', rating: 5 },
@@ -811,7 +811,7 @@ const ARTICLES = [
     lat: 37.7899231,
     lng: 128.9137687,
     category: '국내여행',
-    host: '현지인 추천',
+    host: '홍가현',
     rating: 4.6,
     reviews: [
       { user: '진아', comment: '순두부가 정말 부드럽네요.', rating: 5 },
@@ -835,7 +835,7 @@ const ARTICLES = [
     lat: 34.6657531,
     lng: 135.5010362,
     category: '해외여행',
-    host: '여행자 추천',
+    host: '홍가현',
     rating: 4.4,
     reviews: [
       { user: 'Aki', comment: '위치가 좋아서 관광 편했어요.', rating: 5 },
@@ -858,7 +858,7 @@ const ARTICLES = [
     lat: 34.7005588,
     lng: 135.4957339,
     category: '해외여행',
-    host: '도시 여행객',
+    host: '홍가현',
     rating: 4.5,
     reviews: [
       { user: 'Sora', comment: '조식 뷰가 최고예요.', rating: 5 },
@@ -881,7 +881,7 @@ const ARTICLES = [
     lat: 34.6872571,
     lng: 135.5258546,
     category: '해외여행',
-    host: 'Osaka 관광청',
+    host: '홍가현',
     rating: 4.7,
     reviews: [
       { user: 'Yuki', comment: '역사와 뷰가 아름다웠어요.', rating: 5 },
@@ -904,7 +904,7 @@ const ARTICLES = [
     lat: 34.6712725,
     lng: 135.4775725,
     category: '해외여행',
-    host: '미식가 켄',
+    host: '홍가현',
     rating: 4.8,
     reviews: [
       { user: 'Kenji', comment: '야경이 정말 멋져요.', rating: 5 },
@@ -927,7 +927,7 @@ const ARTICLES = [
     lat: 34.6686694,
     lng: 135.5030523,
     category: '해외여행',
-    host: '오사카 돈부리 마스터',
+    host: '홍가현',
     rating: 4.6,
     reviews: [
       { user: 'Ryo', comment: '면발이 쫄깃해요.', rating: 5 },
@@ -950,7 +950,7 @@ const ARTICLES = [
     lat: 34.66879460000001,
     lng: 135.5009642,
     category: '해외여행',
-    host: '타코마루',
+    host: '홍가현',
     rating: 4.5,
     reviews: [
       { user: 'Kenta', comment: '바삭하고 맛있어요!', rating: 5 },
@@ -1011,7 +1011,7 @@ const ARTICLES = [
   lat: 35.840251,
   lng: 129.281146,
   category: '해외여행',
-  host: '김수현',
+  host: '류태우',
   rating: 4.8,
   reviews: [
     { user: '강민석', comment: '호수 뷰가 정말 환상적입니다. 아침에 일어나서 창밖을 보는 것만으로도 힐링이 되었어요.', rating: 5 },
@@ -1041,7 +1041,7 @@ const ARTICLES = [
   lat: 35.804364,
   lng: 129.284478,
   category: '해외여행',
-  host: '이지훈',
+  host: '류태우',
   rating: 4.6,
   reviews: [
     { user: '김서연', comment: '공간이 너무 아름다워요. 연못을 바라보며 마시는 커피 한 잔이 정말 힐링이었습니다.', rating: 5 },
@@ -1071,7 +1071,7 @@ const ARTICLES = [
   lat: 13.474600,
   lng: 144.752300,
   category: '해외여행',
-  host: 'Carlos Santos',
+  host: '류태우',
   rating: 4.5,
   reviews: [
     { user: '김민아', comment: '성당이랑 붙어있어서 구경하기 좋아요. 초콜릿 하우스 앞에서 사진 찍으면 정말 예쁘게 나옵니다!', rating: 5 },
@@ -1101,7 +1101,7 @@ const ARTICLES = [
   lat: 13.518252,
   lng: 144.805543,
   category: '해외여행',
-  host: '박현준',
+  host: '류태우',
   rating: 4.8,
   reviews: [
     { user: '이정민', comment: '조식 뷔페 라세느는 역시 최고네요. 한국인 직원이 많아서 부모님 모시고 가기 정말 편했습니다.', rating: 5 },
@@ -1131,7 +1131,7 @@ const ARTICLES = [
   lat: 13.504212,
   lng: 144.796123,
   category: '해외여행',
-  host: 'Pika Fejeran',
+  host: '류태우',
   rating: 4.6,
   reviews: [
     { user: '김민수', comment: '로코모코 소스가 정말 독특하고 맛있어요! 다만 조금 짠 편이라 밥이랑 잘 섞어 드세요.', rating: 5 },
@@ -1162,7 +1162,7 @@ const ARTICLES = [
   lat: 13.502500,
   lng: 144.795000,
   category: '해외여행',
-  host: '괌 해양 관광 협회',
+  host: '류태우',
   rating: 4.8,
   reviews: [
     { user: '박서준', comment: '돌고래도 보고 노을 보면서 맥주 한잔하니 여기가 천국이네요. 뷔페 음식은 조금 짰지만 밥이랑 먹으니 괜찮았어요.', rating: 5 },

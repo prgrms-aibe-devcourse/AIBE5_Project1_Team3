@@ -27,7 +27,7 @@ const LOREM_CONTENT = `
 const ARTICLES = [
   {
     id: 'article-1',
-    imageUrl: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-1.jpeg',
     title: '태국 왕실이 사랑한 푸드 맛집',
     subtitle: '방콕 현지인들과 미식가들이 인정하는 게살 커리 맛집',
     mainTags: ['방콕맛집', '게살커리', '뿅뿅지구오락실'],
@@ -49,7 +49,7 @@ const ARTICLES = [
   },
   {
     id: 'article-2',
-    imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-2.jpeg',
     title: '강변의 낭만을 품은 프라이빗 숙소',
     subtitle: '방콕 노이 운하 옆 평화로운 휴식을 제공하는 리버뷰 숙소',
     mainTags: ['운하뷰', '감성숙소', '뿅뿅지구오락실'],
@@ -71,7 +71,7 @@ const ARTICLES = [
   },
   {
     id: 'article-3',
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-3.jpeg',
     title: '도심 속 정원에서의 고품격 스파',
     subtitle: '지친 몸과 마음을 달래주는 실롬의 힐링 오아시스',
     mainTags: ['방콕스파', '힐링여행', '뿅뿅지구오락실'],
@@ -93,7 +93,7 @@ const ARTICLES = [
   },
   {
     id: 'article-4',
-    imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-4.jpeg',
     title: '방콕에서 가장 핫한 보트 누들',
     subtitle: '아리 지역의 감성 넘치는 럭셔리 쌀국수 전문점',
     mainTags: ['보트누들', '아리맛집', '뿅뿅지구오락실'],
@@ -115,7 +115,7 @@ const ARTICLES = [
   },
   {
     id: 'article-5',
-    imageUrl: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-5.jpeg',
     title: '아리 지역의 힙한 포토존 성지',
     subtitle: 'MZ세대의 취향을 저격하는 알록달록 커뮤니티 공간',
     mainTags: ['아리핫플', '복합문화공간', '뿅뿅지구오락실'],
@@ -136,30 +136,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-6',
-    imageUrl: 'https://images.unsplash.com/photo-1555392859-d6e240722363?auto=format&fit=crop&q=80&w=1000',
-    title: '방콕 도심 속의 수직형 라이프스타일 몰',
-    subtitle: '쇼핑, 맛집, 휴식이 공존하는 스마트한 복합 쇼핑몰',
-    mainTags: ['삼얀', '쇼핑몰', '뿅뿅지구오락실'],
-    tags: ['태국', '방콕', '삼얀밋타운', '쇼핑', '대형몰', '방콕맛집', '24시간영업', '터널포토존', '대학교근처', '로컬맛집', '푸드코트', '영화관', '서점', '카페', '지락실쇼핑', '현지인추천', '깔끔한', '에어컨빵빵', '여름휴가', '방콕여행코스', '가족여행', '친구와함께', '기념품쇼핑', '태국간식', '야시장감성', '현대적건물', '관광객인기', '방콕핫플', '지하연결로', 'MRT삼얀', '교통편리', '쇼핑천국', '먹거리천국', '도심여행', '방콕일상', '복합문화공간', '문화생활', '인기명소', '태국관광', '방콕자유여행', '주말나들이', '비올때가기좋은곳', '시원한실내', '태국음식점', '글로벌브랜드', '로컬브랜드', '편의시설', '지구오락실촬영', '대형도서관', '뿅뿅지구오락실'],
-    description: 'MRT 삼얀 역과 연결된 대형 쇼핑몰로, 특히 24시간 개방되는 구역과 독특한 지하 터널로 유명합니다.',
-    content: '쌈얀 밋타운은 방콕의 명문대인 쭐라롱껀 대학교 인근에 위치한 젊은 감각의 쇼핑몰입니다. 뿅뿅지구오락실 방송에서 멤버들이 게임 미션을 수행하거나 쇼핑을 즐기던 장소로 등장했습니다. 이곳의 상징과도 같은 지하 터널 포토존은 우주선 내부를 연상시키는 미래적인 디자인으로 많은 이들의 발길을 끕니다. 몰 내부에는 저렴하고 맛있는 푸드코트부터 유명 맛집 체인, 그리고 대형 서점과 24시간 운영되는 공유 오피스 공간까지 마련되어 있어 현지 대학생들과 관광객 모두에게 사랑받습니다. 쾌적한 실내에서 태국의 최신 트렌드를 확인하고 맛있는 음식을 즐기기에 부족함이 없는 공간입니다.',
-    name: '쌈얀 밋타운 (สามย่าน มิตรทาวน์)',
-    address: '944 Rama IV Rd, Wang Mai, Pathum Wan, Bangkok 10330 태국',
-    lat: 13.7335,
-    lng: 100.5284,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.7,
-    reviews: [
-      { user: '쇼핑왕', comment: '터널에서 사진 찍으면 정말 잘 나와요. 쇼핑하기도 굿!', rating: 5 },
-      { user: '대학생', comment: '푸드코트에 맛있는 게 많아서 자주 갑니다.', rating: 5 },
-      { user: '관광객B', comment: '지하철역이랑 바로 연결돼서 가기 너무 편해요.', rating: 4 }
-    ]
-  },
-  {
     id: 'article-7',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-7.jpeg',
     title: '전통 약초의 힘을 담은 프리미엄 마사지',
     subtitle: '수쿰빗 24 골목에서 만나는 일본식 서비스와 태국 약초의 만남',
     mainTags: ['아시아허브', '마사지', '뿅뿅지구오락실'],
@@ -181,7 +159,7 @@ const ARTICLES = [
   },
   {
     id: 'article-8',
-    imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-8.jpeg',
     title: '통로의 세련미를 담은 브런치 카페',
     subtitle: '최고급 원두와 감각적인 인테리어가 돋보이는 미식 공간',
     mainTags: ['통로맛집', '브런치카페', '뿅뿅지구오락실'],
@@ -203,7 +181,7 @@ const ARTICLES = [
   },
   {
     id: 'article-9',
-    imageUrl: 'https://images.unsplash.com/photo-1563245339-6b2e4428546a?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-9.jpeg',
     title: '없는 게 없는 방콕 최대의 주말 시장',
     subtitle: '쇼핑과 먹거리의 천국, 짜뚜짝에서의 보물찾기',
     mainTags: ['짜뚜짝시장', '방콕쇼핑', '뿅뿅지구오락실'],
@@ -225,7 +203,7 @@ const ARTICLES = [
   },
   {
     id: 'article-10',
-    imageUrl: 'https://images.unsplash.com/photo-1598935833630-d46927953257?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-10.jpeg',
     title: '방콕에서 가장 크고 오래된 사원',
     subtitle: '거대하고 웅장한 와불상과 정통 타이 마사지의 발원지',
     mainTags: ['왓포', '방콕사원', '뿅뿅지구오락실'],
@@ -247,7 +225,7 @@ const ARTICLES = [
   },
   {
     id: 'article-11',
-    imageUrl: 'https://images.unsplash.com/photo-1541813137258-3d84a77006d6?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-11.jpeg',
     title: '실롬의 중심에서 만나는 쇼핑 랜드마크',
     subtitle: 'BTS와 직결된 편리한 접근성, 로컬과 글로벌이 만나는 곳',
     mainTags: ['실롬콤플렉스', '방콕쇼핑몰', '뿅뿅지구오락실'],
@@ -269,7 +247,7 @@ const ARTICLES = [
   },
   {
     id: 'article-12',
-    imageUrl: 'https://images.unsplash.com/photo-1590604518089-28c31bec3ec5?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-12.jpeg',
     title: '방콕에서 즐기는 프리미엄 한식',
     subtitle: '방콕 현지인들에게도 사랑받는 정통 한국 요리의 맛',
     mainTags: ['방콕한식', '서라벌', '뿅뿅지구오락실'],
@@ -290,74 +268,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-13',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=1000',
-    title: '방콕에서 만나는 화끈한 중화요리',
-    subtitle: '수쿰빗 26 골목의 숨은 강자, 한국식 중화요리 전문점',
-    mainTags: ['방콕중국집', '동원각', '뿅뿅지구오락실'],
-    tags: ['태국', '방콕', '수쿰빗', '짜장면', '짬뽕', '탕수육', '한국식중식', '방콕맛집', '수쿰빗맛집', '지락실맛집', '나영석PD추천', '이영지맛집', '해장짬뽕', '가족식사', '든든한끼', '방콕여행', '태국자유여행', '중화요리', '맛있는', '깔끔한', '친절한', '현지인맛집', '교민맛집', '배달가능', '여름', '겨울휴가', '방콕핫플', '짜장면맛집', '불맛짬뽕', '바삭한탕수육', '면요리', '방콕점심', '방콕저녁', '먹방투어', '지구오락실촬영', '방콕라이프', '중식추천', '태국음식외', '이색맛집', '방콕가볼만한곳', '인기있는', '푸짐한', '추억의맛', '한국의맛', '방콕살이', '태국관광', '뿅뿅지구오락실'],
-    description: '한국식 짜장면과 짬뽕, 탕수육을 제대로 구현해낸 곳으로 방콕에서 가장 인기 있는 한국식 중국집 중 하나입니다.',
-    content: '동원각 방콕은 수쿰빗 26번 골목에 위치한 한국식 중화요리 전문점으로, 뿅뿅지구오락실 멤버들이 촬영 중 맛있게 짜장면과 짬뽕을 먹는 모습이 방송되어 화제가 되었습니다. 한국에서 먹던 그 맛 그대로의 짜장 소스와 불맛이 살아있는 얼큰한 짬뽕, 그리고 겉바속촉의 정석인 탕수육을 방콕 한복판에서 즐길 수 있다는 점이 큰 매력입니다. 매장은 깔끔하게 관리되고 있으며, 양도 푸짐하여 많은 여행객과 교민들이 즐겨 찾습니다. 태국 음식의 향신료에 지쳐 익숙하고 자극적인 한국의 중화요리가 생각날 때 방문하면 최고의 만족감을 느낄 수 있는 곳입니다.',
-    name: '동원각 (Dong Won Gak Bangkok)',
-    address: '93, 95 Soi Sukhumvit 26, Khlong Tan, Khlong Toei, Bangkok 10110 태국',
-    lat: 13.7278,
-    lng: 100.5695,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.5,
-    reviews: [
-      { user: '면돌이', comment: '짬뽕 국물이 정말 진하고 맛있어요. 해장에 최고!', rating: 5 },
-      { user: '수진', comment: '탕수육이 진짜 바삭해요. 한국 웬만한 집보다 낫네요.', rating: 5 },
-      { user: '여행자X', comment: '가격도 적당하고 양도 많아서 기분 좋게 먹었습니다.', rating: 4 }
-    ]
-  },
-  {
-    id: 'article-14',
-    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1000',
-    title: '코사무이의 에메랄드빛 바다를 담은 레스토랑',
-    subtitle: '환상적인 오션뷰와 함께 즐기는 신선한 해산물 요리',
-    mainTags: ['코사무이맛집', '오션뷰레스토랑', '뿅뿅지구오락실'],
-    tags: ['태국', '코사무이', '보풋', '해변레스토랑', '오션뷰', '해산물요리', '태국음식', '분위기좋은', '지락실맛집', '나영석PD추천', '섬여행', '휴양지', '로맨틱식사', '석양명소', '파란바다', '모래사장', '야외좌석', '코사무이핫플', '여름휴가', '신혼여행', '가족여행', '인생샷', '태국관광', '휴양', '맛있는해산물', '코코넛주스', '칵테일', '밤바다', '평화로운', '럭셔리식사', '해변가', '사무이여행', '태국남부', '바다뷰', '신선한재료', '친절한서비스', '방콕근교섬', '여행코스', '인기맛집', '뷰맛집', '태국요리', '씨푸드', '그릴요리', '지구오락실투어', '안유진추천', '미미추천', '이영지추천', '이은지추천', '뿅뿅지구오락실'],
-    description: '코사무이의 아름다운 바다를 바로 옆에 두고 식사할 수 있는 곳으로, 탁 트인 전망과 훌륭한 맛을 자랑합니다.',
-    content: '씨 선 사무이는 코사무이 보풋 해변 인근에 위치한 매력적인 비치 프런트 레스토랑입니다. 뿅뿅지구오락실 멤버들이 코사무이의 푸른 바다를 배경으로 맛있는 음식을 즐기며 힐링하던 곳으로, 시각과 미각을 동시에 만족시키는 공간입니다. 매일 아침 공급되는 신선한 로컬 해산물을 활용한 다양한 태국 요리와 서양식 메뉴를 제공하며, 특히 해 질 녘 방문하면 붉게 물드는 바다를 감상하며 로맨틱한 식사를 즐길 수 있습니다. 부드러운 모래를 밟으며 식사할 수 있는 테이블도 마련되어 있어 휴양지의 분위기를 극대화해 줍니다. 코사무이의 여유로움을 만끽하고 싶은 분들에게 최고의 선택이 될 것입니다.',
-    name: '씨 선 사무이 (SEA SUN Samui)',
-    address: 'Bo Put, Ko Samui District, Surat Thani 84320 태국',
-    lat: 9.5583,
-    lng: 100.0305,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.7,
-    reviews: [
-      { user: '바다사랑', comment: '뷰가 다 했습니다. 음식 맛도 훌륭하고 분위기 최고예요.', rating: 5 },
-      { user: '사무이러버', comment: '석양 보면서 저녁 먹었는데 인생 최고의 순간이었어요.', rating: 5 },
-      { user: '민호', comment: '직원들이 친절하고 해산물이 정말 신선합니다.', rating: 5 }
-    ]
-  },
-  {
-    id: 'article-15',
-    imageUrl: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80&w=1000',
-    title: '코사무이의 숨겨진 지상낙원 리조트',
-    subtitle: '나무앙 해변의 고요함 속에 자리 잡은 프라이빗 휴양지',
-    mainTags: ['코사무이숙소', '럭셔리리조트', '뿅뿅지구오락실'],
-    tags: ['태국', '코사무이', '나무앙', '리조트', '프라이빗비치', '수영장호텔', '오션뷰숙소', '힐링휴가', '지락실숙소', '나영석PD픽', '안유진', '이영지', '미미', '이은지', '섬여행', '태국남부', '고급리조트', '커플여행', '신혼여행추천', '가족휴양', '자연친화', '평화로운', '조용한숙소', '인생샷', '럭셔리라이프', '여름휴가', '태국숙소추천', '바다전망', '일출명소', '일몰명소', '친절한서비스', '프라이빗풀', '테라스', '휴양지감성', '사무이핫플', '럭셔리여행', '깔끔한시설', '태국관광', '방콕외지역', '에메랄드바다', '해변산책', '휴식의정석', '지구오락실촬영지', '동남아리조트', '인생숙소', '뿅뿅지구오락실'],
-    description: '코사무이 남쪽의 조용한 해변에 위치하여 완벽한 휴식과 프라이빗한 시간을 보장하는 고품격 리조트입니다.',
-    content: '헤븐 비치 리조트 코사무이는 이름 그대로 천국 같은 휴식을 제공하는 곳입니다. 뿅뿅지구오락실 멤버들이 코사무이의 아름다운 자연 속에서 머물며 즐거운 추억을 쌓았던 숙소로 유명합니다. 관광객들로 북적이는 차웽이나 보풋 지역과는 달리 나중에 위치해 있어, 오직 파도 소리와 새소리만이 들리는 고요한 환경을 자랑합니다. 객실은 현대적이고 넓으며, 바로 앞 해변으로 이어지는 탁 트인 구조는 방문객들에게 해방감을 선사합니다. 넓은 야외 수영장과 정교하게 관리된 정원, 그리고 투숙객만을 위한 세심한 서비스는 머무는 내내 감동을 줍니다. 번잡함을 벗어나 진정한 태국의 바다와 하늘을 느끼고 싶은 분들에게 최적화된 공간입니다.',
-    name: '헤븐 비치 리조트 코사무이 (HEAVEN BEACH RESORT Koh Samui)',
-    address: '38, 2, Tambon Na Mueang, Koh Samui, Surat Thani 84110 태국',
-    lat: 9.4312,
-    lng: 99.9928,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.8,
-    reviews: [
-      { user: '휴양객', comment: '조용하게 쉬기에 이보다 좋은 곳은 없을 거예요.', rating: 5 },
-      { user: '지은', comment: '방에서 바로 바다가 보이고 수영장도 너무 예뻐요.', rating: 5 },
-      { user: 'SamuiFan', comment: '서비스가 정말 왕실 대접 받는 느낌이었습니다.', rating: 5 }
-    ]
-  },
-  {
     id: 'article-16',
-    imageUrl: 'https://images.unsplash.com/photo-1515276427842-7ba4e935bb61?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-16.jpeg',
     title: '절벽 위에서 즐기는 최고의 미식 경험',
     subtitle: '코사무이의 환상적인 해안선을 내려다보는 그릴 레스토랑',
     mainTags: ['절벽레스토랑', '코사무이맛집', '뿅뿅지구오락실'],
@@ -379,7 +291,7 @@ const ARTICLES = [
   },
   {
     id: 'article-17',
-    imageUrl: 'https://images.unsplash.com/photo-1544923246-77307dd654ca?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-17.jpeg',
     title: '코사무이의 금요일 밤을 책임지는 활기찬 야시장',
     subtitle: '해변 마을의 정취와 다양한 로컬 먹거리가 가득한 곳',
     mainTags: ['피셔맨빌리지', '코사무이야시장', '뿅뿅지구오락실'],
@@ -400,74 +312,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-18',
-    imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=1000',
-    title: '코사무이의 귀여운 곰돌이 밀크티',
-    subtitle: '소장 욕구를 자극하는 특별한 병에 담긴 달콤한 휴식',
-    mainTags: ['보틀밀크티', '코사무이디저트', '뿅뿅지구오락실'],
-    tags: ['태국', '코사무이', '마렛', '밀크티맛집', '보틀음료', '곰돌이병', '디저트카페', '달콤한', '지락실카페', '나영석PD추천', '안유진', '이영지', '미미', '이은지', '태국음료', '버블티', '인생샷음료', '귀여운패키지', '테이크아웃', '여름휴가', '코사무이핫플', '아이돌추천', '당충전', '코사무이여행', '섬투어', '간식타임', '태국카페투어', '맛있는밀크티', '특별한선물', '인스타그램핫플', '색다른음료', '태국남부', '방콕외지역', '휴양지디저트', '깔끔한매장', '친절한', '달달구리', '사무이가볼만한곳', '지구오락실투어', '여름간식', '시원한음료', '뿅뿅지구오락실'],
-    description: '귀여운 곰돌이 모양의 보틀에 담긴 다양한 맛의 밀크티로 인기를 끌고 있는 트렌디한 카페입니다.',
-    content: '미쿠암쑥 보틀 밀크티는 코사무이 마렛 지역에서 여행객들의 눈과 입을 사로잡는 핫한 디저트 카페입니다. 뿅뿅지구오락실에서 멤버들이 귀여운 병에 담긴 밀크티를 마시며 미소를 지었던 모습이 방송되어 한국 팬들에게도 널리 알려졌습니다. 이곳의 특징은 단연 귀여운 캐릭터 병입니다. 다 마신 후 깨끗이 씻어 기념품으로 간직할 수 있을 만큼 디자인이 훌륭합니다. 물론 맛 또한 놓치지 않았습니다. 진한 홍차의 향과 부드러운 우유가 조화를 이루는 정통 밀크티부터 상큼한 과일 맛이 가미된 티까지 다양한 메뉴를 선택할 수 있습니다. 덥고 습한 코사무이의 날씨 속에서 시원하고 달콤한 곰돌이 밀크티 한 병은 여행의 큰 활력소가 됩니다.',
-    name: '미쿠암쑥 보틀 밀크티 (Mee-khwam-sook Bottle Milk Tea)',
-    address: '289 ถ. ทวีราษฎร์ภักดี Tambon Maret, Ko Samui District, Chang Wat Surat Thani 84310 태국',
-    lat: 9.4712,
-    lng: 100.0485,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.4,
-    reviews: [
-      { user: '카페덕후', comment: '병이 너무 귀여워서 종류별로 다 사고 싶었어요!', rating: 5 },
-      { user: '준영', comment: '밀크티 맛이 아주 진하고 달달해서 딱 제 스타일입니다.', rating: 4 },
-      { user: '민디', comment: '사진 찍기 너무 좋은 곳이에요. 사장님도 친절하세요.', rating: 5 }
-    ]
-  },
-  {
-    id: 'article-19',
-    imageUrl: 'https://images.unsplash.com/photo-1571943760982-2c6ec35022bb?auto=format&fit=crop&q=80&w=1000',
-    title: '차웽 해변의 힙한 비치 소사이어티',
-    subtitle: '트렌디한 음악과 예술적인 요리가 어우러진 해변의 아지트',
-    mainTags: ['솔트소사이어티', '코사무이핫플', '뿅뿅지구오락실'],
-    tags: ['태국', '코사무이', '차웽비치', '비치바', '해변레스토랑', '트렌디', '힙플레이스', '예술적인', '지락실맛집', '나영석PD픽', '안유진', '이영지', '미미', '이은지', '코사무이저녁', '칵테일바', '해산물그릴', '분위기좋은', '석양명소', '라이브DJ', '감각적인인테리어', '여름휴가', '인생샷', '태국여행', '섬휴양', '사무이맛집', '럭셔리바', '세련된', '데이트장소', '친구와함께', '밤문화', '바다전망', '해변라이프', '파티분위기', '맛있는요리', '창의적인메뉴', '태국남부', '방콕외지역', '지구오락실투어', '코사무이필수코스', '뿅뿅지구오락실'],
-    description: '차웽 비치에 위치한 스타일리시한 비치 바 겸 키친으로, 감각적인 플레이팅과 신나는 음악이 특징입니다.',
-    content: '솔트 소사이어티는 코사무이에서 가장 번화한 차웽 해변에서 독보적인 존재감을 뽐내는 비치 클럽 스타일의 레스토랑입니다. 뿅뿅지구오락실 멤버들이 이곳의 세련된 분위기 속에서 화려한 요리들을 맛보며 즐거운 시간을 보낸 곳입니다. 소금을 테마로 한 독특한 인테리어와 탁 트인 오션뷰는 들어서는 순간 감탄을 자아내며, 제공되는 요리들은 마치 하나의 예술 작품처럼 정교하고 창의적입니다. 낮에는 푸른 바다를 보며 여유로운 브런치를 즐길 수 있고, 밤에는 DJ의 세련된 음악과 함께 화려한 조명 아래서 칵테일을 만끽할 수 있습니다. 코사무이의 힙한 매력을 온몸으로 느끼고 싶은다면 주저 없이 방문해야 할 곳입니다.',
-    name: '솔트 소사이어티 비치 바 & 키친 (Salt Society – Beach Bar & Kitchen)',
-    address: '38/2 Moo 3 Borpud, Chaweng Beach, Surat Thani 84320 태국',
-    lat: 9.5315,
-    lng: 100.0618,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.7,
-    reviews: [
-      { user: '핫플러', comment: '인테리어가 너무 세련됐고 분위기가 정말 힙해요.', rating: 5 },
-      { user: '동건', comment: '음식 플레이팅이 예술입니다. 먹기 아까울 정도예요.', rating: 5 },
-      { user: '관광객E', comment: '밤에 가면 더 신나요. 칵테일 맛도 일품입니다.', rating: 5 }
-    ]
-  },
-  {
-    id: 'article-20',
-    imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1000',
-    title: '수랏타니 도심의 포근한 쉼터',
-    subtitle: '현지의 정겨움과 현대적 카페 감성이 만나는 곳',
-    mainTags: ['수랏타니카페', '감성카페', '뿅뿅지구오락실'],
-    tags: ['태국', '수랏타니', '푼핀', '카페추천', '홈커밍카페', '로컬카페', '아늑한', '분위기좋은', '커피맛집', '디저트', '태국여행', '지락실카페', '나영석PD추천', '안유진', '이영지', '미미', '이은지', '휴식', '여름휴가', '태국남부', '여행의여유', '인테리어맛집', '인생샷', '현지인맛집', '수랏타니여행', '조용한카페', '정원카페', '따뜻한분위기', '수제디저트', '태국차', '관광지', '쉼터', '깔끔한매장', '친절한직원', '방콕근교외', '태국로컬체험', '소박한', '평화로운', '지구오락실투어', '여행코스', '맛있는커피', '뿅뿅지구오락실'],
-    description: '수랏타니 지역의 따뜻한 감성을 담은 카페로, 마치 집에 돌아온 듯한 편안한 분위기에서 휴식을 취할 수 있습니다.',
-    content: '홈커밍 카페 수랏타니는 수랏타니 공항이나 기차역을 이용하는 여행자들이 잠시 들러 쉬어가기에 완벽한 장소입니다. 뿅뿅지구오락실 멤버들이 촬영 이동 중에 들러 편안한 시간을 보냈던 이곳은, 이름처럼 포근하고 친근한 인테리어가 돋보입니다. 나무 소재를 활용한 가구와 곳곳에 놓인 초록색 화분들이 마음을 차분하게 해주며, 정성스럽게 내린 커피와 직접 만든 수제 케이크는 여행의 피로를 싹 씻어줍니다. 화려한 관광지는 아니지만 태국 남부 도시의 소박하고 다정한 일상을 엿볼 수 있는 소중한 공간입니다. 수랏타니를 거쳐 코사무이나 카오속으로 이동하는 일정이라면 꼭 한 번 들러보시길 바랍니다.',
-    name: '홈커밍 카페 수랏타니 (Homecoming Cafe Suratthani)',
-    address: '220, Tha Rong Chang, Phunphin District, Surat Thani 84130 태국',
-    lat: 9.1124,
-    lng: 99.2158,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.5,
-    reviews: [
-      { user: '편안함', comment: '진짜 집처럼 아늑해요. 커피 맛도 기대 이상입니다.', rating: 5 },
-      { user: '성현', comment: '수랏타니에서 발견한 보석 같은 카페입니다.', rating: 5 },
-      { user: '나그네', comment: '이동 중에 들렀는데 너무 평화로워서 더 머물고 싶었네요.', rating: 4 }
-    ]
-  },
-  {
     id: 'article-21',
-    imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-21.jpeg',
     title: '카오속 정글 속 신비로운 트리하우스',
     subtitle: '거대한 기암괴석과 열대 우림 사이에서의 하룻밤',
     mainTags: ['카오속숙소', '트리하우스', '뿅뿅지구오락실'],
@@ -488,52 +334,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-22',
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1000',
-    title: '카오속 정글 탐험 전 든든한 한 끼',
-    subtitle: '현지인들이 추천하는 투박하지만 깊은 손맛의 태국 식당',
-    mainTags: ['카오속맛집', '로컬식당', '뿅뿅지구오락실'],
-    tags: ['태국', '수랏타니', '카오속', '폰스레스토랑', '태국음식맛집', '로컬푸드', '정글맛집', '팟타이', '똠양꿍', '가성비맛집', '지락실맛집', '나영석PD추천', '안유진', '이영지', '미미', '이은지', '친절한사장님', '푸짐한양', '맛있는', '현지분위기', '카오속여행', '태국남부', '여름휴가', '여행중식사', '든든한한끼', '태국요리', '숨은맛집', '관광객인기', '정겨운', '태국식당', '방콕외맛집', '카오속국립공원근처', '식도락', '먹방', '지구오락실투어', '이색맛집', '태국자유여행', '가족식사', '친구와함께', '뿅뿅지구오락실'],
-    description: '카오속 국립공원 입구 근처에 위치한 정겨운 식당으로, 신선한 재료로 만든 정통 태국 요리를 맛볼 수 있습니다.',
-    content: '폰스 레스토랑은 카오속 국립공원을 방문하는 여행자들에게 오아시스와 같은 곳입니다. 뿅뿅지구오락실 멤버들이 정글 투어 전후로 들러 허기를 달래며 감탄했던 맛집으로, 화려하진 않지만 정성 가득한 태국 가정식을 선보입니다. 이곳의 팟타이는 쫄깃한 면발과 적절한 간으로 남녀노소 모두의 입맛을 사로잡으며, 신선한 허브 향이 가득한 똠양꿍은 깊은 풍미를 자랑합니다. 사장님의 친절한 미소와 넉넉한 인심 덕분에 머무는 내내 기분 좋은 식사가 가능합니다. 야외 좌석에 앉아 카오속의 맑은 공기를 마시며 즐기는 태국 음식은 여행의 즐거움을 배가시켜 줍니다. 가격 또한 매우 합리적이어서 부담 없이 다양한 메뉴를 시도해 볼 수 있습니다.',
-    name: '폰스 레스토랑 (Pawn\'s Resturant / ร้านอาหารพร)',
-    address: 'Khlong Sok, Phanom District, Surat Thani 84250 태국',
-    lat: 8.9128,
-    lng: 98.5295,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.6,
-    reviews: [
-      { user: '먹방요정', comment: '팟타이가 진짜 맛있어요. 로컬 맛집 인정!', rating: 5 },
-      { user: '진수', comment: '사장님이 너무 친절하셔서 기분 좋게 식사했습니다.', rating: 5 },
-      { user: 'TravelerY', comment: '음식이 빨리 나오고 다 맛있어서 만족스러웠어요.', rating: 4 }
-    ]
-  },
-  {
-    id: 'article-23',
-    imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000',
-    title: '태국의 아마존, 카오속 폭포 트레킹',
-    subtitle: '웅장한 폭포와 야생의 자연을 따라 걷는 힐링 코스',
-    mainTags: ['폭포트레킹', '카오속관광', '뿅뿅지구오락실'],
-    tags: ['태국', '수랏타니', '카오속', '국립공원', '폭포', '트레킹', '하이킹', '자연탐험', '지락실촬영지', '나영석PD투어', '안유진', '이영지', '미미', '이은지', '태국남부', '여름휴가', '숲길산책', '야생동물', '이색경험', '어드벤처', '힐링여행', '인생샷', '폭포물놀이', '정글투어', '자연친화', '태국가볼만한곳', '방콕외지역', '웅장한폭포', '시원한계곡', '태국여행지추천', '활동적인여행', '가족여행', '친구와함께', '동남아정글', '신비로운자연', '환경보호', '지구오락실투어', '카오속트레일', '산책로', '평화로운', '자연의신비', '뿅뿅지구오락실'],
-    description: '톤 끌로이 폭포까지 이어지는 아름다운 트레킹 코스로, 울창한 밀림과 계곡의 정취를 만끽할 수 있습니다.',
-    content: '톤 끌로이 폭포 트레일은 카오속 국립공원의 정수를 느낄 수 있는 대표적인 탐방로입니다. 뿅뿅지구오락실 멤버들이 거대한 나무들과 신비로운 식물들 사이를 걸으며 대자연의 경이로움을 체험했던 곳입니다. 트레일을 따라 걷다 보면 들리는 새소리와 계곡물 소리는 일상의 스트레스를 잊게 해주며, 마침내 마주하는 톤 끌로이 폭포의 시원한 물줄기는 트레킹의 피로를 단번에 날려줍니다. 코스가 아주 험난하지 않아 초보자도 충분히 도전할 수 있으며, 중간중간 나타나는 작은 폭포와 웅덩이에서 잠시 발을 담그며 쉴 수 있습니다. 야생 원숭이나 희귀한 나비들을 만날 수 있는 행운도 누릴 수 있는, 자연 애호가들에게는 꿈같은 장소입니다.',
-    name: '톤 끌로이 폭포 트레일 (Ton Kloi Waterfall Trail)',
-    address: 'WG64+68R, Khlong Sok, Phanom District, Surat Thani 84250 태국',
-    lat: 8.9168,
-    lng: 98.5155,
-    category: '해외여행',
-    host: '지구오락실 제작진',
-    rating: 4.7,
-    reviews: [
-      { user: '탐험가', comment: '정글 속을 걷는 기분이 너무 상쾌하고 폭포도 멋져요.', rating: 5 },
-      { user: '수아', comment: '조금 힘들었지만 폭포를 보는 순간 다 잊혀졌습니다.', rating: 5 },
-      { user: '자연러버', comment: '공기가 너무 맑고 자연 그대로의 모습이 잘 보존돼 있어요.', rating: 5 }
-    ]
-  },
-  {
     id: 'article-24',
-    imageUrl: 'https://images.unsplash.com/photo-1582719478237-c26ad0d60c41?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-24.jpeg',
     title: '고양이와 함께하는 고즈넉한 한옥',
     subtitle: '가평 숲속에서 즐기는 평온한 한옥 스테이와 귀여운 고양이들의 만남',
     mainTags: ['가평한옥펜션', '촌캉스숙소', '뿅뿅지구오락실'],
@@ -561,7 +363,7 @@ const ARTICLES = [
   },
   {
     id: 'article-25',
-    imageUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-25.jpeg',
     title: '입맛 돋우는 건강한 산채 비빔밥',
     subtitle: '널미재 고갯마루에서 즐기는 정갈하고 신선한 나물 밥상',
     mainTags: ['산채비빔밥', '가평로컬맛집', '뿅뿅지구오락실'],
@@ -588,8 +390,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-263',
-    imageUrl: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?auto=format&fit=crop&q=80&w=1000',
+    id: 'article-26',
+    imageUrl: '../article_picture/article-26.jpeg',
     title: '한국의 알프스에서 즐기는 힐링',
     subtitle: '푸른 초원 위 양떼들과 교감하는 이색적인 목장 체험',
     mainTags: ['가평양떼목장', '체험관광', '뿅뿅지구오락실'],
@@ -616,36 +418,8 @@ const ARTICLES = [
     ]
   },
   {
-    id: 'article-27',
-    imageUrl: 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80&w=1000',
-    title: '장작불 철판 위 화려한 불쇼',
-    subtitle: '거대한 철판 위에서 볶아내는 불맛 가득한 가평 닭갈비',
-    mainTags: ['철판닭갈비', '가평맛집', '뿅뿅지구오락실'],
-    tags: [
-      '한국', '경기도', '가평군', '청평면', '음식', '맛집', '닭갈비', '철판요리', '불맛', '장작불',
-      '인기맛집', '추천맛집', '사계절', '여름', '겨울', '청평호근처', '볶음밥', '이색맛집', '비주얼맛집', '든든한',
-      '점심메뉴', '저녁메뉴', '화끈한맛', '가족외식', '우정여행', '방송맛집', '나영석PD', '이영지', '미미', '안유진',
-      '이은지', '지락실맛집', '가평식도락', '줄서는맛집', '친절한', '활기찬분위기', '현지인추천', '주차편리', '청평맛집', '매콤한',
-      '닭요리', '전통철판', '대형철판', '막국수', '사리추가', '치즈볶음밥', '엠제트맛집', '먹스타그램', '주말식사', '뿅뿅지구오락실'
-    ],
-    description: '참나무 장작불로 달궈진 초대형 철판 위에서 즐기는 비주얼과 맛의 향연입니다.',
-    content: '참나무집 철판닭갈비는 일반적인 식당에서는 볼 수 없는 압도적인 크기의 철판에서 닭갈비를 볶아내는 이색적인 맛집입니다. 뿅뿅지구오락실 멤버들이 거대한 철판 주위에 둘러앉아 감탄사를 연발하며 먹방을 선보였던 바로 그곳입니다. 강력한 화력의 장작불로 순식간에 익혀내기 때문에 닭고기의 육즙이 가득하며 은은한 불향이 코끝을 자극합니다. 신선한 채소와 매콤달콤한 비법 양념이 어우러진 맛은 한 번 먹으면 잊기 힘든 중독성을 자랑합니다. 닭갈비를 다 먹은 후 남은 양념에 볶아먹는 철판 볶음밥은 이곳의 화룡점정입니다. 넓은 매장 덕분에 단체 방문객도 무리 없이 수용 가능하며, 청평 드라이브 코스 중 하나로 들르기에 안성맞춤입니다. 시각적인 퍼포먼스와 확실한 맛을 모두 챙기고 싶은 미식가들에게 강력히 추천합니다.',
-    name: '참나무집 철판닭갈비',
-    address: '경기도 가평군 청평면 고재길 227',
-    lat: 37.712345,
-    lng: 127.421234,
-    category: '국내여행',
-    host: '먹보지망생',
-    rating: 4.6,
-    reviews: [
-      { user: '닭갈비러버', comment: '철판 크기에 한 번 놀라고 맛에 두 번 놀랐어요. 진짜 불맛 대박!', rating: 5 },
-      { user: '청평나들이', comment: '사람이 많지만 회전율이 빠르고 무엇보다 고기가 정말 부드러워요.', rating: 4 },
-      { user: '지락실팬', comment: '방송 보고 궁금해서 왔는데 기대 이상입니다. 볶음밥은 필수!', rating: 5 }
-    ]
-  },
-  {
     id: 'article-28',
-    imageUrl: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-28.jpeg',
     title: '나무 향기에 취하는 고품격 휴식',
     subtitle: '전통 한옥 스타일의 한증막에서 누리는 프리미엄 힐링 타임',
     mainTags: ['춘천한증막', '찜질방데이트', '뿅뿅지구오락실'],
@@ -673,7 +447,7 @@ const ARTICLES = [
   },
   {
     id: 'article-29',
-    imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-29.jpeg',
     title: '숲속에 숨겨진 감각적인 비밀 아지트',
     subtitle: '가평 상면의 고요한 숲속, 미니멀리즘의 정수를 보여주는 숙소',
     mainTags: ['가평감성펜션', '프라이빗숙소', '뿅뿅지구오락실'],
@@ -701,7 +475,7 @@ const ARTICLES = [
   },
   {
     id: 'article-30',
-    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-30.jpeg',
     title: '나무 아래서 만나는 향기로운 오후',
     subtitle: '아침고요수목원 길목에서 즐기는 수준 높은 커피와 베이커리',
     mainTags: ['가평베이커리카페', '뷰맛집카페', '뿅뿅지구오락실'],
@@ -729,7 +503,7 @@ const ARTICLES = [
   },
 {
     id: 'article-33',
-    imageUrl: 'https://images.unsplash.com/photo-1517353023074-5bcb1435e436?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-33.jpeg',
     title: '경포대 & 경포해변',
     subtitle: '강릉 대표 바다 관광지',
     mainTags: ['강릉', '관광지', '해변'],
@@ -752,7 +526,7 @@ const ARTICLES = [
   // ===== 강릉 관광지 2 =====
   {
     id: 'article-34',
-    imageUrl: 'https://images.unsplash.com/photo-1588835684249-0b4cf740c1d2?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-34.jpeg',
     title: '주문진항',
     subtitle: '신선한 해산물 항구 관광',
     mainTags: ['강릉', '관광지', '항구'],
@@ -776,7 +550,7 @@ const ARTICLES = [
   // ===== 강릉 음식점 1 =====
   {
     id: 'article-35',
-    imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-35.jpeg',
     title: '강릉 씨앗호떡 본점',
     subtitle: '현지인과 관광객 모두 찾는 명물 간식',
     mainTags: ['강릉', '음식점', '간식'],
@@ -799,7 +573,7 @@ const ARTICLES = [
   // ===== 강릉 음식점 2 =====
   {
     id: 'article-36',
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-36.jpeg',
     title: '강릉 초당순두부',
     subtitle: '부드러운 두부요리 전문점',
     mainTags: ['강릉', '음식점', '순두부'],
@@ -823,7 +597,7 @@ const ARTICLES = [
   // ===== 오사카 숙박 1 =====
   {
     id: 'article-37',
-    imageUrl: 'https://images.unsplash.com/photo-1582719478149-82f6d7a4e919?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-37.jpeg',
     title: '난바 중심 비즈니스 호텔',
     subtitle: '도톤보리·난바역 도보권',
     mainTags: ['오사카', '숙박', '비즈니스'],
@@ -846,7 +620,7 @@ const ARTICLES = [
   // ===== 오사카 숙박 2 =====
   {
     id: 'article-38',
-    imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-38.jpeg',
     title: '우메다 스테이 호텔',
     subtitle: '우메다 역 근처 전망 좋은 호텔',
     mainTags: ['오사카', '숙박', '우메다'],
@@ -869,7 +643,7 @@ const ARTICLES = [
   // ===== 오사카 관광지 1 =====
   {
     id: 'article-39',
-    imageUrl: 'https://images.unsplash.com/photo-1551102012-19d45d055f7e?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-39.jpeg',
     title: '오사카성',
     subtitle: '역사와 자연이 어우러진 랜드마크',
     mainTags: ['오사카', '관광지', '역사'],
@@ -892,7 +666,7 @@ const ARTICLES = [
   // ===== 오사카 관광지 2 =====
   {
     id: 'article-40',
-    imageUrl: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-40.jpeg',
     title: '도톤보리 거리',
     subtitle: '오사카 대표 먹거리·관광 거리',
     mainTags: ['오사카', '관광지', '거리'],
@@ -915,7 +689,7 @@ const ARTICLES = [
   // ===== 오사카 음식점 1 =====
   {
     id: 'article-41',
-    imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-41.jpeg',
     title: 'Kinryu Ramen 도톤보리',
     subtitle: '오사카 명물 용 라멘',
     mainTags: ['오사카', '음식점', '라멘'],
@@ -938,7 +712,7 @@ const ARTICLES = [
   // ===== 오사카 음식점 2 =====
   {
     id: 'article-42',
-    imageUrl: 'https://images.unsplash.com/photo-1562967916-eb82221dfb43?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-42.jpeg',
     title: 'Takoyaki Kukuru',
     subtitle: '오사카 명물 타코야끼',
     mainTags: ['오사카', '음식점', '타코야끼'],
@@ -960,7 +734,7 @@ const ARTICLES = [
   },
 {
   id: 'article-43',
-  imageUrl: '',
+  imageUrl: '../article_picture/article-43.jpeg',
   title: '천년 고도의 향기와 현대의 감성이 만나는 곳, 경주 황리단길',
   subtitle: '한옥의 고즈넉함과 세련된 카페 문화가 어우러진 경주의 가장 핫한 거리',
   mainTags: ['경주', '관광지', '거리'],
@@ -991,7 +765,7 @@ const ARTICLES = [
 },
 {
   id: 'article-44',
-  imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-44.jpeg',
   title: '보문호수의 푸른 물결을 품은 프리미엄 휴식처, 소노캄 경주',
   subtitle: '사계절 아름다운 보문단지의 전경과 최상의 서비스를 경험하는 고품격 리조트',
   mainTags: ['경주', '숙박', '호텔'],
@@ -1021,7 +795,7 @@ const ARTICLES = [
 },
 {
   id: 'article-45',
-  imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-45.jpeg',
   title: '전통의 미학과 현대의 공간감이 공존하는 미학적 쉼터, 경주 아래헌',
   mainTags: ['경주', '맛집', '카페'],
   subtitle: '연못을 품은 독특한 건축물과 고요한 자연 속에서 즐기는 프리미엄 티타임',
@@ -1051,7 +825,7 @@ const ARTICLES = [
 },
 {
   id: 'article-46',
-  imageUrl: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-46.jpeg',
   title: '스페인의 정취와 괌의 역사가 머무는 곳, 괌 스페인광장',
   subtitle: '과거 스페인 통치 시대의 흔적을 간직한 하갓냐의 역사적 랜드마크',
   mainTags: ['괌', '관광지', '광장'],
@@ -1081,7 +855,7 @@ const ARTICLES = [
 },
 {
   id: 'article-47',
-  imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-47.jpeg',
   title: '투몬 베이의 에메랄드빛 바다를 품은 휴식처, 롯데호텔 괌',
   subtitle: '세련된 디자인과 최상의 서비스가 어우러진 괌 최고의 럭셔리 비즈니스 리조트',
   mainTags: ['괌', '숙박', '리조트'],
@@ -1111,7 +885,7 @@ const ARTICLES = [
 },
 {
   id: 'article-48',
-  imageUrl: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-48.jpeg',
   title: '현지인이 사랑하는 괌 최고의 브런치 맛집, 피카스 카페(Pika\'s Cafe)',
   subtitle: '차모로 전통 스타일을 가미한 독창적인 브런치 요리와 향긋한 커피의 만남',
   mainTags: ['괌', '맛집', '카페'],
@@ -1142,7 +916,7 @@ const ARTICLES = [
 
 {
   id: 'article-49',
-  imageUrl: 'https://images.unsplash.com/photo-1505118380757-91f5f45d8de2?q=80&w=1000&auto=format&fit=crop',
+  imageUrl: '../article_picture/article-49.jpeg',
   title: '괌의 붉은 노을과 야생 돌고래의 만남, 선셋 디너 크루즈 & 돌핀 워칭',
   subtitle: '푸른 태평양 위에서 즐기는 환상적인 일몰과 고품격 선상 뷔페의 낭만',
   mainTags: ['괌', '관광지', '패키지'],

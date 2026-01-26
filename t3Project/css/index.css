@@ -24,28 +24,24 @@
 
 /* 1. 부모 컨테이너: 자식들을 양 끝으로 벌립니다 */
 .nav-inner {
-  display: flex !important;
-  margin-left: auto !important;
-  gap: 2rem !important;
-  align-items: center;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+    display: flex !important;
+    justify-content: space-between !important; /* 로고와 메뉴를 양 끝으로 */
+    align-items: center;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto !important; /* 중앙 정렬 (margin-left: auto 삭제함) */
+    
+    /* [핵심] 오른쪽 끝에 더 붙이고 싶다면 이 패딩을 줄이세요 */
+    /* 기존 1.5rem(24px) -> 0.5rem(8px)로 줄여서 벽쪽으로 밀착 */
+    padding: 0 0.5rem !important;
 }
 
-/* 기존에 흩어져 있던 .nav-right-group 코드를 모두 지우고 이 하나로 통합하세요 */
 .nav-right-group {
     display: flex !important;      /* 강제로 flex 적용 */
     align-items: center !important; 
-    gap: 2rem !important;          /* 간격을 조금 더 넓게 수정 */
-    margin-left: auto !important;  /* 왼쪽 공간을 밀어내서 우측 끝으로 이동 */
+    gap: 2.5rem !important;          /* 간격을 조금 더 넓게 수정 */
+    margin-left: 3rem;  /* 왼쪽 공간을 밀어내서 우측 끝으로 이동 */
 }
-
-/* 로그인 버튼과 아이콘들 사이의 간격을 추가로 더 벌리고 싶을 때 */
-/* .btn-login {
-  margin-left: 0.3rem;
-} */
 
 /* 로고 및 링크 텍스트 */
 .logo-text {
@@ -893,15 +889,24 @@
 
 /* 사용자 아바타 스타일 */
 .user-avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #6b7280;
+  width: 42px !important;  /* 크기 증가: 36px -> 42px */
+    height: 42px !important;
+    border-radius: 50%;
+    overflow: hidden;
+    display: none; /* 기본은 숨김 (JS로 노출) */
+    align-items: center;
+    justify-content: center;
+    
+    /* 세련된 테두리와 그림자 */
+    border: 2px solid rgba(59, 130, 246, 0.5); /* 강조색 테두리 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+.user-avatar-display:hover {
+    transform: scale(1.1);
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* ==========================================================================
@@ -913,7 +918,7 @@
   position: absolute;
   inset: 0;
   width: 120%;
-  height: 120%;
+  height: 10%;
   overflow: hidden; /* 이 안에서 나가는 건 다 숨김 */
   z-index: 0;
 }

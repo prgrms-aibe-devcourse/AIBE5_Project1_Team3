@@ -24,25 +24,37 @@
 
 /* 1. 부모 컨테이너: 자식들을 양 끝으로 벌립니다 */
 .nav-inner {
-    display: flex !important;
-    justify-content: space-between !important; /* 로고와 메뉴를 양 끝으로 */
-    align-items: center;
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto !important; /* 중앙 정렬 (margin-left: auto 삭제함) */
-    
-    /* [핵심] 오른쪽 끝에 더 붙이고 싶다면 이 패딩을 줄이세요 */
-    /* 기존 1.5rem(24px) -> 0.5rem(8px)로 줄여서 벽쪽으로 밀착 */
-    padding: 0 0.5rem !important;
+  display: flex !important;
+  justify-content: space-between !important; /* 로고와 메뉴를 양 끝으로 */
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto !important; /* 중앙 정렬 (margin-left: auto 삭제함) */
+
+  /* [핵심] 오른쪽 끝에 더 붙이고 싶다면 이 패딩을 줄이세요 */
+  /* 기존 1.5rem(24px) -> 0.5rem(8px)로 줄여서 벽쪽으로 밀착 */
+  padding: 0 0.5rem !important;
 }
 
 .nav-right-group {
-    display: flex !important;      /* 강제로 flex 적용 */
-    align-items: center !important; 
-    gap: 2.5rem !important;          /* 간격을 조금 더 넓게 수정 */
-    margin-left: 3rem;  /* 왼쪽 공간을 밀어내서 우측 끝으로 이동 */
+  display: flex !important; /* 강제로 flex 적용 */
+  align-items: center !important;
+  gap: 2.5rem !important; /* 간격을 조금 더 넓게 수정 */
+  margin-left: 3rem; /* 왼쪽 공간을 밀어내서 우측 끝으로 이동 */
+}
+.nav-right-section {
+  display: flex;
+  align-items: center; /* 아이콘들과 프로필 원형이 일직선에 오도록 */
+  gap: 24px; /* 각 메뉴(지도, 룰렛 등) 사이의 간격을 일정하게 */
 }
 
+/* 3. ★ 찜 아이콘만 미세하게 위로 올리기 */
+/* '찜' 아이콘을 감싸는 클래스나 i 태그에 직접 적용하세요 */
+.nav-item-wrap:nth-child(3) i, 
+.heart-icon-class { 
+  display: inline-block;
+  transform: translateY(-10000rem); /* 숫자를 조절하며 눈으로 맞춰보세요 */
+}
 /* 로고 및 링크 텍스트 */
 .logo-text {
   font-size: 1.5rem;
@@ -132,8 +144,8 @@
 
 /* 유저 아바타 이미지 */
 #nav-user-avatar {
-  width: 36px !important;
-  height: 36px !important;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
   background-color: #ddd;
@@ -191,9 +203,22 @@
 .hero-title {
   color: var(--white);
   margin-bottom: 1.5rem;
-  font-size: clamp(2.5rem, 8vw, 4.5rem); /* 반응형 폰트 크기 */
+  
+  /* [수정] 최소 크기를 키우고 기본 크기도 더 큼직하게 변경 */
+  font-size: clamp(3.5rem, 10vw, 5.5rem); 
+  
+  /* 만약 반응형이 싫고 무조건 크게 가고 싶다면 아래 한 줄로 대체하세요 */
+  /* font-size: 5rem; */
+
   font-weight: 800;
   line-height: 1.1;
+  letter-spacing: -0.02em; /* 글자 사이 간격을 살짝 좁혀서 더 단단해 보이게 */
+
+  /* 그림자는 아까처럼 촘촘하게 유지 */
+  text-shadow: 
+    0 0 15px rgba(135, 206, 235, 0.5),  /* 1. 글자 주변에 하늘색 은은한 광채 */
+    0 2px 4px rgba(0, 0, 0, 0.2),       /* 2. 글자 윤곽을 잡아주는 옅은 어두움 */
+    0 0 40px rgba(135, 206, 235, 0.2);  /* 3. 더 멀리 퍼지는 맑은 잔상 */
 }
 
 .hero-subtitle {
@@ -202,6 +227,9 @@
   font-size: 1.25rem;
   font-weight: 300;
   max-width: 600px;
+  text-shadow: 
+    0 0 10px rgba(135, 206, 235, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.2);
   line-height: 1.6;
 }
 
@@ -293,29 +321,54 @@
   position: relative;
 }
 
-/* 컨테이너는 기준점이 됩니다 */
-.search-container {
-  width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
-  position: relative; /* 중요: 드롭다운이 이 녀석을 기준으로 배치됨 */
-}
-
 /* 검색창 래퍼 */
 .search-wrapper {
-  position: relative;
+  gap: 0 !important; /* 래퍼 자체의 gap을 없앱니다 */
   display: flex;
   align-items: center;
+  height: 68px;
+  padding: 0 16px;
   background: #ffffff;
   border: 1px solid #f1f5f9;
   border-radius: 20px;
-  padding: 0 8px 0 24px;
-  height: 68px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  z-index: 10; /* 드롭다운보다 위에 있거나 같은 층위 */
+  position: relative;
 }
 
-/* 드롭다운 본체 - 내부 여백과 위치 재조정 */
+/* 태그들이 담기는 그릇 */
+#selected-tags-inner {
+  display: flex; /* 요소들을 한 줄로 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  flex: 1; /* ★중요: 부모 박스 안에서 이 컨테이너가 꽉 차게 함 */
+  overflow-x: auto; /* 태그가 많아지면 옆으로 밀리게 함 */
+  gap: 6px; /* 태그와 태그, 태그와 인풋 사이의 간격 */
+  padding-left: 10px; /* 돋보기 아이콘과의 최소 간격 */
+}
+#selected-tags-inner::-webkit-scrollbar {
+  display: none;
+}
+
+/* 검색창 안에 들어갈 태그 묶음 */
+.inline-tags {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: nowrap; /* 한 줄로 유지 */
+}
+
+/* ★ 수정 완료: 검색창 안의 태그 디자인 (마진 0으로 수정하여 밀착) ★ */
+.inline-tags .search-tag {
+  background-color: #3b82f6; /* 선택된 건 바로 파란색 */
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0 !important; /* <--- 이 부분이 범인이었습니다! 0으로 고정 */
+}
+
+/* 드롭다운 본체 */
 .search-dropdown {
   position: absolute;
   top: calc(100% + 15px); /* 검색창 하단에서 15px 아래 */
@@ -323,32 +376,28 @@
   right: 0;
   background: #ffffff;
   border-radius: 20px;
-  padding: 24px; /* 사방 여백을 확실하게 부여 */
+  padding: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
   z-index: 1000;
   border: 1px solid #f1f5f9;
-
-  /* 내부 정렬 강제 */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* 왼쪽 정렬 */
+  align-items: flex-start;
   text-align: left;
 }
 
-/* 문제가 되는 추천 태그 제목 */
 .dropdown-title {
-  display: block; /* 한 줄을 다 차지하도록 */
+  display: block;
   width: 100%;
-  margin: 0 0 16px 0; /* 위쪽 여백 0, 아래쪽 여백 16px */
+  margin: 0 0 16px 0;
   padding: 0;
   font-size: 0.85rem;
   font-weight: 700;
   color: #94a3b8;
-  line-height: 1; /* 높이값 꼬임 방지 */
+  line-height: 1;
   letter-spacing: -0.01em;
 }
 
-/* 태그들이 담긴 구름 */
 .tag-cloud {
   display: flex;
   flex-wrap: wrap;
@@ -356,48 +405,59 @@
   width: 100%;
 }
 
-/* 숨김 상태 클래스 */
 .search-dropdown.hidden {
   display: none !important;
 }
 
 /* 아이콘 스타일 */
 .search-icon {
-  color: #94a3b8;
-  margin-right: 14px;
+  margin-right: 8px !important; /* 아이콘 바로 오른쪽 여백만 딱 8px 유지 */
   flex-shrink: 0;
+  color: #94a3b8;
 }
 
-/* 입력창 스타일 */
-#main-search-input {
+/* 태그와 인풋을 묶은 그룹 */
+.search-input-group {
+  display: flex;
+  align-items: center;
   flex: 1;
-  border: none !important;
-  background: transparent !important;
-  outline: none !important;
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: #1e293b;
-  letter-spacing: -0.01em;
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 0 !important;
+  padding-left: 0 !important;
+  cursor: text;
+}
+.search-input-group::-webkit-scrollbar {
+  display: none;
 }
 
-#main-search-input::placeholder {
-  color: #cbd5e1;
-  font-weight: 300;
-}
-
-/* 검색창 안의 검은색 버튼 (Inside Button) */
-.search-btn-inside {
-  height: 52px;
-  padding: 0 24px;
-  background: #0f172a; /* 다크 네이비/블랙 */
-  color: #fff;
+/* 실제 입력창 */
+#main-search-input {
+  flex: 1; /* 이 설정이 태그 뒤의 모든 빈 여백을 인풋으로 채워줍니다! */
+  /* 기존 스타일은 유지하되 아래 속성만 체크 */
   border: none;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 1rem;
+  outline: none;
+  background: transparent;
+  width: auto; /* 고정 너비 해제 */
+  min-width: 120px;
+  z-index: 1;
+  cursor: text; 
+}
+
+.search-btn-inside {
+  flex-shrink: 0 !important;
+  margin-left: auto;
+  height: 44px;
+  padding: 0 20px;
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 12px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
-  margin-left: 10px;
+  border: none;
+  white-space: nowrap;
 }
 
 .search-btn-inside:hover {
@@ -405,7 +465,6 @@
   transform: scale(1.02);
 }
 
-/* 엑스 버튼 (X) */
 .search-clear-btn {
   color: #cbd5e1;
   padding: 10px;
@@ -413,53 +472,38 @@
   align-items: center;
   cursor: pointer;
 }
-.search-clear-btn:hover {
-  color: #64748b;
-}
-.hidden {
-  display: none !important;
-}
-
-/* 드롭다운 영역 */
-.search-dropdown {
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  border: 1px solid #f1f5f9;
-}
-
-.dropdown-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #94a3b8;
-  margin-bottom: 15px;
-}
-
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
 
 .search-tag {
-  padding: 8px 16px;
-  background: #f8fafc;
-  border-radius: 100px;
-  font-size: 0.9rem;
-  color: #475569;
+  display: inline-block;
+  padding: 6px 14px;
+  margin: 4px; /* 드롭다운 내 태그 마진은 유지 */
+  border-radius: 20px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
+  z-index: 1;
 }
 
 .search-tag:hover {
-  background: #000;
   color: #fff;
+  background-color: #e5e7eb;
+  scale: 105%;
+}
+
+.search-tag.active-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #3b82f6 !important;
+  color: white !important;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* 필터 버튼 그룹 */
@@ -488,6 +532,7 @@
   border-color: #0f172a !important;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
+
 /* ==========================================================================
    4. Article Card Grid (카드 리스트)
    ========================================================================== */
@@ -501,7 +546,7 @@
 .article-card {
   position: relative;
   height: 440px;
-  border-radius: var(--radius-2xl);
+  border-radius: 24px;
   overflow: hidden;
   background: #111;
   cursor: pointer;
@@ -512,10 +557,9 @@
 
 .article-card:hover {
   transform: translateY(-10px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* 카드 이미지 및 줌 효과 */
 .card-img-wrap {
   position: absolute;
   inset: 0;
@@ -530,7 +574,6 @@
   transform: scale(1.1);
 }
 
-/* 이미지 위 그라데이션 */
 .card-overlay {
   position: absolute;
   inset: 0;
@@ -542,8 +585,6 @@
   );
   z-index: 1;
 }
-
-/* 좋아요 버튼 */
 
 .card-like-btn-wrap {
   position: absolute;
@@ -569,17 +610,15 @@
   color: #ef4444;
 }
 
-/* 카드 내용물 */
 .card-content {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 28px;
-  color: var(--white);
+  color: #fff;
   z-index: 2;
 }
-
 .card-title {
   font-size: 1.4rem;
   font-weight: 700;
@@ -587,23 +626,20 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 마우스 올리면 설명글 나오는 효과 */
 .card-subtitle-wrapper {
   display: grid;
-  grid-template-rows: 0fr; /* 기본 높이 0 */
+  grid-template-rows: 0fr;
   transition: grid-template-rows 0.4s ease;
 }
 .article-card:hover .card-subtitle-wrapper {
   grid-template-rows: 1fr;
 }
-
 .card-subtitle {
   overflow: hidden;
   font-size: 0.95rem;
   font-weight: 300;
-  opacity: 0.9;
-  transform: translateY(10px);
   opacity: 0;
+  transform: translateY(10px);
   transition: all 0.4s ease;
 }
 .article-card:hover .card-subtitle {
@@ -619,56 +655,32 @@
   justify-content: space-between;
   font-size: 0.9rem;
 }
-
 .card-rating {
   color: #facc15;
   display: flex;
   align-items: center;
   gap: 4px;
 }
-/* 태그들이 가로로 예쁘게 나열되도록 */
 .card-badge-area {
   display: flex;
-  flex-wrap: wrap; /* 혹시나 길어지면 아래로 내림 */
+  flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 12px;
 }
-
 .card-badge {
   padding: 3px 9px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  /* border: 1px solid rgba(255, 255, 255, 0.3); */
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
   color: #ffffff;
 }
 
-/* 제목이 태그나 서브타이틀과 겹치지 않게 */
-.card-title {
-  font-size: 1.3rem;
-  line-height: 1.3;
-  margin: 0 0 8px 0 !important; /* 위아래 간격 고정 */
-  color: #fff;
-  display: -webkit-box;
-  /* -webkit-line-clamp: 2; */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.no-result {
-  grid-column: 1 / -1; /* 그리드 전체 칸 차지 */
-  text-align: center;
-  padding: 100px 0;
-  color: #999;
-  font-size: 1.1rem;
-}
-
 /* ==========================================================================
    5. Mobile / Responsive / Utilities
    ========================================================================== */
-/* 더보기 버튼 */
 .load-more-container {
   text-align: center;
   margin-top: 4rem;
@@ -676,18 +688,17 @@
 }
 .btn-load-more {
   padding: 14px 40px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--gray-200);
-  background: var(--white);
+  border-radius: 100px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
   font-weight: 600;
-  color: var(--gray-700);
+  color: #4a5568;
   transition: 0.2s;
 }
 .btn-load-more:hover {
-  background: var(--gray-100);
+  background: #f7fafc;
 }
 
-/* 모바일 메뉴 (Drawer) */
 .mobile-menu-drawer {
   position: fixed;
   top: 0;
@@ -705,20 +716,6 @@
   transform: translateX(0);
 }
 
-/* 플로팅 배너 */
-.floating-banner {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 260px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: var(--shadow-xl);
-  padding: 16px;
-  z-index: 100;
-}
-
-/* 반응형 미디어 쿼리 */
 @media (max-width: 1024px) {
   .article-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -729,10 +726,6 @@
 }
 
 @media (max-width: 640px) {
-  .nav-links,
-  .nav-right-group .btn-glass {
-    display: none;
-  } /* 모바일에서 일부 메뉴 숨김 */
   .article-grid {
     grid-template-columns: 1fr;
   }
@@ -748,115 +741,46 @@
   }
 }
 
-/* 내비게이션 우측 그룹 컨테이너 */
-.nav-right-group {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem; /* 아이콘 사이 간격 */
-}
-
-/* 개별 메뉴 아이템 (아이콘+텍스트 세로 정렬) */
-/* 1. 기본 상태 */
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-decoration: none;
-  /* 기본 색상: 스크롤 전후에 따라 변수(--gray-700 등)를 쓰거나 특정 색상 지정 */
   color: #4b5563 !important;
   gap: 5px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
-
-/* 2. 마우스를 올렸을 때 (Hover) */
 .nav-item:hover {
-  /* 빨간색 방지: !important로 파란색 계열 강제 지정 */
   color: #3b82f6 !important;
-
-  /* 부드럽게 위로 뜨면서 살짝 커짐 */
   transform: translateY(-3px) scale(1.05);
 }
-
-/* 3. 아이콘에도 색상 변화 같이 적용 */
 .nav-item:hover .nav-icon {
-  stroke: #3b82f6 !important; /* 루사이드 아이콘 색상 변경 */
+  stroke: #3b82f6 !important;
   filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.2));
 }
-
-/* 4. 텍스트 라벨 (아이콘 아래 글자) */
+.nav-item-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px; /* 아이콘과 글자 사이 간격을 좁게 */
+}
 .nav-label {
   font-size: 11px;
   font-weight: 500;
-  /* 호버 시 부모(.nav-item)의 색상을 따라가도록 설정 */
   color: inherit;
 }
-
-/* 하단 점(::after) 제거: 혹시 기존 코드에 있다면 공백으로 덮어씌움 */
-.nav-item::after {
-  display: none !important;
-}
-
-.nav-item:hover::after {
-  opacity: 1;
-  transform: translateY(-2px);
-}
-
-/* 아이콘 크기 고정 */
 .nav-icon {
   width: 22px;
   height: 22px;
 }
 
-/* 텍스트 라벨 스타일 */
-.nav-label {
-  font-size: 11px;
-  font-weight: 500;
-}
-
-/* 찜하기 숫자 배지 위치 */
-.icon-rel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-badge {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background-color: #ef4444; /* 빨간색 */
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 2px 5px;
-  border-radius: 10px;
-  min-width: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-/* ==========================================================================
-   로그인 버튼 커스텀 (Primary 스타일)
-   ========================================================================== */
 .btn-login {
-  /* 배경색: 세련된 브라이트 블루 (원하시는 색상 코드로 변경 가능) */
-  /* background-color: #ffd850 !important; 밝은 노란색 */
-  /* background-color: #3b82f6 !important; 브라이트 블루 */
-  /* background-color: #2563eb !important; 세련된 파란색 */
-  /* color: #ffffff !important; */
-
-  /* 형태 및 간격 */
   padding: 10px 24px;
-  border-radius: 50px; /* 완전한 라운드 형태 */
+  border-radius: 50px;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-
-  /* 정렬 및 효과 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -864,91 +788,61 @@
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  background-color: #3b82f6 !important;
+  color: #fff !important;
 }
-
-/* 마우스를 올렸을 때 (Hover) */
 .btn-login:hover {
-  background-color: #2563eb !important; /* 조금 더 진한 파란색 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  background-color: #2563eb !important;
+  transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
-  color: #ffffff !important;
-}
-
-/* 마우스를 클릭할 때 (Active) */
-.btn-login:active {
-  transform: translateY(0);
-}
-
-/* 사용자 아바타 스타일 */
-.user-avatar {
-  width: 42px !important;  /* 크기 증가: 36px -> 42px */
-    height: 42px !important;
-    border-radius: 50%;
-    overflow: hidden;
-    display: none; /* 기본은 숨김 (JS로 노출) */
-    align-items: center;
-    justify-content: center;
-    
-    /* 세련된 테두리와 그림자 */
-    border: 2px solid rgba(59, 130, 246, 0.5); /* 강조색 테두리 */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-.user-avatar-display:hover {
-    transform: scale(1.1);
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-/* ==========================================================================
-   Spline 하단 텍스트 가리기 전용 스타일 (추가분)
-   ========================================================================== */
-
-/* 1. 마스크: 실제 화면 크기만큼만 보여주고 넘치는 건 숨김 */
-.spline-mask {
-  position: absolute;
-  inset: 0;
-  width: 120%;
-  height: 10%;
-  overflow: hidden; /* 이 안에서 나가는 건 다 숨김 */
-  z-index: 0;
-}
-
-/* 2. 뷰어: 높이를 실제보다 늘려서 글자를 마스크 밖으로 밀어냄 */
-.spline-viewer {
-  position: absolute;
-  width: 100% !important;
-  /* 핵심: 높이를 100%보다 조금 더 크게 해서 로고를 화면 아래로 밀어버림 */
-  height: calc(100% + 70px) !important;
-  top: 0;
-  left: 0;
-  border: none;
-  /* 달걀 소년이 너무 위로 치우치지 않게 미세 조정 */
-  transform: translateY(-5px);
-}
-
-/* 3. 오버레이 클릭 방해 금지 */
-.hero-overlay {
-  z-index: 10;
-  pointer-events: none; /* 뒷배경 Spline 조작 가능하게 */
-}
-
-.hero-content {
-  pointer-events: auto; /* 버튼들은 다시 클릭 가능하게 */
-}
-
-.filter-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px; /* 태극기와 글자 사이 간격 */
-  /* 나머지 기존 스타일... */
 }
 
 .flag-icon {
-  width: 22px; /* 아이콘 크기 적절히 조절 */
+  width: 22px;
   height: auto;
-  border: 1px solid #eee; /* 흰 배경일 때 경계선 확보 */
+  border: 1px solid #eee;
   border-radius: 2px;
   display: inline-block;
+}
+
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+}
+footer {
+  width: 100%;
+  /* 상하 여백을 15px로 슬림하게 조정 (원하는 만큼 숫자를 줄이세요) */
+  padding: 25px 0; 
+  
+  /* 배경색과 글자색 (기존 테마에 맞춰 조절 가능) */
+ 
+  color: black;
+  
+  /* 텍스트 스타일 */
+  font-size: 0.85rem;
+  text-align: center;
+  
+  /* 위쪽 콘텐츠와 너무 붙지 않게 최소한의 경계선만 추가 (선택사항) */
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+footer div {
+  /* 혹시 모를 내부 div의 기본 마진 제거 */
+  margin: 0;
+  line-height: 1;
 }

@@ -5,7 +5,7 @@ function toggleChatIframe() {
 
     if (!isLoggedIn) {
     // 1. 로그인이 안 되어 있으면 즉시 경고창을 띄웁니다.
-    showConfirmModal(
+    showLoginModal(
         "로그인이 필요합니다", 
         "쪼꼬마이와 대화하려면<br>로그인을 해주세요", 
         async () => {
@@ -25,7 +25,7 @@ function toggleChatIframe() {
 }
 
 // 모달 창 정의함수
-function showConfirmModal(title, message, onConfirm, icon = '❓') {
+function showLoginModal(title, message, onConfirm, icon = '❓') {
     const oldModal = document.getElementById('auth-confirm-modal');
     if (oldModal) oldModal.remove();
 

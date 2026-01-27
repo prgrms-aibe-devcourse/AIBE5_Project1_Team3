@@ -79,9 +79,6 @@ if (mobileMenuClose) mobileMenuClose.onclick = () => mobileMenu.classList.remove
 /**
  * --- 2. 로그인 및 실제 Supabase 세션 관리 ---
  */
-/**
- * --- 2. 로그인 및 실제 Supabase 세션 관리 ---
- */
 
 // [수정] UI 업데이트 로직을 별도 함수로 분리하여 재사용성 높임
 function updateAuthUI(session) {
@@ -116,6 +113,56 @@ function updateAuthUI(session) {
   }
 }
 
+function showAuthModal(title, message, icon = '🔔') {
+    // 기존 모달이 있으면 제거
+    const oldModal = document.getElementById('auth-custom-modal');
+    if (oldModal) oldModal.remove();
+
+    const modalHtml = `
+        <div id="auth-custom-modal" 
+             onclick="if(event.target === this) this.remove()" 
+             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
+                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
+                <button onclick="document.getElementById('auth-custom-modal').remove()" 
+                        style="width:100%; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-size:14px; font-weight:bold;">확인</button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function showConfirmModal(title, message, onConfirm, icon = '❓') {
+    const oldModal = document.getElementById('auth-confirm-modal');
+    if (oldModal) oldModal.remove();
+
+    const modalHtml = `
+        <div id="auth-confirm-modal" 
+             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
+                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
+                <div style="display:flex; gap:12px;">
+                    <button onclick="document.getElementById('auth-confirm-modal').remove()" 
+                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600;">취소</button>
+                    <button id="modal-confirm-btn" 
+                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">확인</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // 확인 버튼 클릭 시 실행할 로직 연결
+    document.getElementById('modal-confirm-btn').onclick = () => {
+        document.getElementById('auth-confirm-modal').remove();
+        onConfirm(); // 전달받은 함수 실행
+    };
+}
+
 // [수정] 실시간 감시(onAuthStateChange)를 포함한 상태 체크
 async function checkLoginStatus() {
   const supabase = window.supabaseClient;
@@ -144,17 +191,27 @@ async function handleLogout() {
   const supabase = window.supabaseClient;
   if (!supabase) return;
 
-  if (!confirm('정말 로그아웃 하시겠습니까?')) return;
-
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    alert('로그아웃 중 오류: ' + error.message);
-  } else {
-    localStorage.setItem('isLoggedIn', 'false');
-    localStorage.removeItem('userProfile');
-    alert('로그아웃 되었습니다.');
-    location.href = 'index.html'; 
-  }
+  showConfirmModal(
+        "로그아웃", 
+        "떠나신다니 아쉬워요...", 
+        async () => {
+            // 이 부분이 '확인'을 눌렀을 때 실행될 내용입니다.
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                showAuthModal("오류", error.message, "⚠️");
+            } else {
+                localStorage.setItem('isLoggedIn', 'false');
+                localStorage.removeItem('userProfile');
+                
+                // 알림 모달을 보여주고 1.5초 뒤에 페이지 이동
+                showAuthModal("로그아웃 완료", "안전하게 로그아웃 되었습니다.", "👋");
+                setTimeout(() => {
+                    location.href = 'index.html';
+                }, 1500);
+            }
+        },
+        "😟" // 로그아웃에 어울리는 아이콘
+    );
 }
 // 전역 함수로 등록 (mypage.html 등에서 호출 가능하게)
 window.handleLogout = handleLogout;

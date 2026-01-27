@@ -17,8 +17,8 @@
 <body class="bg-gray-50 h-screen flex items-center justify-center p-6">
 
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 md:p-10 animate-fade-in relative">
-        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black">
-            <i data-lucide="x" width="24"></i>
+        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-transform hover:scale-110" title="홈으로 이동">
+            <i data-lucide="home" width="24"></i>
         </a>
         <div class="text-center mb-10">
             <h1 class="text-3xl font-black mb-2 tracking-tight">여기저기</h1>
@@ -196,6 +196,10 @@
                     provider: provider,
                     options: {
                         redirectTo: getRedirectUrl(), // 자동 계산된 주소 사용
+                        queryParams : {
+                            prompt : 'select_account',
+                            access_type : 'offline',
+                        }
                     }
                 });
                 if (error) throw error;

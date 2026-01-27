@@ -6,13 +6,13 @@ function toggleChatIframe() {
     if (!isLoggedIn) {
     // 1. 로그인이 안 되어 있으면 즉시 경고창을 띄웁니다.
     showConfirmModal(
-        "쪼꼬마이와 대화하려면", 
-        "로그인을 해주세요", 
+        "로그인이 필요합니다", 
+        "쪼꼬마이와 대화하려면<br>로그인을 해주세요", 
         async () => {
             // 이 부분이 '확인'을 눌렀을 때 실행될 내용입니다.
             location.href = 'login.html'
         },
-        "😓" // 땀땀 아이콘
+        "🔒" // 땀땀 아이콘
     );
     } else {
         // [의도] 현재 보이면 숨기고, 안 보이면 보이게 함
@@ -38,9 +38,23 @@ function showConfirmModal(title, message, onConfirm, icon = '❓') {
                 <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
                 <div style="display:flex; gap:12px;">
                     <button onclick="document.getElementById('auth-confirm-modal').remove()" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600;">취소</button>
+                            style="flex:1; 
+                            padding:14px; 
+                            border:none; 
+                            border-radius:12px; 
+                            background:#f3f4f6; 
+                            color:#4b5563; 
+                            cursor:pointer; 
+                            font-weight:600;">나중에</button>
                     <button id="modal-confirm-btn" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">확인</button>
+                            style="flex:1; 
+                            padding:14px; 
+                            border:none; 
+                            border-radius:12px; 
+                            background:#000; 
+                            color:#fff; 
+                            cursor:pointer; 
+                            font-weight:bold;">로그인하기</button>
                 </div>
             </div>
         </div>
@@ -53,11 +67,6 @@ function showConfirmModal(title, message, onConfirm, icon = '❓') {
         onConfirm(); // 전달받은 함수 실행
     };
 }
-
-
-
-
-
 
 
 

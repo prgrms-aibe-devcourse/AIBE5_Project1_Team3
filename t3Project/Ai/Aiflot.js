@@ -19,9 +19,9 @@ window.showToast = function(msg) {
     const toast = document.createElement("div");
 
     toast.style.position = "fixed";
-    toast.style.bottom = "60%";
-    toast.style.right = "15%";
-    toast.style.background = "#54afb6";
+    toast.style.bottom = "640px";
+    toast.style.right = "40px";
+    toast.style.background = "#4B9DA9";
     toast.style.color = "white";
     toast.style.padding = "10px 16px";
     toast.style.borderRadius = "12px";
@@ -41,7 +41,7 @@ window.showToast = function(msg) {
     btn.style.borderRadius = "8px";
     btn.style.border = "none";
     btn.style.cursor = "pointer";
-    btn.style.background = "#203775";
+    btn.style.background = "#E37434";
     btn.style.color = "white";
 
     btn.onclick = () => toast.remove();

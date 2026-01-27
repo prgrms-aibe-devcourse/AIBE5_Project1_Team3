@@ -4,7 +4,9 @@
 <link rel="stylesheet" href="../Ai/Aichatbot.css">
 
    <!-- 챗봇 용버튼 및 챗봇 컨텐츠 불러오는 코드 (body 에 삽입) -->
-    <button id="floating-chat-btn" onclick="toggleChatIframe()">💬</button>
+    <button id="floating-chat-btn" onclick="toggleChatIframe()">
+      <img src="../Ai/ChatGPT Image.png">
+    </button>
     <div id="chat-frame-container">
         <iframe src="../Ai/AiChatbot.html" style="width:100%; height:100%; border:none;" scrolling="no"></iframe>
     </div>

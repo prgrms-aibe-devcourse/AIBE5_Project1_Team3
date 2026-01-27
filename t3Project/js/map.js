@@ -1,4 +1,5 @@
 
+
 // --- 상태 관리 (STATE) ---
 let state = {
     query: '', // 검색어
@@ -22,14 +23,15 @@ let routeLayerGroup = null;
 let routingControl = null;
 
 // --- 필터 정의 (FILTER DEFINITIONS) ---
+// 요청된 키워드 로직 적용
 const FILTER_DEFINITIONS = {
     domestic: {
         id: 'domestic',
         label: '국내여행',
         keywords: [
-            "국내", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천",
+            "국내", "한국", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천",
             "여수", "강원도", "경기도", "경포대", "주문진", "초당", "황리단길", "대릉원", "불국사",
-            "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장"
+            "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장", "전통한식"
         ]
     },
     overseas: {
@@ -65,7 +67,7 @@ const FILTER_DEFINITIONS = {
         keywords: [
             "맛집", "카페", "음식", "디저트", "브런치", "레스토랑", "베이커리", "먹방",
             "미식", "로컬맛집", "커피", "스테이크", "라멘", "타코야키", "순두부", "호떡",
-            "팟타이", "푸팟퐁커리", "오코노미야키", "돈카츠", "간식", "야식", "디너", "조식","전통한식"
+            "팟타이", "푸팟퐁커리", "오코노미야키", "돈카츠", "간식", "야식", "디너", "조식"
         ]
     }
 };
@@ -153,9 +155,9 @@ window.closeModal = closeModal;
 window.togglePlanMode = togglePlanMode;
 window.clearItinerary = clearItinerary;
 window.toggleItineraryItem = toggleItineraryItem;
-window.moveItineraryItem = moveItineraryItem;
 window.toggleFavoriteInMap = toggleFavoriteInMap; // 찜하기 기능 추가
 window.savePlanToMyPage = savePlanToMyPage; // 마이페이지 계획 추가
+window.showLoginModal = showLoginModal; // 모달 함수 노출
 
 // --- 로직 (LOGIC) ---
 
@@ -179,7 +181,10 @@ function initMap() {
     }).addTo(map);
 
     routeLayerGroup = L.layerGroup().addTo(map);
+
+
 }
+
 
 /**
  * 메인 필터 토글 함수
@@ -189,17 +194,12 @@ function toggleFilter(filterId) {
         state.activeFilters = [];
         state.activeSubTags = []; // 서브 태그 초기화
     } else {
-        // 단일 선택 모드로 변경 (사용자 UX 고려: 탭처럼 동작)
-        // 만약 다중 선택을 원하면 로직 변경 필요
         if (state.activeFilters.includes(filterId)) {
-             // 이미 선택된 거 누르면 해제
              state.activeFilters = state.activeFilters.filter(id => id !== filterId);
         } else {
-             // 새로운 거 누르면 기존 거 지우고 선택 (탭 방식)
              state.activeFilters = [filterId];
         }
         
-        // 메인 필터가 바뀌면 서브 태그 선택도 초기화하는게 자연스러움
         state.activeSubTags = [];
         state.isFilterExpanded = false; // 필터 변경 시 접힘 상태로 리셋
     }
@@ -245,15 +245,12 @@ function updateFilteredArticles() {
         // 1. 메인 필터 체크
         let mainFilterMatch = true;
         if (state.activeFilters.length > 0) {
-            // 활성화된 메인 필터 중 하나라도 만족하면 됨 (OR 조건이 자연스러움)
-            // 하지만 이전 로직은 AND 였음. 여기선 버튼이 라디오처럼 동작하게 바꿨으므로 하나만 체크됨.
             mainFilterMatch = state.activeFilters.some(filterId => checkArticleMatchesFilter(article, filterId));
         }
 
         // 2. 서브 태그(키워드) 체크
         let subTagMatch = true;
         if (state.activeSubTags.length > 0) {
-            // 선택된 서브 태그가 아티클의 태그나 텍스트에 포함되어 있는지
             subTagMatch = state.activeSubTags.some(tag => {
                 return article.tags.some(t => t.includes(tag)) || 
                        article.title.includes(tag) || 
@@ -306,32 +303,21 @@ function togglePlanMode() {
 
 /**
  * 마이페이지로 계획 저장 및 이동 함수
- * 1. 로그인 체크 -> 안되어있으면 로그인 페이지 이동
- * 2. 계획 저장
- * 3. 마이페이지 이동
  */
 function savePlanToMyPage() {
-    // 1. 로그인 여부 확인
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
-    // 2. 로그인 안되어 있으면 얼럿 후 이동
     if (!isLoggedIn) {
-        alert('로그인이 필요한 서비스입니다');
-        window.location.href = 'login.html';
+        // 기존 alert 대신 커스텀 모달 호출
+        showLoginModal('여행 계획을 저장하려면<br>로그인이 필요합니다.');
         return;
     }
 
-    // 3. 선택된 계획이 없는 경우 처리
     if (state.itinerary.length === 0) {
         alert('선택된 여행지가 없습니다. 지도에서 여행지를 선택해주세요.');
         return;
     }
 
-    // 4. 마이페이지로 넘길 데이터 생성
-    // ID 목록을 기반으로 전체 아티클 객체 찾기
     const selectedArticles = state.itinerary.map(id => ARTICLES.find(a => a.id === id)).filter(Boolean);
-    
-    // 장소를 기반으로 간단한 여행 제목 및 위치 생성
     const mainLocation = selectedArticles[0].tags.find(t => ['태국', '방콕', '가평', '춘천', '강릉', '오사카', '경주', '괌', '독도', '울릉도'].includes(t)) || '여행';
     
     const newTrip = {
@@ -351,12 +337,10 @@ function savePlanToMyPage() {
         memo: '지도에서 생성된 계획입니다.'
     };
 
-    // 5. 로컬 스토리지에 저장 (마이페이지 데이터 연동)
     const currentTrips = JSON.parse(localStorage.getItem('myTrips') || '[]');
     currentTrips.push(newTrip);
     localStorage.setItem('myTrips', JSON.stringify(currentTrips));
 
-    // 6. 마이페이지로 이동
     alert('마이페이지에 계획이 추가되었습니다.');
     window.location.href = 'mypage.html';
 }
@@ -384,24 +368,6 @@ function toggleItineraryItem(id) {
     } else {
         state.itinerary.splice(index, 1);
     }
-    
-    updateItineraryRoute();
-    render();
-}
-
-/**
- * 일정 순서 변경
- */
-function moveItineraryItem(id, direction) {
-    const index = state.itinerary.indexOf(id);
-    if (index === -1) return;
-    
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= state.itinerary.length) return;
-    
-    const temp = state.itinerary[index];
-    state.itinerary[index] = state.itinerary[newIndex];
-    state.itinerary[newIndex] = temp;
     
     updateItineraryRoute();
     render();
@@ -563,15 +529,13 @@ function toggleSidebar() {
 
 /**
  * 모달 내 찜하기(하트) 토글 기능
- * 1.png 왼쪽 위에 하트 표시를 통해 찜 표시 후 mypage의 찜 목록에 넣기
  */
 function toggleFavoriteInMap(id) {
     // 1. 로그인 체크
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     if (!isLoggedIn) {
-        if(confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?')) {
-            window.location.href = 'login.html';
-        }
+        // 기존 confirm 대신 커스텀 모달 호출
+        showLoginModal();
         return;
     }
 
@@ -586,18 +550,109 @@ function toggleFavoriteInMap(id) {
     
     localStorage.setItem("favorites", JSON.stringify(favorites));
     
-    // 버튼 UI 즉시 업데이트 (색상 채우기/비우기)
-    const btnIcon = document.getElementById(`modal-heart-${id}`);
-    if (btnIcon) {
-        if (index === -1) { // 방금 추가됨
-            btnIcon.classList.remove('text-white');
-            btnIcon.classList.add('fill-red-500', 'text-red-500', 'heart-active');
-            setTimeout(() => btnIcon.classList.remove('heart-active'), 300);
-        } else { // 방금 삭제됨
-            btnIcon.classList.remove('fill-red-500', 'text-red-500');
-            btnIcon.classList.add('text-white');
+    // 버튼 및 아이콘 UI 즉시 업데이트
+    const btn = document.getElementById(`modal-heart-btn-${id}`);
+    const icon = document.getElementById(`modal-heart-icon-${id}`);
+
+    if (btn && icon) {
+        if (index === -1) { 
+            // 찜 추가됨 (활성 상태: 흰 배경 + 빨간 하트)
+            // 기존 비활성 스타일 제거
+            btn.classList.remove('bg-black/20', 'hover:bg-black/40', 'text-white');
+            // 활성 스타일 추가 (흰 배경)
+            btn.classList.add('bg-white', 'hover:bg-white/90');
+            
+            // 아이콘 활성 스타일 (빨간색)
+            icon.classList.remove('text-white');
+            icon.classList.add('fill-red-500', 'text-red-500', 'heart-active');
+            
+            setTimeout(() => icon.classList.remove('heart-active'), 300);
+
+        } else { 
+            // 찜 삭제됨 (비활성 상태: 투명 검정 배경 + 흰 테두리 하트)
+            // 활성 스타일 제거
+            btn.classList.remove('bg-white', 'hover:bg-white/90');
+            // 비활성 스타일 복구
+            btn.classList.add('bg-black/20', 'hover:bg-black/40', 'text-white');
+            
+            // 아이콘 비활성 스타일 (흰색)
+            icon.classList.remove('fill-red-500', 'text-red-500');
+            icon.classList.add('text-white');
         }
     }
+}
+
+// --- DRAG AND DROP LOGIC (드래그 앤 드롭) ---
+let draggedItem = null;
+
+function addDragListeners() {
+    const list = document.getElementById('itinerary-list');
+    const items = list.querySelectorAll('.draggable-item');
+
+    items.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('drop', handleDrop);
+        item.addEventListener('dragend', handleDragEnd);
+    });
+}
+
+function handleDragStart(e) {
+    draggedItem = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.id);
+    setTimeout(() => this.classList.add('dragging'), 0);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const list = document.getElementById('itinerary-list');
+    const afterElement = getDragAfterElement(list, e.clientY);
+    
+    if (afterElement == null) {
+        list.appendChild(draggedItem);
+    } else {
+        list.insertBefore(draggedItem, afterElement);
+    }
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    draggedItem = null;
+    
+    // Update itinerary array based on new DOM order
+    const list = document.getElementById('itinerary-list');
+    const newItinerary = [];
+    list.querySelectorAll('.draggable-item').forEach(item => {
+        newItinerary.push(item.dataset.id);
+    });
+    
+    state.itinerary = newItinerary;
+    updateItineraryRoute();
+    renderHeader(); // Re-render to update index numbers
+    
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // --- 시각적 자산 (VISUAL ASSETS) ---
@@ -628,16 +683,13 @@ function createCoursePinIcon(index, locationName) {
 
 /**
  * 일반 아티클 핀 아이콘 생성
- * (수정됨: 핀 선택 시 오른쪽 위 체크 표시 제거)
- * isSelected여도 플래너 모드가 아니면 뱃지(숫자)나 체크표시를 띄우지 않음.
  */
 function createArticlePinIcon(isSelected, title, planIndex = -1) {
     const pinColor = isSelected ? 'bg-blue-600 border-white text-white' : 'bg-white border-white text-blue-600';
     const stemColor = isSelected ? 'bg-blue-600' : 'bg-white shadow-sm';
     
-    // 요청사항 1번: 맵에서 핑을 선택했을 때 핑 오른쪽 위에 체크 표시 제거
-    // planIndex가 -1보다 클 때(계획 모드일 때)만 숫자 뱃지 표시
-    const badge = (isSelected && planIndex > -1) ? 
+    // 1. 요청사항 반영: 핀 선택 시 체크 표시 제거 (planIndex가 있을 때만 번호 표시, 그 외엔 뱃지 없음)
+    const badge = isSelected && planIndex > -1 ? 
         `<div class="absolute -top-2 -right-2 w-5 h-5 bg-green-500 rounded-full text-white flex items-center justify-center text-[10px] border-2 border-white shadow-sm z-50">
             ${planIndex + 1}
         </div>` : ''; 
@@ -674,8 +726,7 @@ function render() {
 }
 
 /**
- * 헤더 렌더링 (플래너 모드 버튼 변경 포함)
- * 3. 여행 계획하기 버튼을 누르면 '마이 페이지 계획 추가', '계획 종료' 버튼 넣기
+ * 헤더 렌더링 (플래너 모드 버튼 변경 및 드래그 앤 드롭 지원)
  */
 function renderHeader() {
     if (state.isEmbed) return;
@@ -701,27 +752,30 @@ function renderHeader() {
             </div>
         `;
         
+        // 6. 요청사항: X 버튼 왼쪽, 드래그 핸들 오른쪽, 드래그 기능 추가
         if (state.itinerary.length === 0) {
             itineraryList.innerHTML = '<p class="text-xs text-gray-400 italic py-1">지도에서 장소를 선택하여 경로를 만드세요.</p>';
         } else {
             itineraryList.innerHTML = state.itinerary.map((id, index) => {
                 const article = ARTICLES.find(a => a.id === id);
-                return `<div class="group flex items-center gap-2 py-2 border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors px-1 rounded-lg">
+                return `<div class="group draggable-item flex items-center gap-2 py-2 border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors px-1 rounded-lg cursor-grab active:cursor-grabbing" draggable="true" data-id="${article.id}">
                     <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm">${index + 1}</span>
                     <span class="truncate text-xs text-gray-700 font-medium flex-1">${article.title}</span>
                     
-                    <div class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
-                        <button onclick="moveItineraryItem('${article.id}', -1)" class="p-1 hover:bg-white rounded text-gray-400 hover:text-blue-600 disabled:opacity-20" ${index === 0 ? 'disabled' : ''}>
-                            <i data-lucide="chevron-up" class="w-3 h-3"></i>
-                        </button>
-                        <button onclick="moveItineraryItem('${article.id}', 1)" class="p-1 hover:bg-white rounded text-gray-400 hover:text-blue-600 disabled:opacity-20" ${index === state.itinerary.length - 1 ? 'disabled' : ''}>
-                            <i data-lucide="chevron-down" class="w-3 h-3"></i>
-                        </button>
-                    </div>
+                    <!-- X Button (Moved to left of action area) -->
+                    <button onclick="toggleItineraryItem('${article.id}')" class="p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors mr-1">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
 
-                    <button onclick="toggleItineraryItem('${article.id}')" class="ml-1 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <!-- Drag Handle (Replaces Sort Buttons) -->
+                    <div class="p-1 text-gray-400 hover:text-gray-600 cursor-grab">
+                        <i data-lucide="grip-vertical" class="w-3 h-3"></i>
+                    </div>
                 </div>`;
             }).join('');
+            
+            // Drag listeners 연결
+            addDragListeners();
         }
 
     } else {
@@ -736,8 +790,7 @@ function renderHeader() {
 }
 
 /**
- * 필터 렌더링 (서브 태그 확장 UI 적용)
- * 6. 메인 태그 밑에 키워드를 서브 태그로 넣고 펼치기/줄이기로 조절
+ * 필터 렌더링
  */
 function renderFilters() {
     if (state.isEmbed) return;
@@ -745,28 +798,24 @@ function renderFilters() {
     const container = document.getElementById('filter-container');
     if (!container) return;
 
-    // 1. 메인 카테고리 버튼 렌더링
-    let mainButtonsHTML = FILTER_BUTTONS.map(btn => {
+    const mainButtonsHTML = FILTER_BUTTONS.map(btn => {
         const isActive = state.activeFilters.length === 0 && btn.id === 'all' 
                          || state.activeFilters.includes(btn.id);
         
         let btnClass = "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border shadow-sm cursor-pointer ";
         if (isActive) {
-            btnClass += "bg-blue-600 text-white border-blue-600 hover:bg-blue-700";
+            btnClass += "bg-sky-500 text-white border-sky-500 hover:bg-sky-600";
         } else {
-            btnClass += "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600";
+            btnClass += "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-sky-300 hover:text-sky-600";
         }
 
         return `<button onclick="toggleFilter('${btn.id}')" class="${btnClass}">${btn.label}</button>`;
     }).join('');
 
-    // 2. 서브 태그(키워드) 렌더링
-    // 현재 활성화된 메인 필터의 키워드들을 가져옴
     let subTagsHTML = '';
     let currentKeywords = [];
     
     if (state.activeFilters.length > 0) {
-        // 활성화된 필터들의 키워드 수집
         state.activeFilters.forEach(filterId => {
             if (FILTER_DEFINITIONS[filterId]) {
                 currentKeywords = [...currentKeywords, ...FILTER_DEFINITIONS[filterId].keywords];
@@ -774,11 +823,9 @@ function renderFilters() {
         });
     }
     
-    // 중복 제거
     currentKeywords = [...new Set(currentKeywords)];
 
     if (currentKeywords.length > 0) {
-        // 표시할 키워드 개수 설정 (펼쳐졌으면 전체, 아니면 8개 정도)
         const visibleCount = state.isFilterExpanded ? currentKeywords.length : 10;
         const visibleKeywords = currentKeywords.slice(0, visibleCount);
         const hasMore = currentKeywords.length > 10;
@@ -811,7 +858,6 @@ function renderFilters() {
         `;
     }
 
-    // 컨테이너 클래스 재설정 (grid 대신 flex column 사용)
     container.className = "flex flex-col w-full";
     container.innerHTML = `
         <div class="main-filter-row">
@@ -866,10 +912,7 @@ function renderArticlesList() {
                             <i data-lucide="star" class="w-3 h-3 fill-current"></i>
                             <span>${article.rating}</span>
                         </div>
-                        <div class="flex items-center gap-1 text-xs text-gray-400">
-                            <i data-lucide="map-pin" class="w-3 h-3"></i>
-                            <span>${article.category}</span>
-                        </div>
+                        <!-- undefined가 표시되던 카테고리/맵핀 부분 제거됨 -->
                     </div>
                 </div>
             </div>`;
@@ -913,7 +956,11 @@ function renderMarkers() {
 
 /**
  * 상세 모달 열기
- * 2. 핑을 선택했을 때 1.png의 왼쪽 위에 하트 표시를 통해 찜 표시 후 mypage의 찜 목록에 넣기
+ * 1. 핑을 선택했을 때 1번 png가 보이는데 하트 뒷 배경이 클릭했을 때 화이트로 바뀜 (수정: 버튼 배경 고정)
+ * 2. undefined가 data.js의 카테고리를 가져오는데 아예 없애버리기 (수정: 카테고리 태그 제거)
+ * 3. 제목 위에 undefined도 없애기 (수정: 위와 동일)
+ * 4. 상세 정보 밑에 description 정보 가져오는 것도 없애기 (수정: description 제거)
+ * 5. 자세히 보기 버튼 우측으로 이동 (수정: justify-end)
  */
 function openModal(article) {
     if (state.isEmbed) return;
@@ -924,7 +971,20 @@ function openModal(article) {
     // 현재 찜 상태 확인
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     const isFav = favorites.includes(article.id);
-    const heartClass = isFav ? 'fill-red-500 text-red-500' : 'text-white';
+    
+    // 버튼 스타일 설정 (찜 여부에 따라 배경색/투명도 변경)
+    // 찜함(True): 흰색 배경 (3번 png 스타일)
+    // 찜안함(False): 검정 투명 배경 + 흰색 텍스트 (1번 png 스타일)
+    const btnClass = isFav 
+        ? 'bg-white hover:bg-white/90' 
+        : 'bg-black/20 hover:bg-black/40 text-white';
+
+    // 아이콘 스타일 설정
+    // 찜함(True): 빨간색 채우기 + 빨간색 선
+    // 찜안함(False): 흰색 선 (채우기 없음)
+    const iconClass = isFav
+        ? 'fill-red-500 text-red-500'
+        : 'text-white';
 
     modal.classList.remove('hidden');
     modal.classList.add('slide-in');
@@ -935,9 +995,9 @@ function openModal(article) {
         <img src="${article.imageUrl}" alt="${article.title}" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
         
-        <!-- 하트 아이콘 버튼 (왼쪽 상단) -->
-        <button onclick="toggleFavoriteInMap('${article.id}')" class="absolute top-4 left-4 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/40 transition-colors cursor-pointer z-10 group" title="찜하기">
-            <i id="modal-heart-${article.id}" data-lucide="heart" class="w-5 h-5 transition-all ${heartClass} group-hover:scale-110 duration-200"></i>
+        <!-- 하트 아이콘 버튼 -->
+        <button id="modal-heart-btn-${article.id}" onclick="toggleFavoriteInMap('${article.id}')" class="absolute top-4 left-4 w-10 h-10 ${btnClass} backdrop-blur-sm rounded-full flex items-center justify-center transition-colors cursor-pointer z-10 group shadow-sm" title="찜하기">
+            <i id="modal-heart-icon-${article.id}" data-lucide="heart" class="w-5 h-5 transition-all ${iconClass} group-hover:scale-110 duration-200"></i>
         </button>
 
         <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-colors cursor-pointer z-10">
@@ -945,7 +1005,7 @@ function openModal(article) {
         </button>
         <div class="absolute bottom-4 left-6 right-6 text-white">
             <div class="flex items-center gap-2 mb-2 text-xs font-medium opacity-90">
-                <span class="bg-blue-600 px-2 py-0.5 rounded text-[10px] tracking-wider uppercase">${article.category}</span>
+                <!-- 2, 3: 카테고리 태그 제거 -->
                 <span class="flex items-center gap-1">
                     <i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400"></i> ${article.rating}
                 </span>
@@ -971,8 +1031,8 @@ function openModal(article) {
              </div>
 
             <div>
-                <h3 class="font-bold text-gray-900 text-lg mb-2">상세 정보</h3>
-                <p class="text-gray-600 leading-relaxed text-sm mb-4">${article.description}</p>
+                <h3 class="font-bold text-gray-900 text-lg mb-2">소개</h3>
+                <!-- 4: description 정보 제거 -->
                 <div class="text-gray-600 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl border border-gray-100">
                     ${article.content || '상세 내용이 없습니다.'}
                 </div>
@@ -980,7 +1040,7 @@ function openModal(article) {
 
             <div class="space-y-4">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2 text-lg">
-                    <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i> 생생 후기
+                    <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i> 후기
                 </h3>
                 <div class="space-y-3">
                     ${article.reviews.length > 0 ? article.reviews.map(r => `
@@ -1002,7 +1062,8 @@ function openModal(article) {
         </div>
     </div>
 
-    <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-between shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <!-- 5: 자세히 보기 버튼 우측으로 이동 (justify-end) -->
+    <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-end shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button onclick="window.location.href='article.html?id=${article.id}'" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
             자세히 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
@@ -1031,4 +1092,27 @@ function closeModal() {
         
         render(); 
     }
+}
+
+/**
+ * 로그인 유도 모달 생성 함수 (요청된 함수)
+ */
+function showLoginModal(message = '찜하기 기능은 로그인 후<br>이용하실 수 있습니다.') {
+    // 이미 모달이 떠있으면 중복 생성 방지
+    if (document.getElementById('login-confirm-modal')) return;
+
+    const modalHtml = `
+        <div id="login-confirm-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:#fff; padding:30px; border-radius:15px; text-align:center; width:90%; max-width:320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <div style="font-size:40px; margin-bottom:15px;">🔒</div>
+                <h3 style="margin-bottom:10px; font-size:18px;">로그인이 필요합니다</h3>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">${message}</p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
+                    <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">로그인하기</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
 }

@@ -186,6 +186,7 @@
     <!-- Data Script Loaded Before Logic -->
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     
     <!-- Navbar Scroll Event -->
     <script>
@@ -449,100 +450,94 @@
     </script>
 
             <!-- 추천 여행지 좌우 버튼 / 슬라이드 로직 (부드러운 무한 루프) -->
-            <script>
+        <script>
             (function(){
                 const track = document.getElementById('advise-content');
                 const prev = document.querySelector('.advise-prev');
                 const next = document.querySelector('.advise-next');
-                if (!track || !prev || !next) return;
-
+                const viewport = document.querySelector('.advise-viewport');
+                if (!track || !prev || !next || !viewport) return;
+                        
                 let index = 0;
                 const getItems = () => track.querySelectorAll('.content-inner');
-                
-                // 무한 루프를 위해 카드 복제
+                        
                 function cloneItems() {
                     const items = Array.from(getItems());
-                    if (items.length === 0) return;
-                    
-                    // 마지막 카드를 처음에 추가
                     const firstClone = items[items.length - 1].cloneNode(true);
-                    track.insertBefore(firstClone, items[0]);
-                    
-                    // 첫 카드를 마지막에 추가
                     const lastClone = items[0].cloneNode(true);
+                    track.insertBefore(firstClone, items[0]);
                     track.appendChild(lastClone);
-                    
-                    // 처음 위치는 1로 설정 (복제된 마지막 카드 위치)
                     index = 1;
                 }
-
+            
                 function getGapPx(){
-                    const list = getItems();
-                    if (list.length < 2) return 0;
-                    const a = list[0].getBoundingClientRect();
-                    const b = list[1].getBoundingClientRect();
-                    return Math.max(0, b.left - a.right);
+                    const a = getItems()[0].getBoundingClientRect();
+                    const b = getItems()[1].getBoundingClientRect();
+                    return b.left - a.right;
                 }
-
+            
                 function slide(animate = true){
-                    const it = getItems()[0];
-                    if(!it) return;
-                    const gap = getGapPx();
-                    const shift = index * (it.getBoundingClientRect().width + gap);
-                    
-                    if (animate) {
-                        track.style.transition = 'transform 0.4s ease';
-                    }
+                    const item = getItems()[0];
+                    const shift = index * (item.offsetWidth + getGapPx());
+                    track.style.transition = animate ? 'transform .4s ease' : 'none';
                     track.style.transform = `translateX(-${shift}px)`;
                 }
-
-                function handleNext() {
-                    index++;
-                    slide(true);
-                    
-                    // 마지막 복제본에 도달하면 처음으로 리셋
-                    setTimeout(() => {
-                        const itemCount = getItems().length;
-                        if (index === itemCount - 1) {
-                            track.style.transition = 'none'; // 애니메이션 제거
-                            index = 1;
-                            slide(false); // 애니메이션 없이 리셋
-                        }
-                    }, 400);
-                }
-
-                function handlePrev() {
-                    index--;
-                    slide(true);
-                    
-                    // 처음 복제본에 도달하면 마지막으로 리셋
-                    setTimeout(() => {
-                        const itemCount = getItems().length;
-                        if (index === 0) {
-                            track.style.transition = 'none'; // 애니메이션 제거
-                            index = itemCount - 2;
-                            slide(false); // 애니메이션 없이 리셋
-                        }
-                    }, 400);
-                }
-
-                next.addEventListener('click', handleNext);
-                prev.addEventListener('click', handlePrev);
-
-                window.addEventListener('resize', ()=>{
-                    slide(false);
-                    truncateCardTexts();
+            
+                function nextSlide(){ index++; slide(true); }
+                function prevSlide(){ index--; slide(true); }
+            
+                // 무한 루프 핵심
+                track.addEventListener('transitionend', () => {
+                    const items = getItems();
+                    if (index === 0) {
+                        index = items.length - 2;
+                        slide(false);
+                    }
+                    if (index === items.length - 1) {
+                        index = 1;
+                        slide(false);
+                    }
                 });
-
-                // initial render after layout
-                setTimeout(()=>{ 
-                    cloneItems(); // 카드 복제
-                    if(window.lucide) window.lucide.createIcons(); 
-                    slide(false); 
-                    truncateCardTexts(); 
-                }, 60);
+            
+                // ===== 중복 방지 락 =====
+                let lastActionTime = 0;
+                function safeNext() {
+                    const now = Date.now();
+                    if (now - lastActionTime < 300) return;
+                    lastActionTime = now;
+                    nextSlide();
+                }
+                function safePrev() {
+                    const now = Date.now();
+                    if (now - lastActionTime < 300) return;
+                    lastActionTime = now;
+                    prevSlide();
+                }
+            
+                next.addEventListener('click', safeNext);
+                prev.addEventListener('click', safePrev);
+            
+                const hammer = new Hammer(track, {
+                    direction: Hammer.DIRECTION_HORIZONTAL,
+                    threshold: 10,
+                    inputClass: Hammer.TouchMouseInput
+                });
+            
+                hammer.on('swipeleft', safeNext);
+                hammer.on('swiperight', safePrev);
+            
+                hammer.on('panend', (e) => {
+                    if (Math.abs(e.deltaX) < 50) return;
+                    if (e.deltaX < 0) safeNext();
+                    else safePrev();
+                });
+            
+                setTimeout(() => {
+                    cloneItems();
+                    slide(false);
+                }, 50);
             })();
-            </script>
+        </script>
 
 </body>
 </html>

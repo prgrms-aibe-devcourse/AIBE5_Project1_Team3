@@ -4,7 +4,7 @@
     position: relative;
     padding: 10px;
     border-radius: 50%;
-    box-shadow: 0 0 100px rgba(139, 92, 246, 0.3); /* Purple Glow */
+    box-shadow: 0 0 100px rgb(41, 152, 255);
 }
 
 /* The fixed triangle pointer */
@@ -51,7 +51,7 @@
     position: relative;
     padding: 1rem 3rem;
     background: white;
-    color: #4B5563;
+    color: #4e96fa;
     font-weight: 900;
     font-size: 1.25rem;
     border-radius: 9999px;
@@ -63,7 +63,7 @@
 .spin-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    color: #7c3aed; /* Purple-600 */
+    color: #55c4f8;
 }
 
 .spin-button:active {

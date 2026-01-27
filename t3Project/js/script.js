@@ -463,7 +463,7 @@ function handleFavoriteClick() {
     location.href = "login.html"; 
   } else {
     // 3. 로그인 상태라면 마이페이지의 좋아요 목록으로 이동합니다.
-    location.href = "mypage.html?tab=favorites";
+    location.href = "mypage.html";
   }
 }
 

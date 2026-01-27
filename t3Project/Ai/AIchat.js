@@ -29,7 +29,6 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 꽤나 필요
 const API_KEYS = [
-
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스

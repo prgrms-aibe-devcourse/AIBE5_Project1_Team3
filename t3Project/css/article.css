@@ -1,3 +1,4 @@
+
 /* ==========================================================================
    네비게이션 바 ( index.css 에서 퍼옴 )
    ========================================================================== */
@@ -283,10 +284,6 @@
     transition: transform 0.35s ease, color 0.35s ease, stroke 0.35s ease;
 }
 
-.tag-toggle:hover i {
-    color: #2563eb;
-    stroke: #2563eb;
-}
 
 /* fade-in 애니메이션 */
 @keyframes tagToggleFadeIn {

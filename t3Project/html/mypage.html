@@ -458,7 +458,7 @@
     <button onclick="resetAllData()" class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg z-50 text-xs font-bold hover:bg-red-600 transition-colors">
         데이터 초기화
     </button>
-
+    <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
     <script>
         // --- 0. Global Variables ---
@@ -510,7 +510,13 @@
             modal.classList.remove('hidden'); modal.classList.add('flex'); 
         }
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('settings-modal').classList.remove('flex'); }
-        
+                function handleLogout() {
+            if(confirm('정말 로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('isLoggedIn');
+                alert('로그아웃 되었습니다.');
+                location.href = 'login.html';
+            }
+        }
         // --- 3. Tab Logic ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => { const isActive = btn.dataset.tab === tabId; btn.dataset.active = isActive; btn.classList.toggle('text-black', isActive); btn.classList.toggle('text-gray-400', !isActive); });

@@ -12,7 +12,7 @@
 <body style="padding-bottom: 0rem;">
 
     <!-- Header Navigation -->
-    <div id="article-nav" class="navbar" style="background: transparent;">
+    <div id="article-nav" class="navbar">
         <div class="nav-inner">
             <div class="flex gap-2">
                 <a href="javascript:history.back()" class="nav-icon-btn">
@@ -23,16 +23,34 @@
                     <i data-lucide="home" width="24"></i>
                 </a>
             </div>
-            <div class="flex gap-2">
-                <button id="search-btn" class="nav-icon-btn">
-                    <i data-lucide="search" width="20"></i>
-                </button>
-                <button id="share-btn" class="nav-icon-btn">
-                    <i data-lucide="share-2" width="20"></i>
-                </button>
-                <button id="detail-like-btn" class="nav-icon-btn">
-                    <i data-lucide="heart" width="20"></i>
-                </button>
+            <div class="nav-right-group">
+                <a href="map.html" class="nav-item">
+                    <i data-lucide="map" class="nav-icon"></i>
+                    <span class="nav-label">지도</span>
+                </a>
+
+                <a href="roulette.html" class="nav-item">
+                    <i data-lucide="dices" class="nav-icon"></i>
+                    <span class="nav-label">룰렛</span>
+                </a>
+                
+                <a href="javascript:void(0)" onclick="handleFavoriteClick()" class="nav-item favorite-wrapper">
+                    <div class="icon-rel">
+                        <i data-lucide="heart" class="nav-icon"></i>
+                        <span id="favorite-count" class="nav-badge" style="display: none">0</span>
+                    </div>
+                    <span class="nav-label">찜</span>
+                </a>
+
+                <a href="login.html" id="nav-login-btn" class="btn-login">로그인</a>
+
+                <a href="mypage.html" id="nav-user-avatar" class="user-avatar-display" style="display: none">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                </a>
+                
+                <div id="nav-user-avatar" class="user-avatar" style="display: none">
+                    <i data-lucide="user-circle"></i>
+                </div>
             </div>
         </div>
     </div>
@@ -168,6 +186,19 @@
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
     
+    <!-- Navbar Scroll Event -->
+    <script>
+        const articleNav = document.getElementById('article-nav');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 0) {
+                articleNav.classList.add('scrolled');
+            } else {
+                articleNav.classList.remove('scrolled');
+            }
+        });
+    </script>
+    
     <!-- Main Logic using Global Variables -->
     <script>
         // Load Data
@@ -218,16 +249,15 @@
             const tagBox = document.getElementById('d-tags');
 
             toggleBtn.addEventListener('click', () => {
-            tagBox.classList.toggle('open');
-            
-            const icon = toggleBtn.querySelector('i');
-            if (tagBox.classList.contains('open')) {
-                icon.setAttribute('data-lucide', 'chevron-up');
-            } else {
-                icon.setAttribute('data-lucide', 'chevron-down');
-            }
-            
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+                tagBox.classList.toggle('open');
+                const isOpen = tagBox.classList.contains('open');
+                
+                // SVG 직접 생성으로 렌더링
+                if (isOpen) {
+                    toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+                } else {
+                    toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+                }
             });
             art.tags.forEach(tag => {
                 const btn = document.createElement('button');
@@ -400,28 +430,24 @@
 
             // article-nav 스크롤 배경 제어 로직
             const articleNav = document.getElementById('article-nav');
-            const heroHeader = document.getElementById('hero-header');
 
             function updateNavBackground() {
-                if (!articleNav || !heroHeader) return;
+                if (!articleNav) return;
                 
-                const heroHeight = heroHeader.offsetHeight;
-                
-                // hero-header를 벗어났으면 background 추가, 아니면 제거
-                if (window.scrollY > heroHeight) {
+                // 스크롤이 발생하면 배경 추가, 최상단이면 배경 제거
+                if (window.scrollY > 0) {
                     articleNav.classList.add('scrolled');
                 } else {
                     articleNav.classList.remove('scrolled');
                 }
             }
 
-            window.addEventListener('scroll', updateNavBackground);
+            window.addEventListener('scroll', updateNavBackground, { passive: true });
             updateNavBackground(); // 초기 실행
-            // article-nav 스크롤 배경 제어 로직 끝
         }
     </script>
 
-            <!-- 추천 여행지 좌우 버튼 / 슬라이드 로직 -->
+            <!-- 추천 여행지 좌우 버튼 / 슬라이드 로직 (부드러운 무한 루프) -->
             <script>
             (function(){
                 const track = document.getElementById('advise-content');
@@ -430,178 +456,92 @@
                 if (!track || !prev || !next) return;
 
                 let index = 0;
-                const items = () => track.querySelectorAll('.content-inner');
+                const getItems = () => track.querySelectorAll('.content-inner');
+                
+                // 무한 루프를 위해 카드 복제
+                function cloneItems() {
+                    const items = Array.from(getItems());
+                    if (items.length === 0) return;
+                    
+                    // 마지막 카드를 처음에 추가
+                    const firstClone = items[items.length - 1].cloneNode(true);
+                    track.insertBefore(firstClone, items[0]);
+                    
+                    // 첫 카드를 마지막에 추가
+                    const lastClone = items[0].cloneNode(true);
+                    track.appendChild(lastClone);
+                    
+                    // 처음 위치는 1로 설정 (복제된 마지막 카드 위치)
+                    index = 1;
+                }
 
                 function getGapPx(){
-                    const list = items();
+                    const list = getItems();
                     if (list.length < 2) return 0;
                     const a = list[0].getBoundingClientRect();
                     const b = list[1].getBoundingClientRect();
                     return Math.max(0, b.left - a.right);
                 }
 
-                function getVisibleCount(){
-                    return 2; // force two cards visible to avoid partial third card
-                }
-
-                function updateButtons(){
-                    const vc = getVisibleCount();
-                    const maxIndex = Math.max(0, items().length - vc);
-                    prev.disabled = index <= 0;
-                    next.disabled = index >= maxIndex;
-                    prev.style.opacity = prev.disabled ? '0.45' : '1';
-                    next.style.opacity = next.disabled ? '0.45' : '1';
-                }
-
-                function slide(){
-                    const it = items()[0];
+                function slide(animate = true){
+                    const it = getItems()[0];
                     if(!it) return;
                     const gap = getGapPx();
                     const shift = index * (it.getBoundingClientRect().width + gap);
+                    
+                    if (animate) {
+                        track.style.transition = 'transform 0.4s ease';
+                    }
                     track.style.transform = `translateX(-${shift}px)`;
-                    updateButtons();
                 }
 
-                next.addEventListener('click', ()=>{
-                    const vc = getVisibleCount();
-                    const maxIndex = Math.max(0, items().length - vc);
-                    index = Math.min(maxIndex, index + 1);
-                    slide();
-                });
-                prev.addEventListener('click', ()=>{ index = Math.max(0, index - 1); slide(); });
+                function handleNext() {
+                    index++;
+                    slide(true);
+                    
+                    // 마지막 복제본에 도달하면 처음으로 리셋
+                    setTimeout(() => {
+                        const itemCount = getItems().length;
+                        if (index === itemCount - 1) {
+                            track.style.transition = 'none'; // 애니메이션 제거
+                            index = 1;
+                            slide(false); // 애니메이션 없이 리셋
+                        }
+                    }, 400);
+                }
+
+                function handlePrev() {
+                    index--;
+                    slide(true);
+                    
+                    // 처음 복제본에 도달하면 마지막으로 리셋
+                    setTimeout(() => {
+                        const itemCount = getItems().length;
+                        if (index === 0) {
+                            track.style.transition = 'none'; // 애니메이션 제거
+                            index = itemCount - 2;
+                            slide(false); // 애니메이션 없이 리셋
+                        }
+                    }, 400);
+                }
+
+                next.addEventListener('click', handleNext);
+                prev.addEventListener('click', handlePrev);
 
                 window.addEventListener('resize', ()=>{
-                    index = Math.min(index, Math.max(0, items().length - getVisibleCount()));
-                    slide();
+                    slide(false);
                     truncateCardTexts();
                 });
 
                 // initial render after layout
-                setTimeout(()=>{ if(window.lucide) window.lucide.createIcons(); slide(); truncateCardTexts(); }, 60);
+                setTimeout(()=>{ 
+                    cloneItems(); // 카드 복제
+                    if(window.lucide) window.lucide.createIcons(); 
+                    slide(false); 
+                    truncateCardTexts(); 
+                }, 60);
             })();
             </script>
 
-   <!-- Gemini AI Logic -->
-<script type="module">
-    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
-    const btnGenerate = document.getElementById('btn-generate-ai');
-    const aiIntro = document.getElementById('ai-intro');
-    const aiLoading = document.getElementById('ai-loading');
-    const aiResult = document.getElementById('ai-result');
-    const aiContentBox = document.getElementById('ai-content-box');
-    const btnSave = document.getElementById('btn-save-itinerary');
-
-    let generatedItineraryText = ""; 
-
-    // API Key from environment
-    const API_KEY = process.env.API_KEY; 
-
-    if (btnGenerate) {
-        btnGenerate.addEventListener('click', async () => {
-            const article = window.currentArticle;
-            if (!article) {
-                alert('여행지 정보를 불러오지 못했습니다.');
-                return;
-            }
-
-            aiIntro.classList.add('hidden');
-            aiLoading.classList.remove('hidden');
-            
-            try {
-                const genAI = new GoogleGenerativeAI(API_KEY);
-                const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-
-                const prompt = `
-                    전문 여행 플래너로서 여행 추천 사이트에서 활용할 수 있는 고퀄리티로 다음 여행지에 대한 상세한 3일 여행 코스를 자세하게 짜줘.
-                    여행지: "${article.title}"
-                    테마: ${article.tags.join(', ')}
-                    설명: ${article.description}
-                    출력은 반드시 HTML 태그를 사용해서 깔끔하게 해줘. (<h3>, <ul>, <li>, <strong>)
-                    마크다운 기호(\`\`\`html 등)는 쓰지 마. 한국어로 작성해.
-                `;
-
-                const result = await model.generateContent(prompt);
-                const response = await result.response;
-                generatedItineraryText = response.text(); 
-
-                aiLoading.classList.add('hidden');
-                aiResult.classList.remove('hidden');
-                aiContentBox.innerHTML = generatedItineraryText;
-
-                if (window.lucide) window.lucide.createIcons();
-
-            } catch (error) {
-                console.error("AI 생성 에러:", error);
-                alert("코스 생성 중 에러 발생 (Gemini API): " + error.message);
-                aiLoading.classList.add('hidden');
-                aiIntro.classList.remove('hidden');
-            }
-        });
-    }
-
-    // 마이페이지 저장 및 이동 로직
-    if (btnSave) {
-        btnSave.addEventListener('click', () => {
-            console.log("저장 버튼 클릭됨"); 
-            
-            const article = window.currentArticle;
-            
-            if (localStorage.getItem('isLoggedIn') !== 'true') {
-                if(confirm('로그인이 필요한 기능입니다. 로그인하시겠습니까?')) {
-                    location.href = 'login.html';
-                }
-                return;
-            }
-            
-            let contentToSave = generatedItineraryText;
-            if (!contentToSave || contentToSave.trim() === "") {
-                if (aiContentBox && aiContentBox.innerHTML.trim() !== "") {
-                    contentToSave = aiContentBox.innerHTML;
-                }
-            }
-
-            if (!article || !contentToSave) {
-                alert('저장할 코스 내용이 없습니다. 먼저 코스를 생성해 주세요.');
-                return;
-            }
-
-            try {
-                let saved = [];
-                const rawData = localStorage.getItem('myItineraries');
-                if (rawData) {
-                    try {
-                        saved = JSON.parse(rawData);
-                    } catch (e) {
-                        saved = [];
-                    }
-                }
-
-                const newItinerary = {
-                    id: Date.now().toString(),
-                    articleId: article.id,
-                    title: `${article.title} - AI 추천 코스`,
-                    content: contentToSave,
-                    date: new Date().toLocaleDateString(),
-                    image: article.imageUrl
-                };
-
-                saved.unshift(newItinerary);
-                localStorage.setItem('myItineraries', JSON.stringify(saved));
-                
-                alert('마이페이지에 저장되었습니다!');
-                
-                // 2중 체크: 이동
-                setTimeout(() => {
-                    window.location.href = 'mypage.html';
-                }, 100);
-
-            } catch (err) {
-                console.error("저장 중 에러 발생:", err);
-                alert("저장하는 동안 오류가 발생했습니다: " + err.message);
-            }
-        });
-    }
-</script>
 </body>
 </html>

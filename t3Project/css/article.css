@@ -1,8 +1,195 @@
-/* Hero Header */
+/* ==========================================================================
+   네비게이션 바 ( index.css 에서 퍼옴 )
+   ========================================================================== */
+.nav-icon-btn {
+    color: var(--gray-900);
+}
+.nav-right-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2.5rem !important;
+  margin-left: 3rem;
+}
+
+/* 개별 메뉴 아이템 (아이콘+텍스트 세로 정렬) */
+/* 1. 기본 상태 */
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--white);
+  gap: 5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* 2. 마우스를 올렸을 때 (Hover) */
+.nav-item:hover {
+  color: #3b82f6 !important;
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* 3. 아이콘에도 색상 변화 같이 적용 */
+.nav-item:hover .nav-icon {
+  stroke: #3b82f6 !important;
+  filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.2));
+}
+
+/* 4. 텍스트 라벨 (아이콘 아래 글자) */
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+  /* 호버 시 부모(.nav-item)의 색상을 따라가도록 설정 */
+  color: inherit;
+}
+
+/* 하단 점(::after) 제거: 혹시 기존 코드에 있다면 공백으로 덮어씌움 */
+.nav-item::after {
+  display: none !important;
+}
+
+.nav-item:hover::after {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* 아이콘 크기 고정 */
+.nav-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* 텍스트 라벨 스타일 */
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* 찜하기 숫자 배지 위치 */
+.icon-rel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: #ef4444; /* 빨간색 */
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.navbar .nav-item,
+.navbar .btn-login {
+  color: var(--gray-900) !important;
+}
+
+/* nav-icon-btn 아이콘 항상 검은색 - 모든 상태에서 적용 */
+.navbar .nav-icon-btn i {
+  color: #1f2937 !important;
+  stroke: #1f2937 !important;
+}
+
+.navbar.scrolled .nav-icon-btn i {
+  color: #1f2937 !important;
+  stroke: #1f2937 !important;
+}
+
+.navbar.scrolled {
+  background: #ffffff !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gray-200) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-inner {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto !important;
+  padding: 0 0.5rem !important;
+}
+
+/* ==========================================================================
+   로그인 버튼 커스텀 (Primary 스타일)
+   ========================================================================== */
+.btn-login {
+  /* 배경색: 세련된 브라이트 블루 (원하시는 색상 코드로 변경 가능) */
+  /* background-color: #ffd850 !important; 밝은 노란색 */
+  /* background-color: #3b82f6 !important; 브라이트 블루 */
+  /* background-color: #2563eb !important; 세련된 파란색 */
+  /* color: #ffffff !important; */
+
+  /* 형태 및 간격 */
+  padding: 10px 24px;
+  border-radius: 50px; /* 완전한 라운드 형태 */
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+
+  /* 정렬 및 효과 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* 마우스를 올렸을 때 (Hover) */
+.btn-login:hover {
+  background-color: #2563eb !important; /* 조금 더 진한 파란색 */
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
+  color: #ffffff !important;
+}
+
+/* 마우스를 클릭할 때 (Active) */
+.btn-login:active {
+  transform: translateY(0);
+}
+
+/* index.css 우측 네비게이션 끝 */
+
+/* ==========================================================================
+   Hero, 본문 사진 부분
+   ========================================================================== */
 .hero-header {
-    height: 55vh;
+    height: 60vh;
     position: relative;
     width: 100%;
+    margin-top: 70px;
 }
 .hero-header img {
     width: 100%;
@@ -22,67 +209,9 @@
     color: var(--white);
 }
 
-/* 스크롤 시 스타일 (JS로 .scrolled 클래스 추가 필요) */
-.navbar.scrolled {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--gray-200);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Host Info */
-.host-info-bar {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--gray-100);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-}
-.host-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-.host-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--gray-200);
-}
-.host-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: var(--accent);
-    font-weight: 700;
-}
-
-/* Content */
-.article-container {
-    padding-top: 2rem;
-    /* Extra bottom padding so fixed bottom bar doesn't cover content */
-    padding-bottom: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-}
-
-.article-desc {
-    color: var(--gray-600);
-    margin-bottom: 2rem;
-    font-size: 1.125rem;
-    line-height: 1.6;
-}
-
-.tags-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2.5rem;
-}
+/* ==========================================================================
+   태그 부분
+   ========================================================================== */
 .tag {
     display: inline-block;
     padding: 0.5rem 1rem;
@@ -101,6 +230,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-bottom: 2.5rem;
 
     max-height: 4.2em; /* 약 2줄 */
     overflow: hidden;
@@ -137,15 +267,25 @@
 .tag-toggle {
     background: none;
     border: none;
-    color: var(--accent);
+    color: #3b82f6;
     cursor: pointer;
     padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.35s ease;
+    transition: all 0.35s ease;
     opacity: 0;
     animation: tagToggleFadeIn 0.35s ease forwards;
+}
+
+.tag-toggle i {
+    color: #3b82f6;
+    transition: transform 0.35s ease, color 0.35s ease, stroke 0.35s ease;
+}
+
+.tag-toggle:hover i {
+    color: #2563eb;
+    stroke: #2563eb;
 }
 
 /* fade-in 애니메이션 */
@@ -160,13 +300,61 @@
     }
 }
 
-/* advise-content */
-#advise-content {
-    display: flex;
+/* ==========================================================================
+   아티클 컨텐츠 부분
+   ========================================================================== */
+.article-container {
+    padding-top: 2rem;
+    /* Extra bottom padding so fixed bottom bar doesn't cover content */
+    padding-bottom: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
+.article-desc {
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
 
-/* Accordion */
+/* ==========================================================================
+   호스트 부분
+   ========================================================================== */
+.host-info-bar {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+.host-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.host-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--gray-200);
+}
+.host-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   아코디언 공통
+   소개, 장소, 호스트, 후기, 추천여행지
+   ========================================================================== */
 .accordion-wrapper {
     border-top: 1px solid var(--gray-100);
     padding-top: 2rem;
@@ -210,58 +398,13 @@
     line-height: 1.6;
 }
 
-/* AI Specifics */
-.ai-loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--indigo-600);
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    margin: 0 auto 1rem auto;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-/* Bottom Bar */
-.bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: var(--white);
-    border-top: 1px solid var(--gray-100);
-    padding: 1rem 1.5rem;
-    padding-bottom: calc(1rem + var(--safe-area-bottom));
+/* ==========================================================================
+   추천 여행지 관련 
+   ========================================================================== */
+#advise-content {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 40;
-    box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05);
-}
-.price-tag {
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: var(--gray-900);
-}
-.like-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--gray-200);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-}
-.btn-reserve {
-    background-color: var(--accent);
-    color: var(--white);
-    padding: 0.75rem 2rem;
-    border-radius: var(--radius-xl);
-    font-weight: 700;
 }
 
-/* 추천 여행지 관련 css */
 .advise-carousel {
     display: flex;
     align-items: center;
@@ -269,16 +412,26 @@
     position: relative; 
 }
 .advise-prev, .advise-next {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    border: 1px solid var(--gray-200);
-    background: var(--white);
+    width: 44px;
+    height: 44px;
+    border-radius: 50px;
+    border: none;
+    background: #3b82f6;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    color: #ffffff;
 }
+
+.advise-prev:hover, .advise-next:hover {
+    background-color: #2563eb;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
+}
+
+
 .advise-prev {
     position: absolute;
     left: 8px;
@@ -401,4 +554,6 @@
     }
 }
 
-/* 추천 여행지 CSS 끝 */
+/* ==========================================================================
+   추천 여행지 관련 끝
+   ========================================================================== */

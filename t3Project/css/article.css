@@ -22,6 +22,14 @@
     color: var(--white);
 }
 
+/* 스크롤 시 스타일 (JS로 .scrolled 클래스 추가 필요) */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Host Info */
 .host-info-bar {
     padding: 1rem 1.5rem;
@@ -54,6 +62,7 @@
 /* Content */
 .article-container {
     padding-top: 2rem;
+    /* Extra bottom padding so fixed bottom bar doesn't cover content */
     padding-bottom: 2rem;
     max-width: 800px;
     margin: 0 auto;
@@ -82,12 +91,11 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--gray-600);
-
-    pointer-events: none; /* 상세 페이지에서 클릭 비활성화 */
+    pointer-events: none;
     cursor: default;
 }
 
-/* 태그 더보기 CSS (2줄 + 하단 그라데이션 블러) */
+/* 태그 더보기 CSS*/
 .tags-container {
     position: relative;
     display: flex;
@@ -119,7 +127,7 @@
 
 /* 펼친 상태 */
 .tags-container.open {
-    max-height: 500px;
+    max-height: 500px; 
 }
 
 .tags-container.open::after {
@@ -130,11 +138,12 @@
     background: none;
     border: none;
     color: var(--accent);
-    font-size: 0.85rem;
-    font-weight: 600;
     cursor: pointer;
-
-    transform: translateY(-1.2rem); /* margin 한계 회피: 실제 위치 이동 */
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.35s ease;
     opacity: 0;
     animation: tagToggleFadeIn 0.35s ease forwards;
 }
@@ -251,3 +260,145 @@
     border-radius: var(--radius-xl);
     font-weight: 700;
 }
+
+/* 추천 여행지 관련 css */
+.advise-carousel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative; 
+}
+.advise-prev, .advise-next {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.advise-prev {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 6;
+}
+
+.advise-next {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 6;
+}
+.advise-viewport {
+    overflow: hidden;
+    flex: 1;
+    padding: 0 56px;
+    box-sizing: border-box;
+}
+.advise-track {
+    display: flex;
+    gap: 1.25rem; 
+    transition: transform 0.4s ease;
+    will-change: transform;
+    margin: 1rem 0;
+}
+.advise-track .content-inner {
+    flex: 0 0 calc((100% - 1.25rem) / 2);
+    box-sizing: border-box;
+    height: 220px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    position: relative;
+    color: var(--white);
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+.advise-track .content-inner .advise-card-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(0deg, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0) 55%);
+}
+
+.advise-track .content-inner .advise-card-info {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    background: rgba(0,0,0,0.48);
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    pointer-events: auto;
+}
+
+.advise-track .content-inner .advise-card-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.advise-track .content-inner .advise-card-info p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.advise-track .content-inner {
+    text-decoration: none;
+}
+.advise-track .content-inner:focus {
+    outline: 3px solid rgba(59,130,246,0.35);
+    outline-offset: 2px;
+}
+.advise-track .content-inner h4 {
+    margin: 0 0 6px 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+}
+.advise-track .content-inner p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.9);
+}
+
+@media (max-width: 900px) {
+    .advise-track .content-inner {
+        flex: 0 0 calc((100% - 1rem) / 2);
+        height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .advise-track .content-inner {
+        flex: 0 0 100%;
+        height: 220px;
+        border-radius: 10px;
+    }
+}
+
+/* 추천 여행지 CSS 끝 */

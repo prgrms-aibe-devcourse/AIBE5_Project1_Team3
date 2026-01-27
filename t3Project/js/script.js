@@ -293,26 +293,61 @@ function renderArticles() {
   const filtered = shuffledArticles.filter((article) => {
     let matchesFilter = true;
     if (activeFilters.size > 0) {
-      matchesFilter = Array.from(activeFilters).some((filterId) => {
-        if (filterId === "domestic") {
-          const domesticKeywords = ["국내", "한국", "제주", "서울", "부산", "강원", "경주", "여수"];
-          return article.tags.some((tag) => domesticKeywords.includes(tag));
-        }
-        if (filterId === "overseas") {
-          const overseasKeywords = ["해외", "태국", "일본", "베트남", "방콕", "다낭", "오사카", "도쿄", "유럽"];
-          return article.tags.some((tag) => overseasKeywords.includes(tag));
-        }
-        if (filterId === "nature") {
-          const natureKeywords = ["자연", "힐링", "바다", "숲", "캠핑", "산", "안유진"];
-          return article.tags.some((tag) => natureKeywords.includes(tag));
-        }
-        if (filterId === "city") {
-          const cityKeywords = ["도시", "야경", "도심", "시티", "핫플", "트렌디"];
-          return article.tags.some((tag) => cityKeywords.includes(tag));
-        }
-        return false;
-      });
+  matchesFilter = Array.from(activeFilters).some((filterId) => {
+    // 1. 국내 여행 (태극기 아이콘)
+    if (filterId === "domestic") {
+      const domesticKeywords = [
+        "국내", "한국", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천", 
+        "여수", "강원도", "경기도", "경포대", "주문진", "초당", "황리단길", "대릉원", "불국사",
+        "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장", "전통한식"
+      ];
+      // 태그에 위 키워드가 '포함'되어 있는지 검사 (ex: "강릉여행"도 걸리게 함)
+      return article.tags.some((tag) => domesticKeywords.some(key => tag.includes(key)));
     }
+
+    // 2. 해외 여행
+    if (filterId === "overseas") {
+      const overseasKeywords = [
+        "해외", "태국", "일본", "베트남", "방콕", "오사카", "교토", "고베", "나랏마사", "도톤보리", 
+        "난바", "우메다", "신사이바시", "코사무이", "괌", "GUAM", "유럽", "스페인", "방콕사원", 
+        "짜뚜짝", "카오산", "실롬", "와불상", "천수각", "도요토미", "간사이", "투몬", "하갓냐"
+      ];
+      return article.tags.some((tag) => overseasKeywords.some(key => tag.includes(key)));
+    }
+
+    // 3. 자연 & 힐링 (지락실 멤버 및 숙소 테마)
+    if (filterId === "nature") {
+      const natureKeywords = [
+        "자연", "힐링", "바다", "숲", "산", "계곡", "호수", "섬", "해변", "산책", "목장", 
+        "휴양", "온천", "정글", "트리하우스", "안유진", "이영지", "미미", "이은지", "지락실",
+        "지구오락실", "나영석", "촌캉스", "감성숙소", "독채", "펜션", "글램핑", "캠핑", "노을", "석양"
+      ];
+      return article.tags.some((tag) => natureKeywords.some(key => tag.includes(key)));
+    }
+
+    // 4. 도시 & 핫플 (쇼핑 및 야경)
+    if (filterId === "city") {
+      const cityKeywords = [
+        "도시", "도심", "시티", "야경", "핫플", "트렌디", "쇼핑", "백화점", "편집숍", 
+        "인스타감성", "랜드마크", "복합문화공간", "야시장", "번화가", "MZ세대", "SNS핫플",
+        "비즈니스", "역세권", "가성비호텔", "5성급", "호캉스", "면세점", "기념품"
+      ];
+      return article.tags.some((tag) => cityKeywords.some(key => tag.includes(key)));
+    }
+
+    // 5. 음식 & 맛집 (미식 키워드)
+    if (filterId === "food") {
+      const foodKeywords = [
+        "맛집", "카페", "음식", "디저트", "브런치", "레스토랑", "베이커리", "먹방", 
+        "미식", "로컬맛집", "커피", "스테이크", "라멘", "타코야키", "순두부", "호떡",
+        "팟타이", "푸팟퐁커리", "오코노미야키", "돈카츠", "간식", "야식", "디너", "조식"
+      ];
+      return article.tags.some((tag) => foodKeywords.some(key => tag.includes(key)));
+    }
+
+    return false;
+  });
+}
 
     let matchesSearch = true;
     if (searchQuery) {
@@ -415,6 +450,25 @@ function updateFavoriteUI() {
     }
   });
 }
+/**
+ * 헤더 '찜' 버튼 클릭 핸들러
+ */
+function handleFavoriteClick() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  if (!isLoggedIn) {
+    // 1. 로그인이 안 되어 있으면 즉시 경고창을 띄웁니다.
+    alert("로그인이 필요한 서비스입니다.");
+    // 2. 필요하다면 여기서 바로 로그인 페이지로 보낼 수도 있습니다.
+    location.href = "login.html"; 
+  } else {
+    // 3. 로그인 상태라면 마이페이지의 좋아요 목록으로 이동합니다.
+    location.href = "mypage.html?tab=favorites";
+  }
+}
+
+// 전역에서 사용할 수 있게 등록
+window.handleFavoriteClick = handleFavoriteClick;
 /* 상세 페이지 전용 좋아요 UI 업데이트 */
 function updateDetailLikeUI(articleId) {
   const likeBtn = document.getElementById("detail-like-btn");
@@ -427,6 +481,9 @@ function updateDetailLikeUI(articleId) {
 
   const isFav = favorites.includes(articleId);
   const icon = likeBtn.querySelector("svg");
+
+
+  
 
   if (isFav) {
     likeBtn.style.backgroundColor = "var(--red-500)";
@@ -533,12 +590,6 @@ function switchTab(tabId) {
     console.log(tabId + " 탭으로 전환됨");
 }
 
-function scrollToContent() {
-  const contentSection = document.getElementById("content");
-  if (contentSection) {
-    contentSection.scrollIntoView({ behavior: "smooth" });
-  }
-}
 function scrollToContent() {
   const contentSection = document.getElementById("content");
   if (contentSection) {

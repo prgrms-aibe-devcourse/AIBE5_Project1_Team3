@@ -1,3 +1,5 @@
+
+
 body { font-family: 'Inter', sans-serif; }
         
 /* Custom Scrollbar */
@@ -14,7 +16,7 @@ body { font-family: 'Inter', sans-serif; }
 .custom-pin { background: transparent; border: none; }
 
 .planner-marker {
-    background-color: #2563eb;
+    background-color: #5889f5;
     color: white;
     border: 2px solid white;
     border-radius: 50%;
@@ -26,89 +28,109 @@ body { font-family: 'Inter', sans-serif; }
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s;
 }
+
 .planner-marker:hover {
     transform: scale(1.1);
 }
-
-/* Animations */
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-.slide-in { animation: slideIn 0.3s ease-out forwards; }
 
 /* Leaflet Routing Machine - Hide Control Panel */
 .leaflet-routing-container {
     display: none !important;
 }
 
-/* --- NEW FILTER STYLES --- */
-.filter-grid {
+/* --- NEW FILTER STYLES (필터 스타일) --- */
+.filter-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Space between rows */
+    gap: 0.75rem;
 }
 
-.filter-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.filter-label {
-    width: 80px;
-    flex-shrink: 0;
-    font-size: 0.75rem; /* text-xs */
-    font-weight: 600;
-    color: #6b7280; /* text-gray-500 */
-    padding-top: 0.3rem; /* Align with first row of tags */
-}
-
-.filter-options {
-    flex: 1;
+/* Main Category Buttons Row */
+.main-filter-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1rem; /* row-gap col-gap */
+    gap: 0.5rem;
 }
 
-.filter-tag-btn {
-    font-size: 0.8rem;
-    color: #4b5563; /* text-gray-600 */
-    transition: all 0.2s;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    padding: 0.1rem 0.3rem;
-    border-radius: 4px;
+/* Sub-tags Container (Keywords) */
+.sub-filter-container {
+    background-color: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
 }
 
-.filter-tag-btn:hover {
-    color: #2563eb; /* blue-600 */
-    background-color: #eff6ff;
-}
-
-.filter-tag-btn.active {
-    color: #2563eb;
-    font-weight: 700;
-    background-color: #dbeafe; /* blue-100 */
-}
-
-.filter-toggle-area {
+.sub-tags-grid {
     display: flex;
-    justify-content: center;
-    padding-top: 1rem;
-    border-top: 1px solid #f3f4f6;
-    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
 }
 
-.filter-toggle-btn {
-    font-size: 0.8rem;
-    color: #3b82f6;
+.sub-tag-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sub-tag-btn:hover {
+    border-color: #0ea5e9;
+    color: #0ea5e9;
+}
+
+.sub-tag-btn.active {
+    background-color: #f0f9ff;
+    border-color: #0ea5e9;
+    color: #0284c7;
+    font-weight: 600;
+}
+
+/* Expand/Collapse Button */
+.filter-expand-btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e2e8f0;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.25rem;
-    cursor: pointer;
 }
-.filter-toggle-btn:hover {
-    text-decoration: underline;
+.filter-expand-btn:hover {
+    color: #64748b;
+}
+
+/* Modal Heart Icon Animation */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+.heart-active {
+    animation: heartBeat 0.3s;
+}
+
+/* --- DRAG AND DROP STYLES --- */
+.draggable-item {
+    cursor: grab;
+    touch-action: none;
+}
+.draggable-item:active {
+    cursor: grabbing;
+}
+.draggable-item.dragging {
+    opacity: 0.5;
+    background-color: #eff6ff;
+    border: 2px dashed #3b82f6;
 }

@@ -1,18 +1,20 @@
 
-// --- STATE ---
+
+// --- 상태 관리 (STATE) ---
 let state = {
-    query: '',
-    activeFilters: [], 
-    selectedId: null,
-    isSidebarOpen: true,
-    filteredArticles: [...ARTICLES],
-    // State for Planner
+    query: '', // 검색어
+    activeFilters: [], // 활성화된 메인 필터 ID 목록
+    activeSubTags: [], // 활성화된 서브 태그(키워드) 목록
+    selectedId: null, // 현재 선택된 아티클 ID
+    isSidebarOpen: true, // 사이드바 열림 상태
+    filteredArticles: typeof ARTICLES !== 'undefined' ? [...ARTICLES] : [], // 필터링된 결과
+    // 플래너(계획) 모드 상태
     isPlanMode: false,
-    itinerary: [], 
-    // State for Filters
-    isFilterExpanded: false,
-    // Embed mode
+    itinerary: [], // 계획에 담긴 아티클 ID 목록
+    // 임베드 모드 여부
     isEmbed: false,
+    // 필터 확장 상태
+    isFilterExpanded: false
 };
 
 let map = null;
@@ -20,38 +22,67 @@ let markers = {};
 let routeLayerGroup = null; 
 let routingControl = null;
 
-// --- FILTER CATEGORIES CONFIGURATION ---
-const TAG_CATEGORIES = [
-    { 
-        id: 'style', 
-        label: '여행 스타일', 
-        tags: ['자연', '도시', '문화', '휴식', '액티비티', '사진', '쇼핑', '맛집', '모험', '웰니스', '호캉스', '관광지'] 
+// --- 필터 정의 (FILTER DEFINITIONS) ---
+// 요청된 키워드 로직 적용
+const FILTER_DEFINITIONS = {
+    domestic: {
+        id: 'domestic',
+        label: '국내여행',
+        keywords: [
+            "국내", "한국", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천",
+            "여수", "강원도", "경기도", "경포대", "주문진", "초당", "황리단길", "대릉원", "불국사",
+            "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장", "전통한식"
+        ]
     },
-    { 
-        id: 'companion', 
-        label: '누구와 함께', 
-        tags: ['가족', '친구', '혼자', '커플', '아이', '부모님'] 
+    overseas: {
+        id: 'overseas',
+        label: '해외여행',
+        keywords: [
+            "해외", "태국", "일본", "베트남", "방콕", "오사카", "교토", "고베", "나랏마사", "도톤보리",
+            "난바", "우메다", "신사이바시", "코사무이", "괌", "GUAM", "유럽", "스페인", "방콕사원",
+            "짜뚜짝", "카오산", "실롬", "와불상", "천수각", "도요토미", "간사이", "투몬", "하갓냐"
+        ]
     },
-    { 
-        id: 'region', 
-        label: '지역', 
-        tags: ['국내', '해외', '태국', '방콕', '가평', '춘천', '코사무이', '강릉', '오사카', '경주', '괌', '수랏타니'] 
+    nature: {
+        id: 'nature',
+        label: '자연/힐링',
+        keywords: [
+            "자연", "힐링", "바다", "숲", "산", "계곡", "호수", "섬", "해변", "산책", "목장",
+            "휴양", "온천", "정글", "트리하우스", "안유진", "이영지", "미미", "이은지", "지락실",
+            "지구오락실", "나영석", "촌캉스", "감성숙소", "독채", "펜션", "글램핑", "캠핑", "노을", "석양"
+        ]
     },
-    { 
-        id: 'amenity', 
-        label: '편의시설', 
-        tags: ['주차', '대중교통', '반려동물', '와이파이', '식당', '카페'] 
+    city: {
+        id: 'city',
+        label: '도시/야경',
+        keywords: [
+            "도시", "도심", "시티", "야경", "핫플", "트렌디", "쇼핑", "백화점", "편집숍",
+            "인스타감성", "랜드마크", "복합문화공간", "야시장", "번화가", "MZ세대", "SNS핫플",
+            "비즈니스", "역세권", "가성비호텔", "5성급", "호캉스", "면세점", "기념품"
+        ]
     },
-    { 
-        id: 'theme', 
-        label: '테마', 
-        tags: ['로맨틱', '힐링', '이색', '로컬', '유명', '숨은 명소', '핫플', '럭셔리', '지락실', '방송출연'] 
+    food: {
+        id: 'food',
+        label: '맛집/카페',
+        keywords: [
+            "맛집", "카페", "음식", "디저트", "브런치", "레스토랑", "베이커리", "먹방",
+            "미식", "로컬맛집", "커피", "스테이크", "라멘", "타코야키", "순두부", "호떡",
+            "팟타이", "푸팟퐁커리", "오코노미야키", "돈카츠", "간식", "야식", "디너", "조식"
+        ]
     }
+};
+
+const FILTER_BUTTONS = [
+    { id: 'all', label: '전체' },
+    ...Object.values(FILTER_DEFINITIONS)
 ];
 
-// --- INITIALIZATION ---
+// --- 초기화 (INITIALIZATION) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Check for embed mode
+    // 독도 데이터 추가 (data.js 수정 불가 시 주입)
+    injectDokdoData();
+
+    // 임베드 모드 확인
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'embed') {
         state.isEmbed = true;
@@ -64,22 +95,59 @@ document.addEventListener('DOMContentLoaded', () => {
     initMap();
     render();
     
-    // Handle initial article selection from URL
+    // URL에서 초기 아티클 선택 처리
     const id = params.get('id');
     if (id) {
-        // Slight delay to allow map to initialize dimensions
+        // 맵 사이즈 초기화를 위한 약간의 지연
         setTimeout(() => selectArticle(id), 100);
     }
     
-    // Initialize icons if library is loaded
+    // 아이콘 라이브러리 로드 확인
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 });
 
-// Expose functions to window for HTML onclick handlers
+/**
+ * 독도 데이터 주입 함수
+ */
+function injectDokdoData() {
+    if (typeof ARTICLES === 'undefined') return;
+
+    // 이미 존재하는지 확인
+    if (ARTICLES.some(a => a.title === '독도')) return;
+
+    const dokdo = {
+        id: 'dokdo-kr',
+        title: '독도',
+        subtitle: '대한민국의 아름다운 영토',
+        description: '독도는 동해의 해저 지형 중 울릉분지의 북쪽 가장자리에 형성된 화산섬입니다. 천연기념물 제336호로 지정되어 있으며, 역사적, 지리적, 국제법적으로 명백한 대한민국의 고유 영토입니다.',
+        content: `독도는 동도와 서도를 비롯한 89개의 부속 도서로 이루어져 있습니다. 괭이갈매기, 바다제비 등 다양한 조류의 번식지이며, 독특한 식생을 자랑합니다. 
+        
+        날씨가 좋을 때는 울릉도에서 육안으로 볼 수 있습니다. 입도하기 위해서는 미리 입도 신청을 해야 하며, 기상 상황에 따라 접안이 어려울 수 있습니다. 대한민국의 아침이 가장 먼저 시작되는 곳입니다.`,
+        imageUrl: 'https://images.unsplash.com/photo-1548685913-fe6678b4268c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', // 바위섬 이미지 대체
+        lat: 37.2429, 
+        lng: 131.8669,
+        category: '자연',
+        tags: ['국내', '자연', '관광지', '섬', '역사', '독도'],
+        address: '경상북도 울릉군 울릉읍 독도이사부길 55',
+        rating: 5.0,
+        reviews: [
+            { user: '대한민국만세', rating: 5, text: '가슴이 웅장해지는 우리 땅 독도!' },
+            { user: '여행자', rating: 5, text: '날씨가 좋아서 접안 성공했습니다. 정말 아름답네요.' }
+        ],
+        mainTags: ['자연', '역사', '대한민국']
+    };
+
+    ARTICLES.push(dokdo);
+    // state.filteredArticles 업데이트
+    state.filteredArticles = [...ARTICLES];
+}
+
+// HTML onclick 핸들러를 위해 함수를 window 객체에 노출
 window.resetApp = resetApp;
 window.toggleFilter = toggleFilter;
+window.toggleSubTag = toggleSubTag;
 window.toggleFilterExpand = toggleFilterExpand;
 window.selectArticle = selectArticle;
 window.toggleSidebar = toggleSidebar;
@@ -87,55 +155,115 @@ window.closeModal = closeModal;
 window.togglePlanMode = togglePlanMode;
 window.clearItinerary = clearItinerary;
 window.toggleItineraryItem = toggleItineraryItem;
-window.moveItineraryItem = moveItineraryItem;
+window.toggleFavoriteInMap = toggleFavoriteInMap; // 찜하기 기능 추가
+window.savePlanToMyPage = savePlanToMyPage; // 마이페이지 계획 추가
+window.showLoginModal = showLoginModal; // 모달 함수 노출
 
-// --- LOGIC ---
+// --- 로직 (LOGIC) ---
+
+/**
+ * 맵 초기화 함수
+ */
 function initMap() {
     map = L.map('map', {
-        center: [13.75, 100.5], 
-        zoom: 5,
+        center: [36.5, 127.5], // 한국 중심으로 변경 (독도 추가로 인해)
+        zoom: 6,
         minZoom: 2,
         zoomControl: false
     });
     
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    // Use Google Maps with Korean labels (hl=ko)
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m&hl=ko&x={x}&y={y}&z={z}', {
+    // 구글 맵 레이어 사용 (한국어 설정 hl=ko, 지역 설정 gl=KR - 동해 표기)
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&hl=ko&gl=KR&x={x}&y={y}&z={z}', {
         attribution: '&copy; Google Maps',
         maxZoom: 20
     }).addTo(map);
 
     routeLayerGroup = L.layerGroup().addTo(map);
+
+
 }
 
-function toggleFilter(tagName) {
-    if (state.activeFilters.includes(tagName)) {
-        state.activeFilters = state.activeFilters.filter(t => t !== tagName);
+
+/**
+ * 메인 필터 토글 함수
+ */
+function toggleFilter(filterId) {
+    if (filterId === 'all') {
+        state.activeFilters = [];
+        state.activeSubTags = []; // 서브 태그 초기화
     } else {
-        state.activeFilters.push(tagName);
+        if (state.activeFilters.includes(filterId)) {
+             state.activeFilters = state.activeFilters.filter(id => id !== filterId);
+        } else {
+             state.activeFilters = [filterId];
+        }
+        
+        state.activeSubTags = [];
+        state.isFilterExpanded = false; // 필터 변경 시 접힘 상태로 리셋
     }
     updateFilteredArticles();
 }
 
-function toggleFilterExpand() {
-    state.isFilterExpanded = !state.isFilterExpanded;
-    renderFilters();
+/**
+ * 서브 태그(키워드) 토글 함수
+ */
+function toggleSubTag(keyword) {
+    if (state.activeSubTags.includes(keyword)) {
+        state.activeSubTags = state.activeSubTags.filter(k => k !== keyword);
+    } else {
+        state.activeSubTags.push(keyword);
+    }
+    updateFilteredArticles();
 }
 
+/**
+ * 서브 태그 영역 펼치기/접기 토글
+ */
+function toggleFilterExpand() {
+    state.isFilterExpanded = !state.isFilterExpanded;
+    renderFilters(); // UI 다시 그리기
+}
+
+/**
+ * 아티클이 특정 필터 조건을 만족하는지 확인
+ */
+function checkArticleMatchesFilter(article, filterId) {
+    const definition = FILTER_DEFINITIONS[filterId];
+    if (!definition) return false;
+    
+    // 태그에 키워드가 포함되어 있는지 검사
+    return article.tags.some(tag => definition.keywords.some(key => tag.includes(key)));
+}
+
+/**
+ * 필터링된 아티클 업데이트
+ */
 function updateFilteredArticles() {
     state.filteredArticles = ARTICLES.filter(article => {
-        let matchesFilter = true;
+        // 1. 메인 필터 체크
+        let mainFilterMatch = true;
         if (state.activeFilters.length > 0) {
-            const articleTagsString = article.tags.join(' ') + ' ' + article.category;
-            matchesFilter = state.activeFilters.some(filter => articleTagsString.includes(filter));
+            mainFilterMatch = state.activeFilters.some(filterId => checkArticleMatchesFilter(article, filterId));
         }
-        return matchesFilter;
+
+        // 2. 서브 태그(키워드) 체크
+        let subTagMatch = true;
+        if (state.activeSubTags.length > 0) {
+            subTagMatch = state.activeSubTags.some(tag => {
+                return article.tags.some(t => t.includes(tag)) || 
+                       article.title.includes(tag) || 
+                       article.description.includes(tag);
+            });
+        }
+
+        return mainFilterMatch && subTagMatch;
     });
     
     render();
 
-    // Auto-fit bounds based on filtered items
+    // 필터링된 항목에 맞춰 지도 줌/이동
     if (map && state.filteredArticles.length > 0 && !state.isEmbed) {
         const bounds = L.latLngBounds(state.filteredArticles.map(a => [a.lat, a.lng]));
         map.flyToBounds(bounds, { 
@@ -146,7 +274,11 @@ function updateFilteredArticles() {
     }
 }
 
-// --- PLANNER LOGIC ---
+// --- 플래너(계획) 로직 (PLANNER LOGIC) ---
+
+/**
+ * 계획 모드 토글
+ */
 function togglePlanMode() {
     state.isPlanMode = !state.isPlanMode;
     closeModal();
@@ -156,7 +288,7 @@ function togglePlanMode() {
         routeLayerGroup.clearLayers();
     }
     
-    // Cleanup routing control
+    // 라우팅 컨트롤 제거
     if (routingControl) {
         map.removeControl(routingControl);
         routingControl = null;
@@ -169,6 +301,53 @@ function togglePlanMode() {
     render();
 }
 
+/**
+ * 마이페이지로 계획 저장 및 이동 함수
+ */
+function savePlanToMyPage() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        // 기존 alert 대신 커스텀 모달 호출
+        showLoginModal('여행 계획을 저장하려면<br>로그인이 필요합니다.');
+        return;
+    }
+
+    if (state.itinerary.length === 0) {
+        alert('선택된 여행지가 없습니다. 지도에서 여행지를 선택해주세요.');
+        return;
+    }
+
+    const selectedArticles = state.itinerary.map(id => ARTICLES.find(a => a.id === id)).filter(Boolean);
+    const mainLocation = selectedArticles[0].tags.find(t => ['태국', '방콕', '가평', '춘천', '강릉', '오사카', '경주', '괌', '독도', '울릉도'].includes(t)) || '여행';
+    
+    const newTrip = {
+        id: Date.now().toString(),
+        title: `나의 ${mainLocation} 여행 계획`,
+        location: mainLocation,
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: new Date().toISOString().split('T')[0],
+        selectedPlaces: selectedArticles.map(item => ({
+            id: item.id,
+            title: item.title,
+            imageUrl: item.imageUrl,
+            category: item.category,
+            address: item.address
+        })),
+        isAI: false,
+        memo: '지도에서 생성된 계획입니다.'
+    };
+
+    const currentTrips = JSON.parse(localStorage.getItem('myTrips') || '[]');
+    currentTrips.push(newTrip);
+    localStorage.setItem('myTrips', JSON.stringify(currentTrips));
+
+    alert('마이페이지에 계획이 추가되었습니다.');
+    window.location.href = 'mypage.html';
+}
+
+/**
+ * 일정 초기화
+ */
 function clearItinerary() {
     state.itinerary = [];
     if (routeLayerGroup) routeLayerGroup.clearLayers();
@@ -179,6 +358,9 @@ function clearItinerary() {
     render();
 }
 
+/**
+ * 일정 항목 토글 (추가/삭제)
+ */
 function toggleItineraryItem(id) {
     const index = state.itinerary.indexOf(id);
     if (index === -1) {
@@ -191,25 +373,12 @@ function toggleItineraryItem(id) {
     render();
 }
 
-function moveItineraryItem(id, direction) {
-    const index = state.itinerary.indexOf(id);
-    if (index === -1) return;
-    
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= state.itinerary.length) return;
-    
-    const temp = state.itinerary[index];
-    state.itinerary[index] = state.itinerary[newIndex];
-    state.itinerary[newIndex] = temp;
-    
-    updateItineraryRoute();
-    render();
-}
-
+/**
+ * 지도상에 경로 업데이트
+ */
 function updateItineraryRoute() {
     if (routeLayerGroup) routeLayerGroup.clearLayers();
     
-    // Remove old routing control
     if (routingControl) {
         map.removeControl(routingControl);
         routingControl = null;
@@ -232,7 +401,7 @@ function updateItineraryRoute() {
         }
     });
 
-    // Draw numbered markers for all stops
+    // 모든 경유지에 번호 마커 표시
     allStops.forEach(stop => {
         const icon = createCoursePinIcon(stop.globalIndex, stop.name);
         const marker = L.marker([stop.lat, stop.lng], { 
@@ -241,11 +410,10 @@ function updateItineraryRoute() {
         }).addTo(routeLayerGroup);
     });
 
-    // Draw route line if more than 1 stop
+    // 2개 이상의 경유지가 있을 때 경로 그리기
     if (allStops.length > 1) {
         const waypoints = allStops.map(s => L.latLng(s.lat, s.lng));
         
-        // Use Leaflet Routing Machine
         if (typeof L.Routing !== 'undefined') {
             routingControl = L.Routing.control({
                 waypoints: waypoints,
@@ -256,24 +424,22 @@ function updateItineraryRoute() {
                     styles: [{color: '#2563eb', opacity: 0.8, weight: 6}]
                 },
                 plan: L.Routing.plan(waypoints, {
-                    createMarker: function() { return null; }, // Suppress default markers, we use our own
+                    createMarker: function() { return null; }, 
                     addWaypoints: false,
                     draggableWaypoints: false
                 }),
                 addWaypoints: false,
                 draggableWaypoints: false,
                 fitSelectedRoutes: false,
-                show: false, // Hide instructions panel
+                show: false, 
                 containerClassName: 'hidden-routing-container'
             }).addTo(map);
             
-            // Explicitly hide container if needed by direct style manipulation
-            // (CSS usually handles this but this is a fallback)
             if (routingControl.getContainer()) {
                 routingControl.getContainer().style.display = 'none';
             }
         } else {
-            console.warn("Leaflet Routing Machine is not loaded. Add the library to your HTML.");
+            console.warn("Leaflet Routing Machine 라이브러리가 로드되지 않았습니다.");
         }
 
         const bounds = L.latLngBounds(waypoints);
@@ -283,8 +449,11 @@ function updateItineraryRoute() {
     }
 }
 
-// --- EXPLORER LOGIC ---
+// --- 탐색기 로직 (EXPLORER LOGIC) ---
 
+/**
+ * 아티클 선택 처리
+ */
 function selectArticle(id) {
     if (state.isPlanMode) {
         toggleItineraryItem(id);
@@ -296,14 +465,12 @@ function selectArticle(id) {
     
     const article = ARTICLES.find(a => a.id === id);
     if (article && map) {
-        // Ensure no route layers are active in explorer mode
         if (routeLayerGroup) routeLayerGroup.clearLayers();
         if (routingControl) {
              map.removeControl(routingControl);
              routingControl = null;
         }
 
-        // Just fly to the location
         map.flyTo([article.lat, article.lng], 15, {
             duration: 1.5,
             easeLinearity: 0.25
@@ -317,13 +484,16 @@ function selectArticle(id) {
     }
 }
 
+/**
+ * 앱 상태 초기화
+ */
 function resetApp() {
     state.query = '';
     state.activeFilters = [];
+    state.activeSubTags = [];
     state.selectedId = null;
     state.isPlanMode = false;
     state.itinerary = [];
-    state.isFilterExpanded = false;
     
     state.filteredArticles = [...ARTICLES];
     
@@ -335,11 +505,14 @@ function resetApp() {
         routingControl = null;
     }
     
-    if (map) map.flyTo([13.75, 100.5], 5);
+    if (map) map.flyTo([36.5, 127.5], 6); // 독도 포함 한국 전체 뷰로 리셋
     closeModal();
     render();
 }
 
+/**
+ * 사이드바 토글
+ */
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -354,7 +527,139 @@ function toggleSidebar() {
     }
 }
 
-// --- VISUAL ASSETS ---
+/**
+ * 모달 내 찜하기(하트) 토글 기능
+ */
+function toggleFavoriteInMap(id) {
+    // 1. 로그인 체크
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (!isLoggedIn) {
+        // 기존 confirm 대신 커스텀 모달 호출
+        showLoginModal();
+        return;
+    }
+
+    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const index = favorites.indexOf(id);
+    
+    if (index === -1) {
+        favorites.push(id);
+    } else {
+        favorites.splice(index, 1);
+    }
+    
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+    
+    // 버튼 및 아이콘 UI 즉시 업데이트
+    const btn = document.getElementById(`modal-heart-btn-${id}`);
+    const icon = document.getElementById(`modal-heart-icon-${id}`);
+
+    if (btn && icon) {
+        if (index === -1) { 
+            // 찜 추가됨 (활성 상태: 흰 배경 + 빨간 하트)
+            // 기존 비활성 스타일 제거
+            btn.classList.remove('bg-black/20', 'hover:bg-black/40', 'text-white');
+            // 활성 스타일 추가 (흰 배경)
+            btn.classList.add('bg-white', 'hover:bg-white/90');
+            
+            // 아이콘 활성 스타일 (빨간색)
+            icon.classList.remove('text-white');
+            icon.classList.add('fill-red-500', 'text-red-500', 'heart-active');
+            
+            setTimeout(() => icon.classList.remove('heart-active'), 300);
+
+        } else { 
+            // 찜 삭제됨 (비활성 상태: 투명 검정 배경 + 흰 테두리 하트)
+            // 활성 스타일 제거
+            btn.classList.remove('bg-white', 'hover:bg-white/90');
+            // 비활성 스타일 복구
+            btn.classList.add('bg-black/20', 'hover:bg-black/40', 'text-white');
+            
+            // 아이콘 비활성 스타일 (흰색)
+            icon.classList.remove('fill-red-500', 'text-red-500');
+            icon.classList.add('text-white');
+        }
+    }
+}
+
+// --- DRAG AND DROP LOGIC (드래그 앤 드롭) ---
+let draggedItem = null;
+
+function addDragListeners() {
+    const list = document.getElementById('itinerary-list');
+    const items = list.querySelectorAll('.draggable-item');
+
+    items.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('drop', handleDrop);
+        item.addEventListener('dragend', handleDragEnd);
+    });
+}
+
+function handleDragStart(e) {
+    draggedItem = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.id);
+    setTimeout(() => this.classList.add('dragging'), 0);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const list = document.getElementById('itinerary-list');
+    const afterElement = getDragAfterElement(list, e.clientY);
+    
+    if (afterElement == null) {
+        list.appendChild(draggedItem);
+    } else {
+        list.insertBefore(draggedItem, afterElement);
+    }
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    draggedItem = null;
+    
+    // Update itinerary array based on new DOM order
+    const list = document.getElementById('itinerary-list');
+    const newItinerary = [];
+    list.querySelectorAll('.draggable-item').forEach(item => {
+        newItinerary.push(item.dataset.id);
+    });
+    
+    state.itinerary = newItinerary;
+    updateItineraryRoute();
+    renderHeader(); // Re-render to update index numbers
+    
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// --- 시각적 자산 (VISUAL ASSETS) ---
+
+/**
+ * 코스용 핀 아이콘 생성
+ */
 function createCoursePinIcon(index, locationName) {
     return L.divIcon({
         className: 'custom-course-pin',
@@ -376,15 +681,18 @@ function createCoursePinIcon(index, locationName) {
     });
 }
 
+/**
+ * 일반 아티클 핀 아이콘 생성
+ */
 function createArticlePinIcon(isSelected, title, planIndex = -1) {
     const pinColor = isSelected ? 'bg-blue-600 border-white text-white' : 'bg-white border-white text-blue-600';
     const stemColor = isSelected ? 'bg-blue-600' : 'bg-white shadow-sm';
     
+    // 1. 요청사항 반영: 핀 선택 시 체크 표시 제거 (planIndex가 있을 때만 번호 표시, 그 외엔 뱃지 없음)
     const badge = isSelected && planIndex > -1 ? 
         `<div class="absolute -top-2 -right-2 w-5 h-5 bg-green-500 rounded-full text-white flex items-center justify-center text-[10px] border-2 border-white shadow-sm z-50">
             ${planIndex + 1}
-        </div>` : 
-        (isSelected ? `<div class="absolute -top-2 -right-2 w-5 h-5 bg-green-500 rounded-full text-white flex items-center justify-center text-[10px] border-2 border-white shadow-sm z-50"><i data-lucide="check" class="w-3 h-3"></i></div>` : '');
+        </div>` : ''; 
 
     return L.divIcon({
         html: `
@@ -405,7 +713,8 @@ function createArticlePinIcon(isSelected, title, planIndex = -1) {
     });
 }
 
-// --- RENDERING ---
+// --- 렌더링 (RENDERING) ---
+
 function render() {
     renderHeader();
     renderFilters();
@@ -416,96 +725,151 @@ function render() {
     }
 }
 
+/**
+ * 헤더 렌더링 (플래너 모드 버튼 변경 및 드래그 앤 드롭 지원)
+ */
 function renderHeader() {
-    // If in embed mode, header is hidden via sidebar hiding, so no need for complex logic here
     if (state.isEmbed) return;
 
     const plannerHeader = document.getElementById('planner-header');
-    const toggleBtn = document.getElementById('plan-toggle-btn');
+    const planToggleBtnContainer = document.getElementById('plan-btn-container');
     const itineraryList = document.getElementById('itinerary-list');
     
+    if (!planToggleBtnContainer) return;
+
     if (state.isPlanMode) {
         plannerHeader.classList.remove('hidden');
-        toggleBtn.classList.add('bg-blue-600', 'text-white', 'border-transparent');
-        toggleBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200'); // Matches new border in HTML
-        toggleBtn.innerHTML = '<i data-lucide="x" class="w-4 h-4"></i> 계획 종료';
         
+        // 플래너 모드일 때 버튼 변경
+        planToggleBtnContainer.innerHTML = `
+            <div class="flex flex-col gap-2">
+                <button onclick="savePlanToMyPage()" class="w-full py-3 bg-blue-600 border border-transparent text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-md">
+                    <i data-lucide="save" class="w-4 h-4"></i> 마이 페이지 계획 추가
+                </button>
+                <button onclick="togglePlanMode()" class="w-full py-2 bg-white border border-gray-200 text-red-500 rounded-xl text-sm font-bold hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="x" class="w-4 h-4"></i> 계획 종료
+                </button>
+            </div>
+        `;
+        
+        // 6. 요청사항: X 버튼 왼쪽, 드래그 핸들 오른쪽, 드래그 기능 추가
         if (state.itinerary.length === 0) {
-            itineraryList.innerHTML = '<p class="text-xs text-gray-400 italic py-1">Select places on the map to build your route.</p>';
+            itineraryList.innerHTML = '<p class="text-xs text-gray-400 italic py-1">지도에서 장소를 선택하여 경로를 만드세요.</p>';
         } else {
             itineraryList.innerHTML = state.itinerary.map((id, index) => {
                 const article = ARTICLES.find(a => a.id === id);
-                return `<div class="group flex items-center gap-2 py-2 border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors px-1 rounded-lg">
+                return `<div class="group draggable-item flex items-center gap-2 py-2 border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors px-1 rounded-lg cursor-grab active:cursor-grabbing" draggable="true" data-id="${article.id}">
                     <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 shadow-sm">${index + 1}</span>
                     <span class="truncate text-xs text-gray-700 font-medium flex-1">${article.title}</span>
                     
-                    <div class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
-                        <button onclick="moveItineraryItem('${article.id}', -1)" class="p-1 hover:bg-white rounded text-gray-400 hover:text-blue-600 disabled:opacity-20" ${index === 0 ? 'disabled' : ''}>
-                            <i data-lucide="chevron-up" class="w-3 h-3"></i>
-                        </button>
-                        <button onclick="moveItineraryItem('${article.id}', 1)" class="p-1 hover:bg-white rounded text-gray-400 hover:text-blue-600 disabled:opacity-20" ${index === state.itinerary.length - 1 ? 'disabled' : ''}>
-                            <i data-lucide="chevron-down" class="w-3 h-3"></i>
-                        </button>
-                    </div>
+                    <!-- X Button (Moved to left of action area) -->
+                    <button onclick="toggleItineraryItem('${article.id}')" class="p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors mr-1">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
 
-                    <button onclick="toggleItineraryItem('${article.id}')" class="ml-1 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <!-- Drag Handle (Replaces Sort Buttons) -->
+                    <div class="p-1 text-gray-400 hover:text-gray-600 cursor-grab">
+                        <i data-lucide="grip-vertical" class="w-3 h-3"></i>
+                    </div>
                 </div>`;
             }).join('');
+            
+            // Drag listeners 연결
+            addDragListeners();
         }
 
     } else {
         plannerHeader.classList.add('hidden');
-        toggleBtn.classList.remove('bg-blue-600', 'text-white', 'border-transparent');
-        toggleBtn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
-        toggleBtn.innerHTML = '<i data-lucide="map" class="w-4 h-4"></i> 여행 계획하기';
+        // 기본 '여행 계획하기' 버튼으로 복구
+        planToggleBtnContainer.innerHTML = `
+            <button id="plan-toggle-btn" onclick="togglePlanMode()" class="w-full py-3 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm">
+                <i data-lucide="map" class="w-4 h-4"></i> 여행 계획하기
+            </button>
+        `;
     }
 }
 
+/**
+ * 필터 렌더링
+ */
 function renderFilters() {
     if (state.isEmbed) return;
 
     const container = document.getElementById('filter-container');
     if (!container) return;
 
-    // Determine which categories to show
-    const visibleCategories = state.isFilterExpanded 
-        ? TAG_CATEGORIES 
-        : TAG_CATEGORIES.slice(0, 3); // Show first 3 by default
+    const mainButtonsHTML = FILTER_BUTTONS.map(btn => {
+        const isActive = state.activeFilters.length === 0 && btn.id === 'all' 
+                         || state.activeFilters.includes(btn.id);
+        
+        let btnClass = "px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border shadow-sm cursor-pointer ";
+        if (isActive) {
+            btnClass += "bg-sky-500 text-white border-sky-500 hover:bg-sky-600";
+        } else {
+            btnClass += "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-sky-300 hover:text-sky-600";
+        }
 
-    const rowsHTML = visibleCategories.map(cat => {
-        const tagsHTML = cat.tags.map(tag => {
-            const isActive = state.activeFilters.includes(tag);
-            return `<button onclick="toggleFilter('${tag}')" 
-                           class="filter-tag-btn ${isActive ? 'active' : ''}">
-                ${tag}
-            </button>`;
-        }).join('');
-
-        return `
-        <div class="filter-row">
-            <div class="filter-label">${cat.label}</div>
-            <div class="filter-options">
-                ${tagsHTML}
-            </div>
-        </div>
-        `;
+        return `<button onclick="toggleFilter('${btn.id}')" class="${btnClass}">${btn.label}</button>`;
     }).join('');
 
-    // Add Toggle Button
-    const toggleHTML = `
-        <div class="filter-toggle-area">
-            <button onclick="toggleFilterExpand()" class="filter-toggle-btn">
-                ${state.isFilterExpanded ? '접기' : `더 많은 필터 보기 (${TAG_CATEGORIES.length - 3}개)`}
-                <i data-lucide="${state.isFilterExpanded ? 'chevron-up' : 'chevron-down'}" class="w-3 h-3"></i>
-            </button>
-        </div>
-    `;
+    let subTagsHTML = '';
+    let currentKeywords = [];
+    
+    if (state.activeFilters.length > 0) {
+        state.activeFilters.forEach(filterId => {
+            if (FILTER_DEFINITIONS[filterId]) {
+                currentKeywords = [...currentKeywords, ...FILTER_DEFINITIONS[filterId].keywords];
+            }
+        });
+    }
+    
+    currentKeywords = [...new Set(currentKeywords)];
 
-    // Apply specific class for styling instead of grid
-    container.className = "filter-grid";
-    container.innerHTML = rowsHTML + toggleHTML;
+    if (currentKeywords.length > 0) {
+        const visibleCount = state.isFilterExpanded ? currentKeywords.length : 10;
+        const visibleKeywords = currentKeywords.slice(0, visibleCount);
+        const hasMore = currentKeywords.length > 10;
+
+        const tags = visibleKeywords.map(keyword => {
+            const isActive = state.activeSubTags.includes(keyword);
+            const activeClass = isActive ? "active" : "";
+            return `<button onclick="toggleSubTag('${keyword}')" class="sub-tag-btn ${activeClass}">#${keyword}</button>`;
+        }).join('');
+
+        let toggleBtn = '';
+        if (hasMore) {
+            const icon = state.isFilterExpanded ? 'chevron-up' : 'chevron-down';
+            const text = state.isFilterExpanded ? '접기' : '더보기';
+            toggleBtn = `
+                <div class="filter-expand-btn" onclick="toggleFilterExpand()">
+                    <span>${text}</span>
+                    <i data-lucide="${icon}" class="w-3 h-3"></i>
+                </div>
+            `;
+        }
+
+        subTagsHTML = `
+            <div class="sub-filter-container w-full mt-2">
+                <div class="sub-tags-grid">
+                    ${tags}
+                </div>
+                ${toggleBtn}
+            </div>
+        `;
+    }
+
+    container.className = "flex flex-col w-full";
+    container.innerHTML = `
+        <div class="main-filter-row">
+            ${mainButtonsHTML}
+        </div>
+        ${subTagsHTML}
+    `;
 }
 
+/**
+ * 아티클 리스트 렌더링
+ */
 function renderArticlesList() {
     if (state.isEmbed) return;
 
@@ -518,7 +882,7 @@ function renderArticlesList() {
     count.innerText = state.filteredArticles.length;
     
     if (state.filteredArticles.length === 0) {
-        list.innerHTML = '<div class="text-center py-8 text-gray-400 text-sm">No articles found.</div>';
+        list.innerHTML = '<div class="text-center py-8 text-gray-400 text-sm">검색 결과가 없습니다.</div>';
         emptyState.classList.remove('hidden');
     } else {
         emptyState.classList.add('hidden');
@@ -548,10 +912,7 @@ function renderArticlesList() {
                             <i data-lucide="star" class="w-3 h-3 fill-current"></i>
                             <span>${article.rating}</span>
                         </div>
-                        <div class="flex items-center gap-1 text-xs text-gray-400">
-                            <i data-lucide="map-pin" class="w-3 h-3"></i>
-                            <span>${article.category}</span>
-                        </div>
+                        <!-- undefined가 표시되던 카테고리/맵핀 부분 제거됨 -->
                     </div>
                 </div>
             </div>`;
@@ -559,6 +920,9 @@ function renderArticlesList() {
     }
 }
 
+/**
+ * 맵 마커 렌더링
+ */
 function renderMarkers() {
     if (!map) return;
     
@@ -568,10 +932,6 @@ function renderMarkers() {
     markers = {};
 
     state.filteredArticles.forEach(article => {
-        // In embed mode, only show the marker for the selected article, or all markers?
-        // Showing all markers is better for context, but highlighting the selected one.
-        // If query/filters change (impossible in embed mode as UI is hidden), markers update.
-        
         let isSelected;
         let icon;
         
@@ -594,11 +954,37 @@ function renderMarkers() {
     });
 }
 
+/**
+ * 상세 모달 열기
+ * 1. 핑을 선택했을 때 1번 png가 보이는데 하트 뒷 배경이 클릭했을 때 화이트로 바뀜 (수정: 버튼 배경 고정)
+ * 2. undefined가 data.js의 카테고리를 가져오는데 아예 없애버리기 (수정: 카테고리 태그 제거)
+ * 3. 제목 위에 undefined도 없애기 (수정: 위와 동일)
+ * 4. 상세 정보 밑에 description 정보 가져오는 것도 없애기 (수정: description 제거)
+ * 5. 자세히 보기 버튼 우측으로 이동 (수정: justify-end)
+ */
 function openModal(article) {
     if (state.isEmbed) return;
 
     const modal = document.getElementById('detail-modal');
     if (!modal) return;
+
+    // 현재 찜 상태 확인
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const isFav = favorites.includes(article.id);
+    
+    // 버튼 스타일 설정 (찜 여부에 따라 배경색/투명도 변경)
+    // 찜함(True): 흰색 배경 (3번 png 스타일)
+    // 찜안함(False): 검정 투명 배경 + 흰색 텍스트 (1번 png 스타일)
+    const btnClass = isFav 
+        ? 'bg-white hover:bg-white/90' 
+        : 'bg-black/20 hover:bg-black/40 text-white';
+
+    // 아이콘 스타일 설정
+    // 찜함(True): 빨간색 채우기 + 빨간색 선
+    // 찜안함(False): 흰색 선 (채우기 없음)
+    const iconClass = isFav
+        ? 'fill-red-500 text-red-500'
+        : 'text-white';
 
     modal.classList.remove('hidden');
     modal.classList.add('slide-in');
@@ -608,12 +994,18 @@ function openModal(article) {
     <div class="relative h-64 shrink-0">
         <img src="${article.imageUrl}" alt="${article.title}" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        
+        <!-- 하트 아이콘 버튼 -->
+        <button id="modal-heart-btn-${article.id}" onclick="toggleFavoriteInMap('${article.id}')" class="absolute top-4 left-4 w-10 h-10 ${btnClass} backdrop-blur-sm rounded-full flex items-center justify-center transition-colors cursor-pointer z-10 group shadow-sm" title="찜하기">
+            <i id="modal-heart-icon-${article.id}" data-lucide="heart" class="w-5 h-5 transition-all ${iconClass} group-hover:scale-110 duration-200"></i>
+        </button>
+
         <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-colors cursor-pointer z-10">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
         <div class="absolute bottom-4 left-6 right-6 text-white">
             <div class="flex items-center gap-2 mb-2 text-xs font-medium opacity-90">
-                <span class="bg-blue-600 px-2 py-0.5 rounded text-[10px] tracking-wider uppercase">${article.category}</span>
+                <!-- 2, 3: 카테고리 태그 제거 -->
                 <span class="flex items-center gap-1">
                     <i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400"></i> ${article.rating}
                 </span>
@@ -639,8 +1031,8 @@ function openModal(article) {
              </div>
 
             <div>
-                <h3 class="font-bold text-gray-900 text-lg mb-2">상세 정보</h3>
-                <p class="text-gray-600 leading-relaxed text-sm mb-4">${article.description}</p>
+                <h3 class="font-bold text-gray-900 text-lg mb-2">소개</h3>
+                <!-- 4: description 정보 제거 -->
                 <div class="text-gray-600 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl border border-gray-100">
                     ${article.content || '상세 내용이 없습니다.'}
                 </div>
@@ -648,7 +1040,7 @@ function openModal(article) {
 
             <div class="space-y-4">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2 text-lg">
-                    <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i> 생생 후기
+                    <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i> 후기
                 </h3>
                 <div class="space-y-3">
                     ${article.reviews.length > 0 ? article.reviews.map(r => `
@@ -670,7 +1062,8 @@ function openModal(article) {
         </div>
     </div>
 
-    <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-between shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <!-- 5: 자세히 보기 버튼 우측으로 이동 (justify-end) -->
+    <div class="p-4 bg-white border-t border-gray-100 flex items-center justify-end shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button onclick="window.location.href='article.html?id=${article.id}'" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg flex items-center gap-2">
             자세히 보기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
@@ -682,6 +1075,9 @@ function openModal(article) {
     }
 }
 
+/**
+ * 모달 닫기
+ */
 function closeModal() {
     const modal = document.getElementById('detail-modal');
     if (modal) {
@@ -696,4 +1092,27 @@ function closeModal() {
         
         render(); 
     }
+}
+
+/**
+ * 로그인 유도 모달 생성 함수 (요청된 함수)
+ */
+function showLoginModal(message = '찜하기 기능은 로그인 후<br>이용하실 수 있습니다.') {
+    // 이미 모달이 떠있으면 중복 생성 방지
+    if (document.getElementById('login-confirm-modal')) return;
+
+    const modalHtml = `
+        <div id="login-confirm-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:#fff; padding:30px; border-radius:15px; text-align:center; width:90%; max-width:320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <div style="font-size:40px; margin-bottom:15px;">🔒</div>
+                <h3 style="margin-bottom:10px; font-size:18px;">로그인이 필요합니다</h3>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">${message}</p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
+                    <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">로그인하기</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
 }

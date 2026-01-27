@@ -361,7 +361,7 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    color: var(--accent);
+    color: var(--yellow-400);
     font-weight: 700;
 }
 
@@ -379,6 +379,7 @@
 .accordion-item {
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-2xl);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     overflow: hidden;
 }
 .accordion-item.ai-section {

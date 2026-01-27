@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 챗봇 (클라이언트 전용)</title>
+    <link rel="stylesheet" href="css.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="chat-container" id="chat-container">
+        <div class="message ai">
+            <div class="message-bubble">안녕하세요! 저는 여행 플래너 입니다. 무엇을 도와드릴까요?</div>
+        </div>
+    </div>
+
+    <div class="input-container" id="input-container">
+        <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
+        <button id="send-button">전송</button>
+        <div class="loading-spinner" id="loading-spinner"></div>
+    </div>
+
+    <script src="../js/data.js"></script>
+
+    <script type="module" src="AIchat.js"></script>
+
+    <script>
+        // [의도] 기존에 HTML 안에 있던 fetch()나 sendMessage() 함수는 
+        // 이제 모두 AIchat.js로 옮겨갔으므로 여기서는 선언하지 않습니다.
+        console.log("챗봇 인터페이스 로드 완료. 데이터 상태:", ARTICLES ? "성공" : "실패");
+    </script>
+</body>
+</html>

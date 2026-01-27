@@ -471,28 +471,6 @@
         function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('profile-modal').classList.remove('flex'); }
         function saveProfile(e) { e.preventDefault(); const newProfile = { name: document.getElementById('edit-name').value, email: document.getElementById('edit-email').value, bio: document.getElementById('edit-bio').value, avatarSeed: currentAvatarSeed }; localStorage.setItem('userProfile', JSON.stringify(newProfile)); loadProfile(); closeProfileModal(); alert('프로필이 저장되었습니다.'); }
         function refreshAvatar() { currentAvatarSeed = Math.random().toString(36).substring(7); document.getElementById('edit-profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentAvatarSeed}`; }
-
-        // [Modified] New Logout Handler
-        function handleLogout() {
-            if(confirm('정말 로그아웃 하시겠습니까?')) {
-                // 1. [기본] 가짜 로그인 정보 삭제
-                localStorage.removeItem('isLoggedIn');
-                
-                // 2. [Supabase] 저장된 인증 토큰 강제 삭제
-                // (팀원이 설정한 Supabase 세션 키를 찾아서 모두 지웁니다)
-                Object.keys(localStorage).forEach((key) => {
-                    if (key.startsWith('sb-')) {
-                        localStorage.removeItem(key);
-                    }
-                });
-
-                // 3. 알림 및 이동
-                alert('로그아웃 되었습니다.');
-                
-                // 4. 메인으로 이동 (뒤로가기 막기 위해 replace 사용)
-                location.replace('index.html'); 
-            }
-        }
         
         // --- 3. Tab Logic ---
         function switchTab(tabId) {

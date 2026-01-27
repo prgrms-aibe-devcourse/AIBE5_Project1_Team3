@@ -29,6 +29,7 @@ marked.setOptions({ renderer: renderer });
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 꽤나 필요
 const API_KEYS = [
+
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -251,7 +252,6 @@ function buildPrompt(msg, articles) {
         ${msg}
 
         위 데이터를 기반으로 답변하고, 추천하는 장소가 있다면 반드시 아래 형식의 JSON을 답변 끝에 포함해줘:
-        {"recommend_id": "장소ID"}
     `;
 }
 
@@ -333,9 +333,11 @@ function dispatchPlanToParent(tripData) {
     trips.push(data);
     localStorage.setItem("myTrips", JSON.stringify(trips));
 
-    alert("[AI] 마이페이지에 저장 완료");
     console.log("[AI] 일정 저장완료 :", data)
+    parent.emitUI("toast" ,"[쪼꼬마이] 추천일정 저장완료!");
 }
+
+
 
 // memo 생성 로직
 function updateTripMemo(location, theme, selectedPlaces) {

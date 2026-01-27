@@ -375,57 +375,57 @@
             }
 
             // 공유하기 버튼
-            const shareBtn = document.getElementById('share-btn');
-            function handleShare() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: art.title,
-                        subtitle: art.subtitle,
-                        url: window.location.href
-                    }).catch(() => {});
-                } else {
-                    navigator.clipboard.writeText(window.location.href)
-                    .then(() => {
-                        if (typeof showToast === 'function') {
-                            showToast('링크가 클립보드에 복사되었습니다.', 'success');
-                        } else {
-                            alert('링크가 클립보드에 복사되었습니다.');
-                        }
-                    });
-                }
-            }
+            // const shareBtn = document.getElementById('share-btn');
+            // function handleShare() {
+            //     if (navigator.share) {
+            //         navigator.share({
+            //             title: art.title,
+            //             subtitle: art.subtitle,
+            //             url: window.location.href
+            //         }).catch(() => {});
+            //     } else {
+            //         navigator.clipboard.writeText(window.location.href)
+            //         .then(() => {
+            //             if (typeof showToast === 'function') {
+            //                 showToast('링크가 클립보드에 복사되었습니다.', 'success');
+            //             } else {
+            //                 alert('링크가 클립보드에 복사되었습니다.');
+            //             }
+            //         });
+            //     }
+            // }
             // shareBtn.onclick = () => {
             //     handleShare();
             // };
 
             // Like button logic
-            const likeBtn = document.getElementById('detail-like-btn');
-            const heartIcon = likeBtn.querySelector('i');
-            likeBtn.dataset.id = articleId;
+            // const likeBtn = document.getElementById('detail-like-btn');
+            // const heartIcon = likeBtn.querySelector('i');
+            // likeBtn.dataset.id = articleId;
             
-            function updateLikeState() {
-                if (typeof getFavorites !== 'function') return;
+            // function updateLikeState() {
+            //     if (typeof getFavorites !== 'function') return;
 
-                const favorites = getFavorites();
-                const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
-                if (!heartIcon) return;
+            //     const favorites = getFavorites();
+            //     const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
+            //     if (!heartIcon) return;
 
-                if (favorites.includes(articleId)) {
-                    likeBtn.style.backgroundColor = 'var(--red-500)';
-                    likeBtn.style.borderColor = 'var(--red-500)';
-                    heartIcon.style.color = 'white';
-                    heartIcon.setAttribute('fill', 'currentColor');
-                } else {
-                    heartIcon.setAttribute('fill', 'none');
-                }
-            }
+            //     if (favorites.includes(articleId)) {
+            //         likeBtn.style.backgroundColor = 'var(--red-500)';
+            //         likeBtn.style.borderColor = 'var(--red-500)';
+            //         heartIcon.style.color = 'white';
+            //         heartIcon.setAttribute('fill', 'currentColor');
+            //     } else {
+            //         heartIcon.setAttribute('fill', 'none');
+            //     }
+            // }
 
-            likeBtn.onclick = () => {
-                if (typeof toggleFavorite === 'function') {
-                    toggleFavorite(articleId);
-                    updateLikeState();
-                }
-            };
+            // likeBtn.onclick = () => {
+            //     if (typeof toggleFavorite === 'function') {
+            //         toggleFavorite(articleId);
+            //         updateLikeState();
+            //     }
+            // };
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
             updateLikeState();

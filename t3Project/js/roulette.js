@@ -1,4 +1,5 @@
 
+
 // --- Configuration ---
 const CANVAS_SIZE = 500;
 const COLORS = [
@@ -18,6 +19,7 @@ let isSpinning = false;
 let spinVelocity = 0;
 let animationFrameId = null;
 let currentMode = 'preset'; // 'preset' or 'custom'
+let currentWinnerItem = null;
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('spinBtn').addEventListener('click', spinWheel);
     
     if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Check login status for custom mode
+    checkLoginState();
 });
 
 // --- Mode & Setup Logic ---
@@ -45,6 +50,10 @@ window.setMode = function(mode) {
         // Show Input Screen
         stepMode.classList.add('hidden');
         stepInput.classList.remove('hidden');
+        // Update Header Text
+        const backText = document.getElementById('header-back-text');
+        if (backText) backText.textContent = '게임 선택으로';
+        
         // 찜한 목록 불러오기
         loadFavoritesIntoInputs();
     }
@@ -59,12 +68,30 @@ window.goBackToMode = function() {
     document.getElementById('step-mode').classList.remove('hidden');
     document.getElementById('step-input').classList.add('hidden');
     
+    // Reset Header Text
+    const backText = document.getElementById('header-back-text');
+    if (backText) backText.textContent = '메인페이지 돌아가기';
+    
     // Reset State
     isSpinning = false;
     currentAngle = 0;
     cancelAnimationFrame(animationFrameId);
+}
+
+window.handleHeaderBack = function() {
+    const gameView = document.getElementById('game-view');
+    const stepInput = document.getElementById('step-input');
     
-    // Reset Inputs to default if needed, but keeping them might be better UX
+    const isGameActive = !gameView.classList.contains('hidden');
+    const isInputActive = !stepInput.classList.contains('hidden');
+    
+    if (isGameActive || isInputActive) {
+        // If in game or input mode, go back to selection
+        goBackToMode();
+    } else {
+        // If in selection mode, go to main page
+        window.location.href = 'index.html';
+    }
 }
 
 window.startGameWithCustom = function() {
@@ -98,6 +125,10 @@ function switchToGameView() {
     
     setupView.classList.add('hidden');
     gameView.classList.remove('hidden');
+    
+    // Update Header Text
+    const backText = document.getElementById('header-back-text');
+    if (backText) backText.textContent = '게임 선택으로';
     
     // Small delay for fade-in effect
     setTimeout(() => {
@@ -315,39 +346,104 @@ function determineWinner() {
 
 // --- Modal Logic ---
 function showResult(item) {
+    currentWinnerItem = item;
     const modal = document.getElementById('winnerModal');
     const modalContent = document.getElementById('modalContent');
     const img = document.getElementById('winnerImage');
-    const iconPlaceholder = document.getElementById('winnerIconPlaceholder');
-    const title = document.getElementById('winnerTitle');
-    const desc = document.getElementById('winnerDesc');
-    const linkBtn = document.getElementById('winnerLink');
-
-    title.textContent = item.title;
+    const customBg = document.getElementById('winnerCustomBg');
+    const customTitle = document.getElementById('winnerCustomTitle');
+    
+    const titleEl = document.getElementById('winnerTitle');
+    const subtitleEl = document.getElementById('winnerSubtitle');
+    const tagsEl = document.getElementById('winnerTags');
 
     if (item.isCustom) {
-        // Custom Mode Layout
+        // Custom Mode
         img.classList.add('hidden');
-        iconPlaceholder.classList.remove('hidden');
-        desc.textContent = "직접 입력하신 선택지 중 당첨된 결과입니다!";
-        linkBtn.classList.add('hidden'); // No link for custom input
+        customBg.classList.remove('hidden');
+        customTitle.textContent = item.title;
+        
+        // Hide preset specific elements
+        titleEl.textContent = '';
+        subtitleEl.textContent = '';
+        tagsEl.innerHTML = '';
+        
+        // Hide detail hint
+        const hint = modalContent.querySelector('.view-details-hint');
+        if(hint) hint.classList.add('hidden');
+        
     } else {
-        // Preset Mode Layout
-        img.src = item.imageUrl;
+        // Preset Mode
         img.classList.remove('hidden');
-        iconPlaceholder.classList.add('hidden');
-        desc.textContent = item.subtitle || item.description;
-        linkBtn.href = `article.html?id=${item.id}`;
-        linkBtn.classList.remove('hidden');
+        customBg.classList.add('hidden');
+        img.src = item.imageUrl;
+        
+        titleEl.textContent = item.title;
+        subtitleEl.textContent = item.subtitle || item.description;
+        
+        // Render Main Tags (Sky Blue)
+        if (item.mainTags && item.mainTags.length > 0) {
+            tagsEl.innerHTML = item.mainTags.map(tag => `
+                <span class="px-3 py-1 rounded-full bg-sky-500 text-white text-xs font-bold shadow-sm border border-sky-400/50 backdrop-blur-sm">
+                    ${tag}
+                </span>
+            `).join('');
+        } else {
+            tagsEl.innerHTML = '';
+        }
+
+        // Show detail hint
+        const hint = modalContent.querySelector('.view-details-hint');
+        if(hint) hint.classList.remove('hidden');
     }
 
     modal.classList.remove('hidden');
+    
+    // Icon refresh
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
     // Animation delay
     setTimeout(() => {
         modal.classList.remove('opacity-0');
         modalContent.classList.remove('scale-90');
         modalContent.classList.add('scale-100');
     }, 10);
+
+    // --- Firework Effect on both sides ---
+    if (typeof confetti === 'function') {
+        // Function to create firework bursts
+        function firework(xOrigin) {
+            var count = 200;
+            var defaults = {
+                origin: { y: 0.7, x: xOrigin },
+                zIndex: 9999 // Ensure it's above the modal
+            };
+            
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
+        // Trigger fireworks from left and right side of the screen/modal area
+        setTimeout(() => {
+            firework(0.15); // Left side
+            firework(0.85); // Right side
+        }, 100);
+    }
+}
+
+window.goToArticle = function() {
+    if (currentWinnerItem && !currentWinnerItem.isCustom) {
+        window.location.href = `article.html?id=${currentWinnerItem.id}`;
+    }
 }
 
 window.closeModal = function() {
@@ -366,4 +462,59 @@ window.closeModal = function() {
 window.resetRoulette = function() {
     closeModal();
     // Do not reset data, just allow spinning again with same items
+}
+
+// --- Login Logic (Added) ---
+function checkLoginState() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const lockOverlay = document.getElementById('mode-custom-lock');
+    const contentDiv = document.getElementById('mode-custom-content');
+    const customBtn = document.getElementById('mode-custom-btn');
+
+    if (!isLoggedIn) {
+        // Not logged in: Show lock, dim content
+        if (lockOverlay) lockOverlay.classList.remove('hidden');
+        if (contentDiv) contentDiv.classList.add('opacity-40', 'blur-[1px]');
+        
+        if (customBtn) {
+            // Remove normal hover effects to indicate disabled state visual
+            customBtn.classList.remove('hover:-translate-y-2', 'hover:shadow-[0_20px_40px_rgb(236,72,153,0.1)]', 'hover:border-pink-500/30');
+            // Change onclick behavior
+            customBtn.onclick = function(e) {
+                e.preventDefault();
+                showLoginModal('찜한 목록을 이용하려면<br>로그인이 필요합니다.');
+            };
+        }
+    } else {
+        // Logged in: Ensure normal state
+        if (lockOverlay) lockOverlay.classList.add('hidden');
+        if (contentDiv) contentDiv.classList.remove('opacity-40', 'blur-[1px]');
+        // Restore onclick
+        if (customBtn) {
+             customBtn.onclick = function() { setMode('custom'); };
+        }
+    }
+}
+
+window.showLoginModal = function(message = '로그인이 필요합니다.') {
+    if (document.getElementById('login-confirm-modal')) return;
+
+    const modalHtml = `
+        <div id="login-confirm-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+            <div class="bg-white rounded-2xl p-8 text-center max-w-sm w-[90%] shadow-2xl transform transition-all scale-100">
+                <div class="text-4xl mb-4">🔒</div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">로그인이 필요합니다</h3>
+                <p class="text-sm text-gray-500 mb-6 leading-relaxed">${message}</p>
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('login-confirm-modal').remove()" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-colors text-sm">
+                        나중에
+                    </button>
+                    <button onclick="location.href='login.html'" class="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold transition-colors text-sm shadow-md">
+                        로그인하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
 }

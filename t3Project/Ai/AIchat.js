@@ -27,15 +27,8 @@ marked.setOptions({ renderer: renderer });
 
 // [의도] 서버에서 관리하던 5개의 키를 클라이언트로 이동 (로테이션 관리)
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
-// node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 많이 필요
+// node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 꽤나 필요
 const API_KEYS = [
-    "AIzaSyCTQVXTZIEx6n3VZW45LhlfHtD969acigg",
-    "AIzaSyAZpjdlPsxE01tTDOPsUIGqjrIIPxKx89s",
-    "AIzaSyBGC0EhLiQHhcdzlKx8CfsVoqS5qJBoTC4",
-    "AIzaSyCdi4Kkc1rnMHprARvuA5bQZxjq1InhAmk",
-    "AIzaSyBiOajm7EHxr5NPgfITmQhEQY3NpshXAuM",
-    "AIzaSyAO5O8BnzT-W_lRJiy2Wa8REIo7dw9S6jA",
-    "AIzaSyDYNDho5OHevdYZ1ppAZ5kczXiTxbECbgk"
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -49,7 +42,7 @@ Do not use code blocks.
 The response must strictly follow this schema:
 
 {
-  "ui_text": "string (markdown allowed)",
+  "ui_text": "string (markdown use, 3~4day)",
   "tripData": {
     "title": "string",
     "location": "string",
@@ -57,10 +50,10 @@ The response must strictly follow this schema:
     "endDate": "2026-MM-DD",
     "budget": "string",
     "companions": "string",
-    "memo": "string",
     "theme": "string",
     "transport": "string",
-    "selectedPlaces": []
+    "selectedPlaces": [
+    ]
   }
 }
 
@@ -69,7 +62,34 @@ Rules:
 - If not found, respond with empty values.
 - In ui_text, include links using markdown format:
   [PlaceName](http://127.0.0.1:5500/html/article.html?id={id}
-- startDate must always be tomorrow's date based on current date
+- startDate must always be "tomorrow's" date based on current date
+- selectedPlaces must be an array of objects with this exact structure:
+{
+  "id": "string",
+  "title": "string",
+  "imageUrl": "string",
+  "category": "🏡 숙소 | 🍽️ 맛집 | 📸 관광",
+  "address": "string"
+}
+- imageUrl rule:
+  Use the exact imageUrl field from ARTICLES if available.
+  Example: "https://example.com/images/place_01.jpg" or "https://images.unsplash.com/photo-1544923246-77307dd654ca?auto=format&fit=crop&q=80&w=1000"
+  If no imageUrl exists, use "".
+- category rule:
+  숙소/호텔/리조트 관련 → "🏡 숙소"
+  맛집/식당/카페 관련 → "🍽️ 맛집"
+  그 외 관광지 → "📸 관광"
+- address rule:
+  Use the exact address field from ARTICLES if available.
+  Example: "169 Dinso Rd, Wat Bowon Niwet, Phra Nakhon, Bangkok 10200 태국"
+  If no address exists, use "주소 정보 없음".
+- budget rule:
+  Budget must be a number in units of 10,000 KRW.
+  Output only the numeric value.
+  Example:
+  100만원 → "100"
+  50만원 → "50"
+  235만원 → "235"
 `;
 
 
@@ -80,6 +100,16 @@ const chatContainer = document.getElementById('chat-container');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 const inputContainer = document.getElementById('input-container');
+
+const loadingSpinner = document.getElementById('loading-spinner');
+
+function showSpinner() {
+    loadingSpinner.style.display = 'inline-block';
+}
+
+function hideSpinner() {
+    loadingSpinner.style.display = 'none';
+}
 
 // =========================================================
 // 2. [MAIN LOOP] - 사용자 요청 및 이벤트 처리 루프
@@ -102,26 +132,68 @@ async function sendMessage() {
     const message = userInput.value.trim();
     if (!message) return;
 
-    // 1) UI 업데이트: 사용자 메시지 즉시 표시 및 입력창 초기화
+    // 1) UI 업데이트: 사용자 메시지 즉시 표시
     addMessage('user', message);
     userInput.value = '';
     setLoading(true);
+    showSpinner();
 
     try {
+        // 2) 프롬프트 생성
         const finalPrompt = buildPrompt(message, localKnowledge);
+
+        // 3) AI 호출
         const aiResponse = await getAiWithFailover(finalPrompt);
 
-        const data = JSON.parse(aiResponse)
+        // 4) 혹시 AI가 앞뒤에 쓰레기 텍스트 붙였을 경우 대비
+        // JSON 시작/끝만 잘라냄
+        const jsonStart = aiResponse.indexOf('{');
+        const jsonEnd = aiResponse.lastIndexOf('}') + 1;
+
+        // 5) 최소 구조 검증 (ui_text, tripData 없으면 바로 에러)
+        const match = aiResponse.match(/\{[\s\S]*\}/);
+        if (!match) {
+            throw new Error("JSON 형식 응답 없음");
+        }
+        const pureJson = match[0];
+        if (!pureJson.includes('"ui_text"') || !pureJson.includes('"tripData"')) {
+            throw new Error("AI JSON 구조 불일치");
+        }
+
+        // 6) JSON 파싱
+        const data = JSON.parse(pureJson);
+
+        // 7) tripData 방어 로직 (필드 빠져도 안 터지게)
+        const safeTripData = {
+            title: data.tripData?.title || '',
+            location: data.tripData?.location || '',
+            startDate: data.tripData?.startDate || '',
+            endDate: data.tripData?.endDate || '',
+            budget: data.tripData?.budget || '200',
+            companions: data.tripData?.companions || '친구/가족과 같이',
+            memo: data.tripData?.memo || '',
+            theme: data.tripData?.theme || '힐링',
+            transport: data.tripData?.transport || '비행기',
+            selectedPlaces: Array.isArray(data.tripData?.selectedPlaces)
+                ? data.tripData.selectedPlaces
+                : []
+        };
+
+        // 8) UI 출력은 ui_text만
         addMessage('ai', data.ui_text);
-        handleExtraction(data.tripData);
+
+        // 9) 저장 버튼용 데이터 넘김
+        handleExtraction(safeTripData);
 
     } catch (error) {
         console.error("최종 통신 실패:", error);
         addMessage('ai', "모든 API 키가 만료되었거나 네트워크 연결에 문제가 있습니다.");
     } finally {
+        hideSpinner();
         setLoading(false);
     }
 }
+
 
 // =========================================================
 // 3. [FUNCTION DECLARATION] - 핵심 로직 및 보조 함수들
@@ -166,7 +238,9 @@ function buildPrompt(msg, articles) {
         id: a.id, 
         title: a.title, 
         tags: a.tags, 
-        desc: a.description 
+        desc: a.description,
+        address: a.address,
+        imageUrl: a.imageUrl,
     })));
 
     return `
@@ -177,7 +251,6 @@ function buildPrompt(msg, articles) {
         ${msg}
 
         위 데이터를 기반으로 답변하고, 추천하는 장소가 있다면 반드시 아래 형식의 JSON을 답변 끝에 포함해줘:
-        {"recommend_id": "장소ID"}
     `;
 }
 
@@ -212,19 +285,34 @@ function setLoading(isLoading) {
 
 function handleExtraction(tripData) {
     window.latestTripData = tripData; // 임시 보관
-    showSaveButton();
+    if(tripData.title !== ""){
+        showSaveButton();
+    }
+ 
 }
 
 function showSaveButton() {
+    // 기존 버튼 있으면 제거
+    const existing = document.querySelector(".save-btn");
+    if (existing) existing.remove();
+
     const btn = document.createElement("button");
     btn.innerText = "마이페이지에 저장하기";
     btn.className = "save-btn";
-    btn.onclick = () => dispatchPlanToParent(window.latestTripData);
+    btn.onclick = () => {
+        dispatchPlanToParent(window.latestTripData);
+    };
     chatContainer.appendChild(btn);
 }
 
 function dispatchPlanToParent(tripData) {
     const trips = JSON.parse(localStorage.getItem("myTrips")) || [];
+    const memo = updateTripMemo(
+        tripData.location,
+        tripData.theme,
+        tripData.selectedPlaces
+    );
+
 
     const data = {
         id: Date.now().toString(),
@@ -234,7 +322,7 @@ function dispatchPlanToParent(tripData) {
         endDate: tripData.endDate,
         budget: tripData.budget,
         companions: tripData.companions,
-        memo: tripData.memo,
+        memo: memo,
         theme: tripData.theme,
         transport: tripData.transport,
         selectedPlaces: tripData.selectedPlaces || [],
@@ -244,5 +332,56 @@ function dispatchPlanToParent(tripData) {
     trips.push(data);
     localStorage.setItem("myTrips", JSON.stringify(trips));
 
-    console.log("[AI] mypage 저장 완료", data);
+    console.log("[AI] 일정 저장완료 :", data)
+    parent.emitUI("toast" ,"[쪼꼬마이] 추천일정 저장완료!");
 }
+
+
+
+// memo 생성 로직
+function updateTripMemo(location, theme, selectedPlaces) {
+    let memo = `✨ [${location}] ${theme} 여행 계획서 ✨\n\n`;
+    memo += `📋 선택한 장소 (방문 순서)\n`;
+    
+    selectedPlaces.forEach((item, index) => {
+        const icon = item.category === '숙소' ? '🏠' : (item.category === '맛집' ? '🍽️' : '📸');
+        memo += `${index + 1}. ${icon} ${item.title}\n   📍 ${item.address}\n`;
+    });
+
+    memo += `\n🗓️ 추천 일정 (동선 최적화)\n-------------------\n`;
+
+    if (selectedPlaces.length === 0) {
+        memo += "장소를 선택하면 일정이 생성됩니다.";
+    } else {
+        const itemsPerDay = 3;
+        let dayCount = 1;
+        memo += `1일차:\n`;
+        memo += `- ${location} 도착\n`;
+
+        selectedPlaces.forEach((item, index) => {
+            if (index > 0 && index % itemsPerDay === 0) {
+                dayCount++;
+                memo += `\n${dayCount}일차:\n`;
+            }
+            const seq = index % itemsPerDay;
+            let timeLabel = "";
+            if (seq === 0) timeLabel = "[오전/이동]";
+            else if (seq === 1) timeLabel = "[오후]";
+            else if (seq === 2) timeLabel = "[저녁]";
+
+            let action = "방문";
+            if (item.category === '숙소') {
+                action = "체크인 및 휴식";
+                timeLabel = "[숙소]"; 
+            } else if (item.category === '맛집') {
+                action = "식사";
+            }
+
+            memo += `- ${timeLabel} ${item.title} (${action})\n`;
+        });
+        memo += `\n${dayCount + 1}일차:\n- 체크아웃 및 귀가\n`;
+    }
+
+    return memo;
+}
+

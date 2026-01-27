@@ -17,8 +17,8 @@
 <body class="bg-gray-50 h-screen flex items-center justify-center p-6">
 
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 md:p-10 animate-fade-in relative">
-        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black">
-            <i data-lucide="x" width="24"></i>
+        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-transform hover:scale-110" title="홈으로 이동">
+            <i data-lucide="home" width="24"></i>
         </a>
         <div class="text-center mb-10">
             <h1 class="text-3xl font-black mb-2 tracking-tight">여기저기</h1>
@@ -47,14 +47,25 @@
                 <button type="submit" id="btn-submit" class="w-full py-3.5 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200 disabled:bg-gray-400">로그인</button>
             </form>
         </div>
+        <div class="mt-8 text-center space-y-3">
+            <div class="text-xs text-gray-400">
+                <span id="switch-label">계정이 없으신가요?</span>
+                <a href="#" id="btn-switch-mode" class="underline hover:text-black ml-1 font-medium transition-colors">회원가입</a>
+            </div>
 
-        <div class="mt-8 text-center text-xs text-gray-400">
-            <span id="switch-label">계정이 없으신가요?</span>
-            <a href="#" id="btn-switch-mode" class="underline hover:text-black ml-1">회원가입</a>
+            <div>
+                <a href="forgotPassword.html" class="text-xs text-gray-300 hover:text-gray-600 hover:underline transition-colors">
+                    비밀번호를 잊으셨나요?
+                </a>
+            </div>
         </div>
+
+
     </div>
 
     <script src="../js/script.js"></script>
+    
+    <script src="../js/data.js"></script>
     
     <script>
         const supabaseClient = window.supabaseClient;
@@ -70,11 +81,27 @@
         const dividerText = document.getElementById('divider-text');
         const switchLabel = document.getElementById('switch-label');
 
-        let isSignUpMode = false; // [추가] 현재 로그인/회원가입 모드 상태 관리
+        let isSignUpMode = false;
 
-        // ------------------------------------------------------------------
-        // [추가] 로그인 <-> 회원가입 모드 전환 함수
-        // ------------------------------------------------------------------
+        // [중요 수정] 현재 login.html 위치를 기반으로 index.html 경로 자동 생성
+        function getRedirectUrl() {
+            try {
+                const origin = window.location.origin;
+                const path = window.location.pathname;
+                // 마지막 '/' 뒤에 있는 파일명(login.html)을 제거하고 index.html을 붙임
+                const basePath = path.substring(0, path.lastIndexOf('/'));
+                const fullPath = origin + basePath + '/index.html';
+                
+                console.log("Calculated Redirect URL:", fullPath); // 확인용 로그
+                return fullPath;
+            } catch (e) {
+                console.error("URL 생성 실패:", e);
+                // 실패 시 기본값 (혹시 모를 대비)
+                return window.location.origin + '/index.html';
+            }
+        }
+
+        // --- 모드 전환 ---
         btnSwitchMode.addEventListener('click', (e) => {
             e.preventDefault();
             isSignUpMode = !isSignUpMode;
@@ -83,7 +110,7 @@
                 authDesc.textContent = "새로운 계정을 만들어보세요.";
                 dividerText.textContent = "또는 이메일로 회원가입";
                 btnSubmit.textContent = "회원가입 시작하기";
-                confirmGroup.classList.remove('hidden'); // 비밀번호 확인 칸 보이기
+                confirmGroup.classList.remove('hidden');
                 confirmInput.required = true;
                 switchLabel.textContent = "이미 계정이 있으신가요?";
                 btnSwitchMode.textContent = "로그인으로 돌아가기";
@@ -91,16 +118,14 @@
                 authDesc.textContent = "나만의 여행 큐레이션을 시작해보세요.";
                 dividerText.textContent = "또는 이메일로 로그인";
                 btnSubmit.textContent = "로그인";
-                confirmGroup.classList.add('hidden'); // 비밀번호 확인 칸 숨기기
+                confirmGroup.classList.add('hidden');
                 confirmInput.required = false;
                 switchLabel.textContent = "계정이 없으신가요?";
                 btnSwitchMode.textContent = "회원가입";
             }
         });
 
-        // ------------------------------------------------------------------
-        // [추가] 이메일 로그인 & 회원가입 통합 처리
-        // ------------------------------------------------------------------
+        // --- 로그인 & 회원가입 처리 ---
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('input-email').value;
@@ -109,81 +134,81 @@
             btnSubmit.disabled = true;
             btnSubmit.textContent = isSignUpMode ? "처리 중..." : "로그인 중...";
 
-            if (isSignUpMode) {
-                // 회원가입 로직
-                const confirmPw = confirmInput.value;
-                if (password !== confirmPw) {
-                    alert("비밀번호가 일치하지 않습니다.");
-                    btnSubmit.disabled = false;
-                    btnSubmit.textContent = "회원가입 시작하기";
-                    return;
-                }
+            try {
+                if (isSignUpMode) {
+                    // [회원가입]
+                    const confirmPw = confirmInput.value;
+                    if (password !== confirmPw) {
+                        showAuthModal("입력 오류", "비밀번호가 서로 일치하지 않습니다. 다시 확인해주세요.", "❌");
+                        return;
+                    }
 
-                const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) {
-                    alert("가입 실패: " + error.message);
+                    if (password.length < 6) {
+                        showAuthModal("보안 경고", "비밀번호는 최소 6자 이상이어야 합니다.", "🔐");
+                        return;
+                    }
+
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            emailRedirectTo: getRedirectUrl() // 자동 계산된 주소 사용
+                        }
+                    });
+
+                    if (error) throw error;
+                    showAuthModal("인증 메일 발송", `${email}로 인증 링크를 보냈습니다. 메일함을 확인해주세요!`, "📩");
+
                 } else {
-                    alert("가입 성공! 메일함에서 인증 버튼을 눌러주세요.");
-                }
-            } else {
-                // 로그인 로직
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) {
-                    alert("로그인 실패: " + error.message);
-                } else {
-                    alert("로그인 성공!");
+                    // [로그인]
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    
                     location.href = 'index.html';
                 }
+            } catch (error) {
+                if (error.message !== "비밀번호 불일치") {
+                    console.error(error);
+                    showAuthModal("오류 발생", "이메일 주소 또는 비밀번호가 틀렸습니다.", "⚠️");
+                }
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = isSignUpMode ? "회원가입 시작하기" : "로그인";
             }
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = isSignUpMode ? "회원가입 시작하기" : "로그인";
         });
 
+        // --- 인증 상태 감지 ---
         supabaseClient.auth.onAuthStateChange((event, session) => {
-            // 1. 이메일 링크를 통해 인증(INITIAL_SESSION)되었거나 SIGNED_IN 되었을 때
-            // 2. 하지만 사용자가 '로그인 폼'을 통해 직접 버튼을 눌러 로그인하는 중이 아닐 때만 반응하게 합니다.
-            
-            // 이메일 링크 클릭 시 보통 event가 'SIGNED_IN' 또는 'USER_UPDATED'로 들어옵니다.
             if (event === 'SIGNED_IN') {
-                // 현재 URL에 'access_token'이 포함되어 있다면 이메일 링크를 타고 온 것으로 간주할 수 있습니다.
                 const isEmailConfirmation = window.location.hash.includes('access_token');
-                
                 if (isEmailConfirmation) {
-                    alert("이메일 인증이 완료되었습니다! 메인 페이지로 이동합니다.");
+                    showAuthModal("인증 완료", "이메일 인증이 성공적으로 완료되었습니다!", "✅");
+                    // 여기서도 안전하게 이동
                     location.href = 'index.html';
                 }
-                // 직접 로그인(signInWithPassword)의 경우, 
-                // 폼 제출 핸들러 내의 location.href = 'index.html'이 처리하므로 여기서 중복 처리할 필요가 없습니다.
             }
         });
 
-      // --- 소셜 로그인 함수 (개선 버전) ---
-    async function handleSocialLogin(provider) {
-        try {
-            // 1. 현재 접속한 환경의 프로토콜+도메인+포트번호를 자동으로 가져옵니다.
-            // (예: 로컬은 http://127.0.0.1:5500, 배포 후엔 https://prgrms-aibe-devcourse.github.io)
-            const currentOrigin = window.location.origin;
-
-            // 2. 레포지토리 이름을 포함한 공통 경로 설정
-            // GitHub Pages 배포 환경인지 로컬 환경인지 체크하여 경로를 맞춥니다.
-            const redirectPath = window.location.hostname.includes('github.io')
-                ? '/AIBE5_Project1_Team3/t3Project/html/index.html' // 배포 환경
-                : '/t3Project/html/index.html';                     // 로컬 환경
-
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: provider,
-                options: {
-                    // 두 값을 합쳐서 리다이렉트 주소 생성
-                    redirectTo: currentOrigin + redirectPath,
-                }
-            });
-
-            if (error) throw error;
-        } catch (error) {
-            console.error(error);
-            alert("소셜 로그인 에러: " + error.message);
+        // --- 소셜 로그인 ---
+        async function handleSocialLogin(provider) {
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: provider,
+                    options: {
+                        redirectTo: getRedirectUrl(), // 자동 계산된 주소 사용
+                        queryParams : {
+                            prompt : 'select_account',
+                            access_type : 'offline',
+                        }
+                    }
+                });
+                if (error) throw error;
+            } catch (error) {
+                console.error(error);
+                showAuthModal("소셜 로그인 에러", error.message, "⚠️");
+            }
         }
-    }
+
         if(btnGoogle) btnGoogle.addEventListener('click', () => handleSocialLogin('google'));
     </script>
 </body>

@@ -45,7 +45,7 @@ body {
 }
 
 .message.user .message-bubble {
-    background-color: #7a18cf;
+    background-color: #4B9DA9;
     color: white;
     border-bottom-right-radius: 2px;
 }
@@ -82,7 +82,7 @@ body {
 .input-container button {
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #8d18b4;
+    background-color: #4B9DA9;
     color: white;
     border: none;
     border-radius: 20px;
@@ -93,7 +93,7 @@ body {
 /* 로딩 애니메이션 혹시나 싶어 만들어둠 */
 .loading-spinner {
     border: 3px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #9510b6;
+    border-left-color: #81BFDA;
     border-radius: 50%;
     width: 16px;
     height: 16px;
@@ -105,3 +105,31 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* 마이페이지에 저장 버튼 */
+.save-btn {
+    margin-top: 0px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #91C6BC, #4B9DA9);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(79, 124, 255, 0.25);
+    transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(79, 124, 255, 0.35);
+    background: linear-gradient(135deg, #4B9DA9, #91C6BC);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(79, 124, 255, 0.2);
+}
+
+

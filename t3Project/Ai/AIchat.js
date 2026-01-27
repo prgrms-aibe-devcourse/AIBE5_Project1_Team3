@@ -10,7 +10,6 @@ import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 const renderer = new marked.Renderer();
 
 /**
- * [수정 핵심] marked 최신 버전에서는 인자가 객체 형태로 들어오는 경우가 많습니다.
  * 아래와 같이 인자를 구조 분해 할당하거나, 안전하게 href를 추출해야 합니다. [cite: 2025-11-17]
  */
 renderer.link = (arg) => {
@@ -25,10 +24,10 @@ renderer.link = (arg) => {
 
 marked.setOptions({ renderer: renderer });
 
-// [의도] 서버에서 관리하던 5개의 키를 클라이언트로 이동 (로테이션 관리)
 // node 를 사용하지 않고 Live server 만으로 구동이 되도록 하기 위해 직접 담아둠
 // node 를 사용하지 않으려는 이유는 포트 맞추기 문제가 너무 어려우며 추가 적인 백앤드 작업 과정이 꽤나 필요
 const API_KEYS = [
+    "보안 이슈로 key 올리지 않습니다"
 ]
 
 let currentKeyIndex = 0; // [의도] 실패 시 다음 키를 가리키는 인덱스
@@ -187,7 +186,7 @@ async function sendMessage() {
 
     } catch (error) {
         console.error("최종 통신 실패:", error);
-        addMessage('ai', "모든 API 키가 만료되었거나 네트워크 연결에 문제가 있습니다.");
+        addMessage('ai', "😓 모든 API 키가 만료되었거나 <br/> 네트워크에 문제가 있어요");
     } finally {
         hideSpinner();
         setLoading(false);
@@ -200,7 +199,7 @@ async function sendMessage() {
 // =========================================================
 
 /**
- * [의도] API 키 5개를 순환하며 성공할 때까지 AI 호출을 시도함
+ * [의도] API 키 여러개를 순환하며 성공할 때까지 AI 호출을 시도함
  * @param {string} prompt - [인자 출처: sendMessage 내 buildPrompt 결과값]
  */
 async function getAiWithFailover(prompt) {

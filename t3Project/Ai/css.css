@@ -19,7 +19,7 @@ body {
     margin: 10px auto;  /* 상하 마진 축소 */
     border-radius: 8px 8px 0 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    width: 95%;         /* 가로 폭 확대하여 가로 스크롤 방지 */
+    width: 90%;         /* 가로 폭 확대하여 가로 스크롤 방지 */
     max-width: 800px;
     
     /* [의도] 브라우저 기본 스크롤바 디자인 숨기기 (선택 사항) */

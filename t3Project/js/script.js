@@ -400,8 +400,10 @@ function renderArticles() {
 }
 
 /**
- * --- 4. 좋아요 기능 ---
+ * --- 4. 좋아요 기능 통합 버전 ---
  */
+
+// 1. 좋아요 토글 함수 (메시지 + 데이터 저장)
 function toggleFavorite(id) {
   if (localStorage.getItem("isLoggedIn") !== "true") {
     if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
@@ -409,17 +411,36 @@ function toggleFavorite(id) {
     }
     return;
   }
+
   let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-  const index = favorites.indexOf(id);
-  index === -1 ? favorites.push(id) : favorites.splice(index, 1);
+  // ID 타입을 문자열로 통일하여 비교 오류 방지
+  const stringId = String(id);
+  const index = favorites.indexOf(stringId);
+
+  if (index === -1) {
+    favorites.push(stringId);
+    // showLikeToast("❤️ 좋아요를 눌렀습니다!"); 
+  } else {
+    favorites.splice(index, 1);
+    // 취소 시에도 알림을 원하면 아래 주석 해제
+    // showLikeToast("💔 좋아요가 취소되었습니다."); 
+  }
+
   localStorage.setItem("favorites", JSON.stringify(favorites));
+  
+  // UI 동기화 (헤더 카운트 + 카드 아이콘 + 상세페이지 아이콘)
   updateFavoriteUI();
-  updateDetailLikeUI(id);
+  if (typeof updateDetailLikeUI === "function") {
+    updateDetailLikeUI(stringId);
+  }
 }
 
+// 2. 전체 UI 업데이트 (카운터 및 아이콘 색상)
 function updateFavoriteUI() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const favorites = isLoggedIn ? JSON.parse(localStorage.getItem("favorites") || "[]") : [];
+  
+  // 헤더 찜 카운트 업데이트
   const countEl = document.getElementById("favorite-count");
   if (countEl) {
     if (isLoggedIn && favorites.length > 0) {
@@ -429,10 +450,13 @@ function updateFavoriteUI() {
       countEl.style.display = "none";
     }
   }
+
+  // 화면에 있는 모든 좋아요 버튼 상태 반영
   document.querySelectorAll(".btn-like").forEach((btn) => {
-    const id = btn.dataset.id;
-    const isFav = favorites.includes(id);
-    const icon = btn.querySelector("svg");
+    const btnId = String(btn.dataset.id);
+    const isFav = favorites.includes(btnId);
+    const icon = btn.querySelector("svg") || btn.querySelector("i");
+
     if (isFav) {
       btn.style.background = "white";
       btn.style.color = "#ef4444";
@@ -449,45 +473,59 @@ function updateFavoriteUI() {
       }
     }
   });
+
+  // 동적 생성된 아이콘들을 위해 Lucide 다시 실행
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
 }
-/**
- * 헤더 '찜' 버튼 클릭 핸들러
- */
+
+// 3. 토스트 알림 함수
+function showLikeToast(message) {
+  let container = document.getElementById("toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toast-container";
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerText = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 300);
+  }, 500);
+}
+
+// 4. 헤더 '찜' 버튼 핸들러
 function handleFavoriteClick() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
   if (!isLoggedIn) {
-    // 1. 로그인이 안 되어 있으면 즉시 경고창을 띄웁니다.
     alert("로그인이 필요한 서비스입니다.");
-    // 2. 필요하다면 여기서 바로 로그인 페이지로 보낼 수도 있습니다.
     location.href = "login.html"; 
   } else {
-    // 3. 로그인 상태라면 마이페이지의 좋아요 목록으로 이동합니다.
     location.href = "mypage.html?tab=favorites";
   }
 }
 
-// 전역에서 사용할 수 있게 등록
-window.handleFavoriteClick = handleFavoriteClick;
-/* 상세 페이지 전용 좋아요 UI 업데이트 */
+// 5. 상세 페이지 UI 업데이트
 function updateDetailLikeUI(articleId) {
   const likeBtn = document.getElementById("detail-like-btn");
   if (!likeBtn) return;
 
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const favorites = isLoggedIn
-    ? JSON.parse(localStorage.getItem("favorites") || "[]")
-    : [];
-
-  const isFav = favorites.includes(articleId);
+  const favorites = isLoggedIn ? JSON.parse(localStorage.getItem("favorites") || "[]") : [];
+  const isFav = favorites.includes(String(articleId));
   const icon = likeBtn.querySelector("svg");
 
-
-  
-
   if (isFav) {
-    likeBtn.style.backgroundColor = "var(--red-500)";
-    likeBtn.style.borderColor = "var(--red-500)";
+    likeBtn.style.backgroundColor = "var(--red-500, #ef4444)";
+    likeBtn.style.borderColor = "var(--red-500, #ef4444)";
     if (icon) {
       icon.style.fill = "white";
       icon.style.stroke = "white";

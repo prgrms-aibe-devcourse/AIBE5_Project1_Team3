@@ -573,6 +573,11 @@
     touch-action: pan-y;
 }
 
+.advise-viewport {
+    overscroll-behavior: contain;
+}
+
+
 
 /* ==========================================================================
    추천 여행지 관련 끝

@@ -457,10 +457,10 @@
                 const next = document.querySelector('.advise-next');
                 const viewport = document.querySelector('.advise-viewport');
                 if (!track || !prev || !next || !viewport) return;
-                        
+
                 let index = 0;
                 const getItems = () => track.querySelectorAll('.content-inner');
-                        
+
                 function cloneItems() {
                     const items = Array.from(getItems());
                     const firstClone = items[items.length - 1].cloneNode(true);
@@ -522,6 +522,23 @@
                     threshold: 10,
                     inputClass: Hammer.TouchMouseInput
                 });
+
+                // PC 마우스 휠로 좌우 이동
+                let wheelLock = false;
+                            
+                viewport.addEventListener('wheel', (e) => {
+                    e.preventDefault(); // 세로 스크롤 막고 캐러셀 제어
+                
+                    if (wheelLock) return;
+                    wheelLock = true;
+                
+                    if (e.deltaY > 0) safeNext();   // 휠 내리면 다음
+                    else safePrev();               // 휠 올리면 이전
+                
+                    setTimeout(() => wheelLock = false, 400);
+                }, { passive: false });
+
+
             
                 hammer.on('swipeleft', safeNext);
                 hammer.on('swiperight', safePrev);

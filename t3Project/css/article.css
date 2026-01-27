@@ -370,8 +370,8 @@
    소개, 장소, 호스트, 후기, 추천여행지
    ========================================================================== */
 .accordion-wrapper {
-    border-top: 1px solid var(--gray-100);
-    padding-top: 2rem;
+    /* border-top: 1px solid var(--gray-100); */
+    /* padding-top: 2rem; */
     display: flex;
     flex-direction: column;
     gap: 1rem;

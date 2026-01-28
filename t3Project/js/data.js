@@ -1521,9 +1521,9 @@ const ARTICLES = [
         host : '김세준',
         rating: 5.0,
         reviews: [
-            { user: '대한민국만세', rating: 5, text: '가슴이 웅장해지는 우리 땅 독도!' },
-            { user: '여행자', rating: 5, text: '날씨가 좋아서 접안 성공했습니다. 정말 아름답네요.' },
-            { user: '류태우', rating: 5, text: '독도새우 진짜 존맛이에요!!'}
+            { user: '대한민국만세', rating: 5, comment: '가슴이 웅장해지는 우리 땅 독도!' },
+            { user: '여행자', rating: 5, comment: '날씨가 좋아서 접안 성공했습니다. 정말 아름답네요.' },
+            { user: '류태우', rating: 5, comment: '독도새우 진짜 존맛이에요!!'}
         ],
         mainTags: ['자연', '역사', '대한민국']
   },

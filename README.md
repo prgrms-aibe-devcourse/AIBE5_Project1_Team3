@@ -25,7 +25,11 @@
   - **마이페이지 : 이소연**
   - **챗봇 AI : 신문규**
 
-## 🔧 기술 스택
+### 📽️ 프로젝트 기능
+
+- 
+
+### 🔧 기술 스택
 
 | 구분                      | 기술                                                         |
 | ------------------------- | ------------------------------------------------------------ |
@@ -33,6 +37,48 @@
 | AI Chat Bot               | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white) |
 | Database                  | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) |
 | Version Control / Hosting | ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
+
+### 📂 폴더 구조 
+
+~~~text
+```
+.
+└── 📦 여기저기!/
+    ├── 📂 Ai/
+    │   ├── Aichatbot.css              # 챗봇 css
+    │   ├── AiChatbot.html             # 챗봇 페이지
+    │   ├── AIchatbot.js               # 챗봇 로직
+    │   ├── Aiflot.css                 # 메인페이지 챗봇 css
+    │   └── Aiflot.js                  # 메인페이지 챗봇 로직
+    ├── 📂 css/
+    │   ├── article.css                # 아티클 페이지 css
+    │   ├── auth.css                   # 로그인/회원가입 페이지 css
+    │   ├── global.css                 # 공통으로 쓰는 css
+    │   ├── index.css                  # 메인페이지 css
+    │   ├── map.css                    # 지도 css
+    │   ├── mypage.css                 # 마이페이지 css
+    │   └── roulette.css               # 룰렛 css
+    ├── 📂 html/
+    │   ├── article.html               # 아티클 페이지
+    │   ├── favorites.html             # 찜하기 목록
+    │   ├── index.html                 # 메인페이지
+    │   ├── map.html                   # 지도
+    │   ├── roulette.html              # 룰렛
+    │   ├── mypage.html                # 마이페이지
+    │   ├── login.html                 # 로그인
+    │   ├── resetPassword.html         # 비밀번호 초기화
+    │   └── forgotPassword.html        # 비밀번호 찾기
+    └── 📂 js/
+        ├── data.js                    # 아티클, 리뷰 정보, 좌표 등
+        ├── map.js                     # 지도 로직
+        ├── roulette.js                # 룰렛 로직
+        └── script.js                  # 네비게이션, UI 인터렉션/
+                                       ## 인증 및 커스텀 모달 시스템
+                                       ## 찜하기, 상세페이지 UI, 토스트 알림
+                                       ## 카드 렌더링, 필터/검색 통합 로직
+                                       ## 검색창 태그 관리 & 필터 제어
+```
+~~~
 
 ### 🎨 UI / UX
 
@@ -48,64 +94,10 @@
     - 경고 / 초기화
   - ACCENT ( 배경 / 중립 ) : 연한 그레이 / 화이트톤
 
-### 📂 폴더 구조 
+## 🗂️ 서비스 이용 및 시연 영상
 
-~~~text
-```
-.
-└── 여기저기!/
-    ├── Ai/
-    │   ├── Aichatbot.css
-    │   ├── AiChatbot.html
-    │   ├── AIchatbot.js
-    │   ├── Aiflot.css
-    │   └── Aiflot.js
-    ├── css/
-    │   ├── article.css
-    │   ├── auth.css
-    │   ├── global.css
-    │   ├── index.css
-    │   ├── map.css
-    │   ├── mypage.css
-    │   └── roulette.css
-    ├── html/
-    │   ├── article.html
-    │   ├── favorites.html
-    │   ├── forgotPassword.html
-    │   ├── index.html
-    │   ├── login.html
-    │   ├── map.html
-    │   ├── mypage.html
-    │   ├── resetPassword.html
-    │   └── roulette.html
-    └── js/
-        ├── data.js
-        ├── map.js
-        ├── roulette.js
-        └── script.js
-```
-~~~
-
-## 📽️ 프로젝트 시연
-
-- ( 메인 페이지 ) - index.html
-  - gif 임베디드
-
-( 로그인 / 회원가입 )
-
-( 마이페이지 )
-
-( AI 챗봇 )
-
-( 아티클 페이지 )
-
-( 지도 페이지 )
-
-( 룰렛 페이지 )
-
-## 🗂️ 프로젝트 설치 및 실행 방법
-
-사이트 링크 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
+- 웹사이트 바로가기 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
+- 시연 영상 보기 - ( 유튜브 링크 )
 
 ## 🦖 About "Team 박치기공룡" 
 

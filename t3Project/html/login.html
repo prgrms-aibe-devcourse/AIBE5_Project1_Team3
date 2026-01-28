@@ -2,12 +2,13 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>로그인 - 여기저기</title>
+    <title>여기저기: 로그인</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/auth.css">
     <script>
         tailwind.config = {
             theme: { extend: { colors: { primary: '#000', accent: '#FF385C' } } }
@@ -17,7 +18,7 @@
 <body class="bg-gray-50 h-screen flex items-center justify-center p-6">
 
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 md:p-10 animate-fade-in relative">
-        <a href="index.html" class="absolute top-6 right-6 text-gray-400 hover:text-black transition-transform hover:scale-110" title="홈으로 이동">
+        <a href="index.html" class="absolute top-6 left-6 text-gray-400 hover:text-black transition-transform hover:scale-110" title="홈으로 이동">
             <i data-lucide="home" width="24"></i>
         </a>
         <div class="text-center mb-10">
@@ -139,13 +140,11 @@
                     // [회원가입]
                     const confirmPw = confirmInput.value;
                     if (password !== confirmPw) {
-                        showAuthModal("입력 오류", "비밀번호가 서로 일치하지 않습니다. 다시 확인해주세요.", "❌");
-                        return;
+                        throw new Error("비밀번호 불일치");
                     }
 
                     if (password.length < 6) {
-                        showAuthModal("보안 경고", "비밀번호는 최소 6자 이상이어야 합니다.", "🔐");
-                        return;
+                        throw new Error("비밀번호 길이 부족");
                     }
 
                     const { data, error } = await supabaseClient.auth.signUp({
@@ -157,7 +156,7 @@
                     });
 
                     if (error) throw error;
-                    showAuthModal("인증 메일 발송", `${email}로 인증 링크를 보냈습니다. 메일함을 확인해주세요!`, "📩");
+                    showAuthModal("인증 메일 발송", `${email}로 <br />인증 링크를 보냈습니다. <br />메일함을 확인해주세요!`, "📩");
 
                 } else {
                     // [로그인]
@@ -167,9 +166,21 @@
                     location.href = 'index.html';
                 }
             } catch (error) {
-                if (error.message !== "비밀번호 불일치") {
+                if (error.message.includes("Invalid login credentials")) {
                     console.error(error);
-                    showAuthModal("오류 발생", "이메일 주소 또는 비밀번호가 틀렸습니다.", "⚠️");
+                    showAuthModal("로그인 실패", "이메일 또는 비밀번호가 일치하지 않습니다.<br />다시 확인해주세요.", "🚫");
+                }
+                else if (error.message.includes("Email not confirmed")){
+                    showAuthModal("로그인 실패", "이메일 인증이 완료되지 않았습니다.<br />메일함을 확인해주세요.", "📩");
+                }
+                else if (error.message === "비밀번호 불일치") {
+                    showAuthModal("입력 오류", "비밀번호가 서로 일치하지 않습니다.", "❌");
+                }
+                else if (error.message === "비밀번호 길이 부족") {
+                    showAuthModal("보안 경고", "비밀번호는 최소 6자 이상이어야 합니다.", "🔐");
+                }
+                else {
+                    showAuthModal("오류 발생", "예기치 못한 오류가 발생했습니다. 잠시 후에 시도해주세요.", "⚠️");
                 }
             } finally {
                 btnSubmit.disabled = false;

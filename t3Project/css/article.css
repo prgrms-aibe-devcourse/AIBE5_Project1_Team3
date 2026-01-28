@@ -1,3 +1,12 @@
+:root {
+    --primary: #2563eb;
+    --secondary: #62B6FF;
+    --point: #FFD850;
+    --accent: #F1F5F9;
+}
+body {
+    background-color: var(--accent);
+}
 /* ==========================================================================
    네비게이션 바 ( index.css 에서 퍼옴 )
    ========================================================================== */
@@ -28,13 +37,13 @@
 
 /* 2. 마우스를 올렸을 때 (Hover) */
 .nav-item:hover {
-  color: #3b82f6 !important;
+  color: var(--secondary) !important;
   transform: translateY(-3px) scale(1.05);
 }
 
 /* 3. 아이콘에도 색상 변화 같이 적용 */
 .nav-item:hover .nav-icon {
-  stroke: #3b82f6 !important;
+  stroke: var(--secondary) !important;
   filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.2));
 }
 
@@ -186,7 +195,7 @@
 
 /* 마우스를 올렸을 때 (Hover) */
 .btn-login:hover {
-  background-color: #2563eb !important; /* 조금 더 진한 파란색 */
+  background-color: var(--primary) !important; /* 조금 더 진한 파란색 */
   transform: translateY(-2px); /* 살짝 떠오르는 효과 */
   box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
   color: #ffffff !important;
@@ -284,7 +293,7 @@
 .tag-toggle {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: var(--secondary);
     cursor: pointer;
     padding: 0.5rem;
     display: flex;
@@ -296,7 +305,7 @@
 }
 
 .tag-toggle i {
-    color: #3b82f6;
+    color: var(--secondary);
     transition: transform 0.35s ease, color 0.35s ease, stroke 0.35s ease;
 }
 
@@ -441,7 +450,7 @@
 }
 
 .advise-prev:hover, .advise-next:hover {
-    background-color: #2563eb;
+    background-color: var(--primary);
     box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
 }
 
@@ -581,80 +590,3 @@
 /* ==========================================================================
    추천 여행지 관련 끝
    ========================================================================== */
-
-/* ==========================================================================
-   Floating Like / Share Buttons
-   ========================================================================== */
-
-/* 컨테이너 */
-.floating-actions {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 3000;
-}
-
-/* 버튼 공통 */
-.floating-actions button {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid var(--gray-200);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* hover */
-.floating-actions button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
-}
-
-/* 아이콘 기본 상태 */
-#floating-like-btn svg,
-#floating-share-btn svg {
-    width: 24px;
-    height: 24px;
-    stroke: #111827;
-    fill: none;
-}
-
-/* ===============================
-   ❤️ 좋아요 버튼 (핵심)
-   =============================== */
-
-/*
- lucide heart는 path에 fill="none"이 직접 들어있기 때문에
- active 상태에서 path를 명시적으로 채워야 한다
-*/
-
-/* 활성화 색상 소스 */
-#floating-like-btn.active {
-    color: #ef4444;
-}
-
-/* 테두리 */
-#floating-like-btn.active svg {
-    stroke: currentColor;
-}
-
-/* 🔥 실제 채움 */
-#floating-like-btn.active svg path {
-    fill: #ef4444 !important;
-    stroke: #ef4444 !important;
-}
-
-/* ===============================
-   🔗 공유 버튼
-   =============================== */
-#floating-share-btn svg {
-    stroke: #111827;
-}

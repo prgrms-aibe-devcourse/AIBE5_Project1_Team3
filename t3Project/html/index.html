@@ -3,25 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>여기저기 - 여행 큐레이션</title>
+    <title>여기저기</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <!--supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="../css/global.css" />
     <link rel="stylesheet" href="../css/index.css" />
     <!-- 챗봇 플롯용 css (head 에 삽입) -->
-    <link rel="stylesheet" href="../Ai/Aiflot.css">
+    <link rel="stylesheet" href="../Ai/Aiflot.css" />
   </head>
   <body id="page-home">
     <!-- 챗봇 용버튼 및 챗봇 컨텐츠 불러오는 코드 (body 에 삽입) -->
     <button id="floating-chat-btn" onclick="toggleChatIframe()">
-      <img src="../Ai/ChatGPT Image.png">
+      <img src="../Ai/ChatGPT Image.png" />
     </button>
     <div id="chat-frame-container">
-        <iframe src="../Ai/AiChatbot.html" style="width:100%; height:100%; border:none;" scrolling="no"></iframe>
+      <iframe
+        src="../Ai/AiChatbot.html"
+        style="width: 100%; height: 100%; border: none"
+        scrolling="no"
+      ></iframe>
     </div>
     <!-- 챗봇 버튼 토글 작동용 소스 -->
-    <script src="../Ai/Aiflot.js"></script> 
+    <script src="../Ai/Aiflot.js"></script>
     <nav id="navbar" class="navbar">
       <div class="nav-inner">
         <div class="nav-left-group">
@@ -38,7 +42,7 @@
             <i data-lucide="dices" class="nav-icon"></i>
             <span class="nav-label">룰렛</span>
           </a>
-          <a
+          <!-- <a
             href="javascript:void(0)"
             onclick="handleFavoriteClick()"
             class="nav-item favorite-wrapper"
@@ -50,7 +54,7 @@
               >
             </div>
             <span class="nav-label">찜</span>
-          </a>
+          </a> -->
 
           <a href="login.html" id="nav-login-btn" class="btn-login">로그인</a>
 
@@ -79,30 +83,15 @@
           <i data-lucide="x" width="24"></i>
         </button>
       </div>
-      <!-- 모바일 기능 햄버거에요! 구현 안함 -->
-      <!-- <div class="mobile-menu-links">
-        <a href="#content" class="mobile-menu-link">여행지 둘러보기</a>
-        <a href="#" class="mobile-menu-link">카테고리별 보기</a>
-        <a href="#" class="mobile-menu-link text-accent">이번 주 특가</a>
-        <a href="map.html" class="mobile-menu-link">지도로 보기</a>
-        <a href="roulette.html" class="mobile-menu-link">여행지 룰렛 돌리기</a>
-        <a href="mypage.html" class="mobile-menu-link">좋아요 목록</a>
-        <a
-          href="mypage.html"
-          class="mobile-menu-link user-avatar-display hidden"
-          >마이페이지</a
-        >
-      </div>
-      <div class="mobile-menu-footer">
-        <a href="login.html" class="btn">로그인 / 회원가입</a>
-      </div> -->
+      
     </div>
 
     <div class="hero-section">
-     
-        <iframe src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/" frameborder="0" class="spline-viewer"></iframe>
-     
-
+      <iframe
+        src="https://my.spline.design/summereggboyremix-nHiTRsGl5475MeOGWvdA1Edm/"
+        frameborder="0"
+        class="spline-viewer"
+      ></iframe>  
       <div class="hero-overlay">
         <div class="hero-content">
           <h1 class="hero-title">
@@ -110,21 +99,12 @@
             바로 여기에서.
           </h1>
           <p class="hero-subtitle">
-            지친 일상에 쉼표가 필요하신가요? 당신의 취향에 딱 맞는 여행지를
+            지친 일상에 쉼표가 필요하신가요? 
+            <br/>당신의 취향에 딱 맞는 여행지를
             찾아드립니다.
           </p>
           <div class="hero-actions">
-            <!-- <button
-              onclick="
-                document
-                  .getElementById('content')
-                  .scrollIntoView({ behavior: 'smooth' })
-              "
-              class="btn-glass"
-            >
-              여행지 보기
-            </button>
-            <a href="roulette.html" class="btn-glass"> 랜덤 추천 받기 </a> -->
+
           </div>
         </div>
       </div>
@@ -140,52 +120,48 @@
       </div>
     </div>
 
-    <section id="content" class="container content-section">
-      <div class="filter-section-wrap">
-        <div class="filter-header">
-          <div class="filter-title-group">
-            <h2 class="section-main-title">어디로 떠나볼까요?</h2>
-            <p class="section-sub-title">
-              원하는 테마를 선택해 나만의 여행지를 찾아보세요.
-            </p>
-          </div>
+  <section id="content" class="container content-section">
+<div class="filter-section-wrap">
+    <div class="filter-header" style="text-align: center; margin-bottom: 2rem;">
+      <h2 class="section-main-title">어디로 떠나볼까요?</h2>
+      <p class="section-sub-title">원하는 테마를 선택해 나만의 여행지를 찾아보세요.</p>
+    </div>
+
+    <div class="search-container">
+      <div class="search-wrapper">
+        <i data-lucide="search" class="search-icon" style="color: #94a3b8; flex-shrink: 0;"></i>
+
+        <div id="selected-tags-inner" class="search-input-group">
+          <input
+            type="text"
+            id="main-search-input"
+            placeholder="어디로 떠나고 싶으신가요?"
+            autocomplete="off"
+          />
         </div>
 
-        <div class="search-container">
-          <div class="search-wrapper">
-            <i data-lucide="search" class="search-icon"></i>
-            <input
-              type="text"
-              id="main-search-input"
-              placeholder="어디로 떠나고 싶으신가요?"
-              autocomplete="off"
-            />
+        <button id="search-clear-btn" class="search-clear-btn" style="display: none; border:none; background:none; cursor:pointer;">
+          <i data-lucide="x" style="width: 18px; color: #cbd5e1;"></i>
+        </button>
 
-            <button id="search-clear-btn" class="search-clear-btn hidden">
-              <i data-lucide="x"></i>
-            </button>
+        <button class="search-btn-inside">검색</button>
+      </div>
 
-            <button class="search-btn-inside">검색</button>
-
-            <div id="search-dropdown" class="search-dropdown hidden">
-              <div class="dropdown-section">
-                <p class="dropdown-title">추천 태그</p>
-                <div id="recommended-tags" class="tag-cloud">
-                  <span class="search-tag">#가족</span>
-                  <span class="search-tag">#가성비</span>
-                  <span class="search-tag">#명소</span>
-                  <span class="search-tag">#바다</span>
-                       <span class="search-tag">#일본</span>   
-                  <span class="search-tag">#커플</span>
-                  <span class="search-tag">#태국</span>
-                  <span class="search-tag">#펜션</span>
-                </div>
-              </div>
-              <div id="search-results" class="search-results-list"></div>
-            </div>
-          </div>
+      <div id="search-dropdown" class="search-dropdown hidden">
+        <p class="dropdown-title" style="color: #94a3b8; font-weight: 700; font-size: 0.85rem;">추천 태그</p>
+        <div id="recommended-tags" class="tag-cloud">
+          <span class="search-tag">가족</span>
+          <span class="search-tag">가성비</span>
+          <span class="search-tag">커플</span>
+          <span class="search-tag">바다</span>
+          <span class="search-tag">명소</span>
+          <span class="search-tag">태국</span>
+          <span class="search-tag">일본</span>
+          <span class="search-tag">AIBE5</span>
         </div>
-
+      </div>
+    </div>
+  </div>
         <div class="filter-group">
           <button
             class="filter-btn active"
@@ -244,49 +220,12 @@
         </button>
       </div>
     </section>
-    <!-- 플러팅 배너 제거 할 예정 혹시 몰라 -->
-    <!-- <div id="floating-banner" class="floating-banner">
-      <div class="floban-header">
-        <span class="floban-badge">NOTICE</span>
-        <button
-          onclick="
-            document.getElementById('floating-banner').style.display = 'none'
-          "
-          class="floban-close"
-        >
-          <i data-lucide="x" width="14"></i>
-        </button>
-      </div>
-      <div id="floban-content"></div>
-    </div> -->
-
+    
     <footer>
-      <div style="text-align: center">Copyright © 2026 Team3 박치기공룡. All rights reserved.</div>
-      <!-- <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3 class="footer-logo">여기저기</h3>
-                    <p class="footer-desc">당신의 여정에 특별한 영감이 되기를 바랍니다.</p>
-                </div>
-                <div class="footer-nav-group">
-                    <h4 class="footer-heading">서비스</h4>
-                    <div class="footer-links">
-                        <a href="#">매거진</a>
-                        <a href="#">예약</a>
-                    </div>
-                </div>
-                <div class="footer-nav-group">
-                    <h4 class="footer-heading">고객지원</h4>
-                    <div class="footer-links">
-                        <a href="#">공지사항</a>
-                        <a href="#">1:1 문의</a>
-                    </div>
-                </div>
-                <div class="footer-copy-wrap">
-                    <p class="footer-copy">© 2024 Yeogi Jeogi. All rights reserved.</p>
-                </div>
-            </div>
-        </div> -->
+      <div style="text-align: center">
+        Copyright © 2026 Team3 박치기공룡. All rights reserved.
+      </div>
+     
     </footer>
 
     <script src="../js/data.js"></script>

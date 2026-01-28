@@ -1,33 +1,28 @@
-// [script.js 최상단에 추가]
-// 1. Supabase 클라이언트 초기화 (모든 페이지 공통)
-const SUPABASE_URL = 'https://ozhieovgrmnehaimuyni.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96aGllb3Zncm1uZWhhaW11eW5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NzgwODksImV4cCI6MjA4NDU1NDA4OX0.haULDDCnJXw4zwFeJSQKhS1Jun4CRFCziGgKQKVwmyY';
+// =================================================================
+// 1. 초기화 및 전역 변수 설정
+// =================================================================
+const SUPABASE_URL = "https://ozhieovgrmnehaimuyni.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96aGllb3Zncm1uZWhhaW11eW5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NzgwODksImV4cCI6MjA4NDU1NDA4OX0.haULDDCnJXw4zwFeJSQKhS1Jun4CRFCziGgKQKVwmyY";
 
-// window 객체에 할당하여 어디서든 접근 가능하게 함
-if (typeof supabase !== 'undefined') {
-    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-    console.error("Supabase SDK가 로드되지 않았습니다. HTML <head>를 확인하세요.");
+if (typeof supabase !== "undefined") {
+  window.supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+  );
 }
-/***********************************************
- * [전역 설정]
- * Lucide 아이콘 초기화 및 전역 변수 설정
- ***********************************************/
+
 if (typeof lucide !== "undefined") {
   lucide.createIcons();
 }
 
-let activeFilters = new Set(); // 선택된 필터를 저장하는 집합
-let visibleCount = 9; // 처음에 보여줄 카드 개수 (3x3)
-let isInfiniteScroll = false; // 더보기 버튼 클릭 후 무한스크롤 전환 여부
-let searchQuery = ''; // [중요] 검색어 저장 변수
-
-// [추가] 새로고침 시 무작위 노출을 위한 셔플 데이터 저장 변수
+let activeFilters = new Set();
+let visibleCount = 9;
+let isInfiniteScroll = false;
+let searchQuery = "";
 let shuffledArticles = [];
+const selectedTags = new Set(); // 선택된 태그 관리
 
-/**
- * --- 셔플 함수 ---
- */
 function shuffleArray(array) {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -37,9 +32,9 @@ function shuffleArray(array) {
   return newArray;
 }
 
-/**
- * --- 1. 네비게이션 & 스크롤 UI ---
- */
+// =================================================================
+// 2. 네비게이션 & UI 인터랙션
+// =================================================================
 const nav = document.getElementById("navbar");
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileMenu = document.getElementById("mobile-menu");
@@ -47,433 +42,240 @@ const mobileMenuClose = document.getElementById("mobile-menu-close");
 
 window.addEventListener("scroll", () => {
   if (nav) {
-    if (window.scrollY > 20) {
-      nav.classList.add("scrolled");
-    } else if (document.body.id === "page-home") {
-      nav.classList.remove("scrolled");
-    }
+    if (window.scrollY > 20) nav.classList.add("scrolled");
+    else if (document.body.id === "page-home") nav.classList.remove("scrolled");
   }
-
-  if (isInfiniteScroll) {
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 500
-    ) {
-      handleInfiniteLoad();
-    }
+  if (
+    isInfiniteScroll &&
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 500
+  ) {
+    handleInfiniteLoad();
   }
-
   const floBan = document.getElementById("floating-banner");
-  if (floBan) {
-    if (window.scrollY > 400) {
-      floBan.style.display = "block";
-    } else {
-      floBan.style.display = "none";
-    }
-  }
+  if (floBan) floBan.style.display = window.scrollY > 400 ? "block" : "none";
 });
 
-if (mobileMenuBtn) mobileMenuBtn.onclick = () => mobileMenu.classList.add("open");
-if (mobileMenuClose) mobileMenuClose.onclick = () => mobileMenu.classList.remove("open");
+if (mobileMenuBtn)
+  mobileMenuBtn.onclick = () => mobileMenu.classList.add("open");
+if (mobileMenuClose)
+  mobileMenuClose.onclick = () => mobileMenu.classList.remove("open");
 
-/**
- * --- 2. 로그인 및 실제 Supabase 세션 관리 ---
- */
-
-// [수정] UI 업데이트 로직을 별도 함수로 분리하여 재사용성 높임
-function updateAuthUI(session) {
-  const isLoggedIn = !!session;
-  const loginBtn = document.getElementById("nav-login-btn");
-  const userAvatar = document.getElementById("nav-user-avatar");
-  const otherTriggers = document.querySelectorAll(".btn-login-trigger");
-  const mobileUserLink = document.querySelector('.mobile-menu-link.user-avatar-display');
-
-  if (isLoggedIn) {
-    if (loginBtn) loginBtn.style.display = "none";
-    if (userAvatar) {
-      userAvatar.style.display = "block";
-      const img = userAvatar.querySelector('img');
-      // 구글 등 소셜 로그인 메타데이터 우선 참조
-      const avatarUrl = session.user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.id}`;
-      if (img) img.src = avatarUrl;
-    }
-    if (mobileUserLink) mobileUserLink.classList.remove('hidden');
-    otherTriggers.forEach((btn) => btn.style.display = "none");
-    localStorage.setItem("isLoggedIn", "true");
-  } else {
-    if (loginBtn) loginBtn.style.display = "inline-flex";
-    if (userAvatar) {
-      userAvatar.style.display = "none";
-      const img = userAvatar.querySelector('img');
-      if (img) img.src = ""; 
-    }
-    if (mobileUserLink) mobileUserLink.classList.add('hidden');
-    otherTriggers.forEach((btn) => btn.style.display = "block");
-    localStorage.setItem("isLoggedIn", "false");
-  }
-}
-
-function showAuthModal(title, message, icon = '🔔') {
-    // 기존 모달이 있으면 제거
-    const oldModal = document.getElementById('auth-custom-modal');
-    if (oldModal) oldModal.remove();
-
-    const modalHtml = `
-        <div id="auth-custom-modal" 
-             onclick="if(event.target === this) this.remove()" 
-             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter: blur(4px);">
-            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
-                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold; color:#1a1a1a;">${title}</h3>
-                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
-                <button onclick="document.getElementById('auth-custom-modal').remove()" 
-                        style="width:100%; padding:14px; border:none; border-radius:12px; background:#3b82f6; color:#fff; cursor:pointer; font-size:14px; font-weight:bold; transition: background 0.2s;"
-                        onmouseover="this.style.background='#2563eb'"
-                        onmouseout="this.style.background='#3b82f6'"> 확인 </button>
-            </div>
-        </div>
-        <style>
-            @keyframes modalPop {
-                from { opacity: 0; transform: scale(0.9) translateY(20px); }
-                to { opacity: 1; transform: scale(1) translateY(0); }
-            }
-        </style>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function showConfirmModal(title, message, onConfirm, icon = '❓') {
-    const oldModal = document.getElementById('auth-confirm-modal');
-    if (oldModal) oldModal.remove();
-
-    const modalHtml = `
-        <div id="auth-confirm-modal" 
-             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter: blur(4px);">
-            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
-                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold; color:#1a1a1a;">${title}</h3>
-                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
-                <div style="display:flex; gap:12px;">
-                    <button onclick="document.getElementById('auth-confirm-modal').remove()" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600; transition: background 0.2s;"
-                            onmouseover="this.style.background='#e5e7eb'"
-                            onmouseout="this.style.background='#f3f4f6'">취소</button>
-                    <button id="modal-confirm-btn" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#3b82f6; color:#fff; cursor:pointer; font-weight:bold; transition: background 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);"
-                            onmouseover="this.style.background='#2563eb'"
-                            onmouseout="this.style.background='#3b82f6'">확인</button>
-                </div>
-            </div>
-        </div>
-        <style>
-            @keyframes modalPop {
-                from { opacity: 0; transform: scale(0.9) translateY(20px); }
-                to { opacity: 1; transform: scale(1) translateY(0); }
-            }
-        </style>
-    `;
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-    document.getElementById('modal-confirm-btn').onclick = () => {
-        document.getElementById('auth-confirm-modal').remove();
-        if (onConfirm) onConfirm();
-    };
-}
-
-// [수정] 실시간 감시(onAuthStateChange)를 포함한 상태 체크
+// =================================================================
+// 3. 인증(Auth) 및 커스텀 모달 시스템
+// =================================================================
 async function checkLoginStatus() {
   const supabase = window.supabaseClient;
-  if (!supabase) {
-    console.error("Supabase 클라이언트를 찾을 수 없습니다.");
-    return;
-  }
-
-  // 1. 초기 세션 확인
-  const { data: { session } } = await supabase.auth.getSession();
+  if (!supabase) return;
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   updateAuthUI(session);
-
-  // 2. [중요] 상태 변경 실시간 감지 (로그인/로그아웃 즉시 반응)
   supabase.auth.onAuthStateChange((event, session) => {
-    console.log("인증 이벤트:", event);
     updateAuthUI(session);
-    if (event === 'SIGNED_OUT') {
-      localStorage.removeItem('userProfile');
+    if (event === "SIGNED_OUT") {
+      localStorage.removeItem("userProfile");
       updateFavoriteUI();
     }
   });
 }
 
-// [수정] 로그아웃 함수를 전역에서 사용 가능하도록 window 객체에 할당
+function updateAuthUI(session) {
+  const isLoggedIn = !!session;
+  const loginBtn = document.getElementById("nav-login-btn");
+  const userAvatar = document.getElementById("nav-user-avatar");
+  const mobileUserLink = document.querySelector(
+    ".mobile-menu-link.user-avatar-display",
+  );
+  const otherTriggers = document.querySelectorAll(".other-auth-trigger") || [];
+
+  if (isLoggedIn) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (userAvatar) {
+      userAvatar.style.display = "block";
+      const img = userAvatar.querySelector("img");
+      if (img)
+        img.src =
+          session.user.user_metadata?.avatar_url ||
+          `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.id}`;
+    }
+    if (mobileUserLink) mobileUserLink.classList.remove("hidden");
+    otherTriggers.forEach((btn) => (btn.style.display = "none"));
+    localStorage.setItem("isLoggedIn", "true");
+  } else {
+    if (loginBtn) loginBtn.style.display = "inline-flex";
+    if (userAvatar) userAvatar.style.display = "none";
+    if (mobileUserLink) mobileUserLink.classList.add("hidden");
+    otherTriggers.forEach((btn) => (btn.style.display = "block"));
+    localStorage.setItem("isLoggedIn", "false");
+  }
+}
+
+function showAuthModal(title, message, icon = "🔔") {
+  const oldModal = document.getElementById("auth-custom-modal");
+  if (oldModal) oldModal.remove();
+  const modalHtml = `
+    <div id="auth-custom-modal" onclick="if(event.target === this) this.remove()" 
+         style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+        <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
+            <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+            <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
+            <button onclick="document.getElementById('auth-custom-modal').remove()" 
+                    style="width:100%; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-size:14px; font-weight:bold;">확인</button>
+        </div>
+    </div>`;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+}
+
+function showConfirmModal(title, message, onConfirm, icon = "❓") {
+  const oldModal = document.getElementById("auth-confirm-modal");
+  if (oldModal) oldModal.remove();
+  const modalHtml = `
+    <div id="auth-confirm-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+        <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+            <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
+            <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+            <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
+            <div style="display:flex; gap:12px;">
+                <button onclick="document.getElementById('auth-confirm-modal').remove()" 
+                        style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600;">취소</button>
+                <button id="modal-confirm-btn" 
+                        style="flex:1; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">확인</button>
+            </div>
+        </div>
+    </div>`;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+  document.getElementById("modal-confirm-btn").onclick = () => {
+    document.getElementById("auth-confirm-modal").remove();
+    onConfirm();
+  };
+}
+
+function showLoginModal() {
+  if (document.getElementById("login-confirm-modal")) return;
+  const modalHtml = `
+    <div id="login-confirm-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+        <div style="background:#fff; padding:30px; border-radius:15px; text-align:center; width:90%; max-width:320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <div style="font-size:40px; margin-bottom:15px;">🔒</div>
+            <h3 style="margin-bottom:10px; font-size:18px;">로그인이 필요합니다</h3>
+            <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">찜하기 기능은 로그인 후<br>이용하실 수 있습니다.</p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
+                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6;; cursor:pointer; font-weight:bold;">로그인하기</button>
+            </div>
+        </div>
+    </div>`;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+}
+
 async function handleLogout() {
   const supabase = window.supabaseClient;
   if (!supabase) return;
-
   showConfirmModal(
-        "로그아웃", 
-        "떠나신다니 아쉬워요...", 
-        async () => {
-            // 이 부분이 '확인'을 눌렀을 때 실행될 내용입니다.
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                showAuthModal("오류", error.message, "⚠️");
-            } else {
-                localStorage.setItem('isLoggedIn', 'false');
-                localStorage.removeItem('userProfile');
-                
-                // 알림 모달을 보여주고 1.5초 뒤에 페이지 이동
-                showAuthModal("로그아웃 완료", "안전하게 로그아웃 되었습니다.", "👋");
-                setTimeout(() => {
-                    location.href = 'index.html';
-                }, 1500);
-            }
-        },
-        "😟" // 로그아웃에 어울리는 아이콘
-    );
-}
-// 전역 함수로 등록 (mypage.html 등에서 호출 가능하게)
-window.handleLogout = handleLogout;
-
-function addToRecent(articleId) {
-  let recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
-  recent = recent.filter((id) => id !== articleId);
-  recent.unshift(articleId);
-  if (recent.length > 5) recent.pop();
-  localStorage.setItem("recentArticles", JSON.stringify(recent));
+    "로그아웃",
+    "떠나신다니 아쉬워요...",
+    async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) showAuthModal("오류", error.message, "⚠️");
+      else {
+        localStorage.setItem("isLoggedIn", "false");
+        localStorage.removeItem("userProfile");
+        showAuthModal("로그아웃 완료", "안전하게 로그아웃 되었습니다.", "👋");
+        setTimeout(() => {
+          location.href = "index.html";
+        }, 1500);
+      }
+    },
+    "😟",
+  );
 }
 
-function renderFloatingBanner() {
-  const floBanContent = document.getElementById("floban-content");
-  if (!floBanContent || typeof ARTICLES === "undefined") return;
-  const recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
-  const article =
-    recent.length > 0 ? ARTICLES.find((a) => a.id === recent[0]) : ARTICLES[0];
-  if (article) {
-    floBanContent.innerHTML = `
-      <div class="flex items-center gap-3 cursor-pointer" onclick="location.href='article.html?id=${article.id}'" style="display: flex; align-items: center; gap: 0.75rem;">
-          <img src="${article.imageUrl}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;">
-          <div>
-            <p style="font-size: 10px; color: var(--accent); font-weight: bold; margin-bottom: 2px;">최근 본 상품</p>
-            <p style="font-size: 14px; font-weight: bold; color: var(--gray-900); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${article.title}</p>
-          </div>
-      </div>`;
-  }
-}
+// =================================================================
+// 4. 찜하기(Favorite) & 상세 페이지 UI 연동 + 토스트 알림
+// =================================================================
 
 /**
- * --- 3. 카드 렌더링 (검색 + 필터 통합 + 랜덤 셔플 적용) ---
+ * 토스트 메시지를 화면에 띄우는 함수
  */
-function toggleFilter(filterId) {
-  const btn = document.querySelector(`.filter-btn[data-id="${filterId}"]`);
-  if (!btn) return;
-  if (filterId === "all") {
-    activeFilters.clear();
-    document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
+function showLikeToast(message) {
+  let container = document.getElementById("toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toast-container";
+    container.style.cssText =
+      "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:10001; display:flex; flex-direction:column; gap:10px; pointer-events:none;";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.style.cssText =
+    "background:rgba(0,0,0,0.8); color:#fff; padding:12px 24px; border-radius:50px; font-size:14px; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.15); transition:all 0.3s ease; opacity:0; transform:translateY(10px);";
+  toast.innerText = message;
+
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+  });
+
+  // 2초 후 삭제
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-10px)";
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
+}
+
+function handleLikeClick(event, articleId) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  if (!isLoggedIn) {
+    showLoginModal();
   } else {
-    document.querySelector('.filter-btn[data-id="all"]').classList.remove("active");
-    activeFilters.has(filterId) ? activeFilters.delete(filterId) : activeFilters.add(filterId);
-    btn.classList.toggle("active");
-    if (activeFilters.size === 0)
-      document.querySelector('.filter-btn[data-id="all"]').classList.add("active");
-  }
-  visibleCount = 9;
-  renderArticles();
-}
-
-function handleLoadMore() {
-  isInfiniteScroll = true;
-  const loadMoreBtn = document.querySelector(".load-more-container");
-  if (loadMoreBtn) loadMoreBtn.style.display = "none";
-  visibleCount = 21;
-  renderArticles();
-}
-
-function handleInfiniteLoad() {
-  if (typeof ARTICLES !== "undefined" && visibleCount < ARTICLES.length) {
-    visibleCount += 3;
-    renderArticles();
+    toggleFavorite(articleId);
   }
 }
 
-function renderArticles() {
-  const grid = document.getElementById("article-grid");
-  if (!grid || typeof ARTICLES === "undefined") return;
-
-  // [중요] 처음 로드 시에만 무작위로 섞음
-  if (shuffledArticles.length === 0) {
-    shuffledArticles = shuffleArray(ARTICLES);
-  }
-
-  grid.innerHTML = "";
-
-  // 1. 필터링 및 검색 로직 (섞인 데이터인 shuffledArticles 사용)
-  const filtered = shuffledArticles.filter((article) => {
-    let matchesFilter = true;
-    if (activeFilters.size > 0) {
-  matchesFilter = Array.from(activeFilters).some((filterId) => {
-    // 1. 국내 여행 (태극기 아이콘)
-    if (filterId === "domestic") {
-      const domesticKeywords = [
-        "국내", "한국", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천", 
-        "여수", "강원도", "경기도", "경포대", "주문진", "초당", "황리단길", "대릉원", "불국사",
-        "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장", "전통한식"
-      ];
-      // 태그에 위 키워드가 '포함'되어 있는지 검사 (ex: "강릉여행"도 걸리게 함)
-      return article.tags.some((tag) => domesticKeywords.some(key => tag.includes(key)));
-    }
-
-    // 2. 해외 여행
-    if (filterId === "overseas") {
-      const overseasKeywords = [
-        "해외", "태국", "일본", "베트남", "방콕", "오사카", "교토", "고베", "나랏마사", "도톤보리", 
-        "난바", "우메다", "신사이바시", "코사무이", "괌", "GUAM", "유럽", "스페인", "방콕사원", 
-        "짜뚜짝", "카오산", "실롬", "와불상", "천수각", "도요토미", "간사이", "투몬", "하갓냐"
-      ];
-      return article.tags.some((tag) => overseasKeywords.some(key => tag.includes(key)));
-    }
-
-    // 3. 자연 & 힐링 (지락실 멤버 및 숙소 테마)
-    if (filterId === "nature") {
-      const natureKeywords = [
-        "자연", "힐링", "바다", "숲", "산", "계곡", "호수", "섬", "해변", "산책", "목장", 
-        "휴양", "온천", "정글", "트리하우스", "안유진", "이영지", "미미", "이은지", "지락실",
-        "지구오락실", "나영석", "촌캉스", "감성숙소", "독채", "펜션", "글램핑", "캠핑", "노을", "석양"
-      ];
-      return article.tags.some((tag) => natureKeywords.some(key => tag.includes(key)));
-    }
-
-    // 4. 도시 & 핫플 (쇼핑 및 야경)
-    if (filterId === "city") {
-      const cityKeywords = [
-        "도시", "도심", "시티", "야경", "핫플", "트렌디", "쇼핑", "백화점", "편집숍", 
-        "인스타감성", "랜드마크", "복합문화공간", "야시장", "번화가", "MZ세대", "SNS핫플",
-        "비즈니스", "역세권", "가성비호텔", "5성급", "호캉스", "면세점", "기념품"
-      ];
-      return article.tags.some((tag) => cityKeywords.some(key => tag.includes(key)));
-    }
-
-    // 5. 음식 & 맛집 (미식 키워드)
-    if (filterId === "food") {
-      const foodKeywords = [
-        "맛집", "카페", "음식", "디저트", "브런치", "레스토랑", "베이커리", "먹방", 
-        "미식", "로컬맛집", "커피", "스테이크", "라멘", "타코야키", "순두부", "호떡",
-        "팟타이", "푸팟퐁커리", "오코노미야키", "돈카츠", "간식", "야식", "디너", "조식"
-      ];
-      return article.tags.some((tag) => foodKeywords.some(key => tag.includes(key)));
-    }
-
-    return false;
-  });
-}
-
-    let matchesSearch = true;
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      const inTitle = article.title.toLowerCase().includes(query);
-      const inSubtitle = article.subtitle?.toLowerCase().includes(query);
-      const inTags = article.tags.some((tag) => tag.toLowerCase().includes(query));
-      const inMainTags = article.mainTags?.some((tag) => tag.toLowerCase().includes(query));
-      matchesSearch = inTitle || inSubtitle || inTags || inMainTags;
-    }
-
-    return (activeFilters.size > 0 || searchQuery !== '') ? (matchesFilter && matchesSearch) : true;
-  });
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div class="no-result" style="grid-column: 1/-1; text-align: center; padding: 100px 0; color: #999;">검색 결과가 없습니다.</div>`;
-    return;
-  }
-
-  filtered.slice(0, visibleCount).forEach((article) => {
-    const card = document.createElement("div");
-    card.className = "article-card";
-    card.innerHTML = `
-        <div class="card-img-wrap">
-            <img src="${article.imageUrl}" alt="${article.title}" class="card-img">
-            <div class="card-overlay"></div>
-        </div>
-        <div class="card-like-btn-wrap">
-            <button class="nav-icon-btn btn-like" data-id="${article.id}" onclick="event.stopPropagation(); toggleFavorite('${article.id}')">
-                <i data-lucide="heart" width="20"></i>
-            </button>
-        </div>
-        <div class="card-content">
-            <div class="card-badge-area">
-                ${article.mainTags.map((tag) => `<span class="card-badge">#${tag}</span>`).join("")}
-            </div>
-            <h3 class="card-title">${article.title}</h3>
-            <div class="card-subtitle-wrapper">
-                <p class="card-subtitle">${article.subtitle || "자세히 보기"}</p>
-            </div>
-        </div>`;
-    card.onclick = () => {
-      addToRecent(article.id);
-      location.href = `article.html?id=${article.id}`;
-    };
-    grid.appendChild(card);
-  });
-  if (typeof lucide !== "undefined") lucide.createIcons();
-  updateFavoriteUI();
-}
-
-/**
- * --- 4. 좋아요 기능 통합 버전 ---
- */
-
-// 1. 좋아요 토글 함수 (메시지 + 데이터 저장)
 function toggleFavorite(id) {
-  if (localStorage.getItem("isLoggedIn") !== "true") {
-    if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
-      location.href = "login.html";
-    }
-    return;
-  }
-
   let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-  // ID 타입을 문자열로 통일하여 비교 오류 방지
   const stringId = String(id);
   const index = favorites.indexOf(stringId);
 
   if (index === -1) {
     favorites.push(stringId);
-    // showLikeToast("❤️ 좋아요를 눌렀습니다!"); 
+    // [수정] 메시지 변경 완료
+    showLikeToast("📂 마이페이지에 저장됐습니다!");
   } else {
     favorites.splice(index, 1);
-    // 취소 시에도 알림을 원하면 아래 주석 해제
-    // showLikeToast("💔 좋아요가 취소되었습니다."); 
+    showLikeToast("🗑️ 마이페이지에서 삭제됐습니다!");
   }
 
   localStorage.setItem("favorites", JSON.stringify(favorites));
-  
-  // UI 동기화 (헤더 카운트 + 카드 아이콘 + 상세페이지 아이콘)
   updateFavoriteUI();
-  if (typeof updateDetailLikeUI === "function") {
-    updateDetailLikeUI(stringId);
-  }
+  if (typeof updateDetailLikeUI === "function") updateDetailLikeUI(stringId);
 }
 
-// 2. 전체 UI 업데이트 (카운터 및 아이콘 색상)
 function updateFavoriteUI() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const favorites = isLoggedIn ? JSON.parse(localStorage.getItem("favorites") || "[]") : [];
-  
-  // 헤더 찜 카운트 업데이트
+  const favorites = isLoggedIn
+    ? JSON.parse(localStorage.getItem("favorites") || "[]")
+    : [];
+
   const countEl = document.getElementById("favorite-count");
   if (countEl) {
-    if (isLoggedIn && favorites.length > 0) {
-      countEl.textContent = favorites.length;
-      countEl.style.display = "flex";
-    } else {
-      countEl.style.display = "none";
-    }
+    countEl.textContent = favorites.length;
+    countEl.style.display =
+      isLoggedIn && favorites.length > 0 ? "flex" : "none";
   }
 
-  // 화면에 있는 모든 좋아요 버튼 상태 반영
   document.querySelectorAll(".btn-like").forEach((btn) => {
-    const btnId = String(btn.dataset.id);
-    const isFav = favorites.includes(btnId);
-    const icon = btn.querySelector("svg") || btn.querySelector("i");
-
+    const isFav = favorites.includes(String(btn.dataset.id));
+    const icon = btn.querySelector("svg");
     if (isFav) {
       btn.style.background = "white";
       btn.style.color = "#ef4444";
@@ -490,172 +292,522 @@ function updateFavoriteUI() {
       }
     }
   });
-
-  // 동적 생성된 아이콘들을 위해 Lucide 다시 실행
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
 }
 
-// 3. 토스트 알림 함수
-function showLikeToast(message) {
-  let container = document.getElementById("toast-container");
-  if (!container) {
-    container = document.createElement("div");
-    container.id = "toast-container";
-    container.className = "toast-container";
-    document.body.appendChild(container);
-  }
-
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.innerText = message;
-
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => toast.remove(), 300);
-  }, 500);
-}
-
-// 4. 헤더 '찜' 버튼 핸들러
-function handleFavoriteClick() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  if (!isLoggedIn) {
-    alert("로그인이 필요한 서비스입니다.");
-    location.href = "login.html"; 
-  } else {
-    location.href = "mypage.html?tab=favorites";
-  }
-}
-
-// 5. 상세 페이지 UI 업데이트
 function updateDetailLikeUI(articleId) {
   const likeBtn = document.getElementById("detail-like-btn");
   if (!likeBtn) return;
-
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const favorites = isLoggedIn ? JSON.parse(localStorage.getItem("favorites") || "[]") : [];
+  const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
   const isFav = favorites.includes(String(articleId));
   const icon = likeBtn.querySelector("svg");
-
   if (isFav) {
-    likeBtn.style.backgroundColor = "var(--red-500, #ef4444)";
-    likeBtn.style.borderColor = "var(--red-500, #ef4444)";
+    likeBtn.style.backgroundColor = "#ef4444";
     if (icon) {
       icon.style.fill = "white";
       icon.style.stroke = "white";
     }
   } else {
     likeBtn.style.backgroundColor = "";
-    likeBtn.style.borderColor = "";
     if (icon) {
       icon.style.fill = "none";
       icon.style.stroke = "currentColor";
     }
   }
 }
-/**
- * --- 5. 검색 및 이벤트 핸들링 ---
- */
-const mainSearchInput = document.getElementById("main-search-input");
-const searchDropdown = document.getElementById("search-dropdown");
-const clearBtn = document.getElementById("search-clear-btn");
 
-function handleSearch() {
-    if(mainSearchInput) {
-        searchQuery = mainSearchInput.value.trim().toLowerCase();
-        if(searchDropdown) searchDropdown.classList.add("hidden");
-        renderArticles(); 
+// [유지] 최근 본 항목 추가 로직
+function addToRecent(articleId) {
+  let recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
+  recent = recent.filter((id) => id !== articleId);
+  recent.unshift(articleId);
+  if (recent.length > 5) recent.pop();
+  localStorage.setItem("recentArticles", JSON.stringify(recent));
+}
+// =================================================================
+// 5. 카드 렌더링 & 필터/검색 통합 로직
+// =================================================================
+
+// 카테고리 데이터 (함수 밖으로 빼서 관리)
+const categories = {
+  domestic: [
+    "국내",
+    "한국",
+    "제주",
+    "강릉",
+    "부산",
+    "가평",
+    "경주",
+    "여수",
+    "속초",
+    "양양",
+    "전주",
+    "포항",
+    "남해",
+    "거제",
+    "통영",
+    "대구",
+    "대전",
+    "광주",
+    "울산",
+    "인천",
+    "수원",
+    "성남",
+    "고양",
+    "용인",
+    "부천",
+    "안산",
+    "청주",
+    "천안",
+    "창원",
+    "김해",
+    "구미",
+    "제주도",
+  ],
+  overseas: [
+    "해외",
+    "일본",
+    "태국",
+    "베트남",
+    "미국",
+    "유럽",
+    "프랑스",
+    "이탈리아",
+    "스페인",
+    "영국",
+    "독일",
+    "스위스",
+    "호주",
+    "뉴질랜드",
+    "캐나다",
+    "중국",
+    "대만",
+    "홍콩",
+    "싱가포르",
+    "말레이시아",
+    "인도네시아",
+    "필리핀",
+    "괌",
+    "사이판",
+    "하와이",
+    "발리",
+    "다낭",
+    "나트랑",
+    "푸꾸옥",
+    "방콕",
+    "치앙마이",
+    "도쿄",
+    "오사카",
+    "후쿠오카",
+    "삿포로",
+    "오키나와",
+  ],
+  nature: [
+    "자연",
+    "힐링",
+    "바다",
+    "산",
+    "숲",
+    "계곡",
+    "캠핑",
+    "글램핑",
+    "불멍",
+    "물멍",
+    "별멍",
+    "촌캉스",
+    "한옥",
+    "템플스테이",
+    "트레킹",
+    "등산",
+    "서핑",
+    "다이빙",
+    "스노쿨링",
+    "스키",
+    "보드",
+    "빠지",
+    "수상레저",
+    "낚시",
+    "골프",
+    "승마",
+    "요가",
+    "명상",
+    "산책",
+    "드라이브",
+    "일몰",
+    "일출",
+    "야경",
+    "별",
+    "꽃구경",
+    "단풍",
+    "눈꽃",
+  ],
+  city: [
+    "도시",
+    "도심",
+    "시티",
+    "호캉스",
+    "쇼핑",
+    "백화점",
+    "아울렛",
+    "면세점",
+    "시장",
+    "야시장",
+    "플리마켓",
+    "팝업스토어",
+    "전시회",
+    "박물관",
+    "미술관",
+    "공연",
+    "콘서트",
+    "뮤지컬",
+    "연극",
+    "영화",
+    "축제",
+    "테마파크",
+    "놀이공원",
+    "동물원",
+    "수족관",
+    "아쿠아리움",
+    "식물원",
+    "수목원",
+    "카페",
+    "맛집",
+    "빵지순례",
+    "핫플",
+    "데이트",
+  ],
+  food: [
+    "맛집",
+    "먹방",
+    "미식",
+    "카페",
+    "디저트",
+    "베이커리",
+    "빵",
+    "커피",
+    "차",
+    "술",
+    "와인",
+    "맥주",
+    "소주",
+    "막걸리",
+    "칵테일",
+    "위스키",
+    "전통주",
+    "안주",
+    "야식",
+    "브런치",
+    "다이닝",
+    "오마카세",
+    "뷔페",
+    "레스토랑",
+    "식당",
+    "노포",
+    "길거리음식",
+    "푸드트럭",
+    "쿠킹클래스",
+  ],
+};
+
+function renderArticles() {
+  const grid = document.getElementById("article-grid");
+  if (!grid || typeof ARTICLES === "undefined") return;
+
+  if (shuffledArticles.length === 0) shuffledArticles = shuffleArray(ARTICLES);
+
+  // [중요] 6번 영역에서 관리하는 window.searchQuery와 window.selectedTags를 직접 참조
+  const filtered = shuffledArticles.filter((article) => {
+    // 1. 카테고리 필터 체크
+    let matchesFilter = true;
+    if (activeFilters.size > 0) {
+      matchesFilter = Array.from(activeFilters).some((fId) => {
+        const targetKeys = categories[fId] || [];
+        return article.tags.some((tag) =>
+          targetKeys.some((key) => tag.includes(key)),
+        );
+      });
     }
+
+    // 2. 검색어 + 태그 필터 체크
+    let matchesSearch = true;
+    const typedText = (
+      document.getElementById("main-search-input")?.value || ""
+    )
+      .trim()
+      .toLowerCase();
+    const tagsText = Array.from(window.selectedTags || [])
+      .join(" ")
+      .toLowerCase();
+    const fullQuery = (typedText + " " + tagsText).trim();
+
+    if (fullQuery) {
+      const queries = fullQuery
+        .split(/\s+/)
+        .filter((q) => q !== "")
+        .map((q) => q.replace("#", ""));
+      const articleText = (
+        article.title +
+        (article.subtitle || "") +
+        article.tags.join("") +
+        (article.mainTags || []).join("")
+      ).toLowerCase();
+
+      // 모든 검색 단어가 포함되어야 하는 경우(AND)는 every, 하나라도 포함되면 되는 경우(OR)는 some
+      matchesSearch = queries.some((q) => articleText.includes(q));
+    }
+
+    return matchesFilter && matchesSearch;
+  });
+
+  grid.innerHTML = "";
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="no-result" style="grid-column: 1/-1; text-align: center; padding: 100px 0; color: #999;">검색 결과가 없습니다.</div>`;
+    return;
+  }
+
+  filtered.slice(0, visibleCount).forEach((article) => {
+    const card = document.createElement("div");
+    card.className = "article-card";
+    card.innerHTML = `
+            <div class="card-img-wrap">
+                <img src="${article.imageUrl}" class="card-img">
+                <div class="card-overlay"></div>
+            </div>
+            <div class="card-like-btn-wrap">
+                <button class="nav-icon-btn btn-like" data-id="${article.id}" onclick="handleLikeClick(event, '${article.id}')">
+                    <i data-lucide="heart" width="20"></i>
+                </button>
+            </div>
+            <div class="card-content">
+                <div class="card-badge-area">
+                    ${(article.mainTags || []).map((t) => `<span class="card-badge">#${t}</span>`).join("")}
+                </div>
+                <h3 class="card-title">${article.title}</h3>
+                <div class="card-subtitle-wrapper">
+                    <p class="card-subtitle">${article.subtitle || "자세히 보기"}</p>
+                </div>
+            </div>`;
+    card.onclick = () => {
+      addToRecent(article.id);
+      location.href = `article.html?id=${article.id}`;
+    };
+    grid.appendChild(card);
+  });
+  if (typeof lucide !== "undefined") lucide.createIcons();
+  updateFavoriteUI();
 }
 
-if (mainSearchInput) {
-    mainSearchInput.addEventListener("focus", () => {
-        if(searchDropdown) searchDropdown.classList.remove("hidden");
-    });
-    mainSearchInput.addEventListener("input", (e) => {
-        if(clearBtn) {
-            e.target.value.length > 0 ? clearBtn.classList.remove("hidden") : clearBtn.classList.add("hidden");
-        }
-    });
-    mainSearchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") handleSearch();
-    });
+// =================================================================
+// 6. 검색창 태그 관리 & 필터 제어 (통합 수정 버전)
+// =================================================================
+
+// 전역 변수 초기화
+window.selectedTags = window.selectedTags || new Set();
+
+const mInput = document.getElementById("main-search-input");
+const sDropdown = document.getElementById("search-dropdown");
+const cBtn = document.getElementById("search-clear-btn");
+const tInner = document.getElementById("selected-tags-inner");
+
+function refreshTags() {
+  if (!tInner || !mInput) return;
+  tInner.querySelectorAll(".search-tag.active-tag").forEach((t) => t.remove());
+
+  window.selectedTags.forEach((tagName) => {
+    const span = document.createElement("span");
+    span.className = "search-tag active-tag";
+    span.style.cssText =
+      "background:#3b82f6; color:white; white-space:nowrap; flex-shrink:0; padding:6px 12px; border-radius:20px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-size:14px; margin: 2px 4px;";
+    span.innerHTML = `${tagName} <span style="font-size:10px; opacity:0.8;">✕</span>`;
+
+    span.onclick = (e) => {
+      e.stopPropagation();
+      window.selectedTags.delete(tagName);
+      document.querySelectorAll("#search-dropdown .search-tag").forEach((t) => {
+        if (t.textContent.trim().replace("#", "") === tagName)
+          t.classList.remove("active-tag");
+      });
+      refreshTags();
+      renderArticles(); // UI 갱신 후 즉시 검색 실행
+    };
+    tInner.insertBefore(span, mInput);
+  });
+
+  mInput.placeholder =
+    window.selectedTags.size > 0 ? "" : "어디로 떠나고 싶으신가요?";
+  if (cBtn)
+    cBtn.style.display =
+      window.selectedTags.size > 0 || mInput.value.length > 0 ? "flex" : "none";
+
+  requestAnimationFrame(() => {
+    tInner.scrollLeft = tInner.scrollWidth;
+  });
 }
 
-const searchBtnInside = document.querySelector(".search-btn-inside");
-if (searchBtnInside) searchBtnInside.addEventListener("click", handleSearch);
-
-document.querySelectorAll(".search-tag").forEach(tagElement => {
-    tagElement.addEventListener("click", () => {
-        const tagName = tagElement.textContent.replace('#', '').trim();
-        if(mainSearchInput) {
-            mainSearchInput.value = tagName;
-            if(clearBtn) clearBtn.classList.remove("hidden");
-            handleSearch();
-        }
+window.addSearchTag = function (tagName) {
+  if (!tagName) return;
+  const clean = tagName.replace("#", "").trim();
+  if (!window.selectedTags.has(clean)) {
+    window.selectedTags.add(clean);
+    document.querySelectorAll("#search-dropdown .search-tag").forEach((t) => {
+      if (t.textContent.trim().replace("#", "") === clean)
+        t.classList.add("active-tag");
     });
-});
+    refreshTags();
+    renderArticles();
+  }
+};
+
+if (mInput) {
+  mInput.addEventListener("input", () => {
+    refreshTags();
+    renderArticles();
+  });
+  mInput.addEventListener("focus", () => sDropdown?.classList.remove("hidden"));
+  mInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      sDropdown?.classList.add("hidden");
+      renderArticles();
+    }
+    if (
+      e.key === "Backspace" &&
+      mInput.value === "" &&
+      window.selectedTags.size > 0
+    ) {
+      const lastTag = Array.from(window.selectedTags).pop();
+      window.selectedTags.delete(lastTag);
+      refreshTags();
+      renderArticles();
+    }
+  });
+}
 
 document.addEventListener("click", (e) => {
-  if (!e.target.closest(".search-container")) {
-    if(searchDropdown) searchDropdown.classList.add("hidden");
+  const isSearch = e.target.closest(".search-container");
+  const tagItem = e.target.closest(".search-tag");
+  if (tagItem && sDropdown?.contains(tagItem)) {
+    window.addSearchTag(tagItem.textContent.trim());
+  } else if (!isSearch) {
+    sDropdown?.classList.add("hidden");
   }
 });
 
-if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-        mainSearchInput.value = "";
-        clearBtn.classList.add("hidden");
-        mainSearchInput.focus();
-        handleSearch();
+if (cBtn) {
+  cBtn.onclick = (e) => {
+    e.preventDefault();
+    window.selectedTags.clear();
+    if (mInput) mInput.value = "";
+    document
+      .querySelectorAll("#search-dropdown .search-tag")
+      .forEach((t) => t.classList.remove("active-tag"));
+    refreshTags();
+    renderArticles();
+  };
+}
+
+// =================================================================
+// 7. 기타 기능 및 초기화
+// =================================================================
+
+window.toggleFilter = (id) => {
+    // 1. 현재 클릭한 ID를 전역 변수에 저장 (단일 선택)
+    activeFilterId = id;
+
+    // 2. UI 업데이트 (버튼 활성화 상태 변경)
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+        if (btn.dataset.id === id) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
     });
+
+    // 3. 목록 다시 그리기
+    visibleCount = 9; // 다시 9개부터 보여주기
+    renderArticles();
+};
+
+window.handleLoadMore = function () {
+  isInfiniteScroll = true;
+  const btn = document.querySelector(".load-more-container");
+  if (btn) btn.style.display = "none";
+  visibleCount = 21;
+  renderArticles();
+};
+
+function handleInfiniteLoad() {
+  if (typeof ARTICLES !== "undefined" && visibleCount < ARTICLES.length) {
+    visibleCount += 3;
+    renderArticles();
+  }
 }
 
-/**
- * --- 6. 초기 실행 및 탭 전환 ---
- */
-// [수정] 비동기 함수로 감싸서 실행 순서 보장
 window.addEventListener("DOMContentLoaded", async () => {
-  await checkLoginStatus(); // 로그인 상태 확인 먼저!
+  await checkLoginStatus();
   if (document.getElementById("article-grid")) renderArticles();
-  updateFavoriteUI();
-   if (window.currentArticle) {
-    updateDetailLikeUI(window.currentArticle.id);
-  }
-  // URL 파라미터 체크 (탭 전환)
-  const urlParams = new URLSearchParams(window.location.search);
-  const tabName = urlParams.get('tab');
-  if (tabName === 'favorites') {
-      switchTab('favorites');
-  }
+  refreshTags(); // updateTagBoxes 대신 refreshTags 호출
+
+  // 추천 태그 클릭 이벤트
+  document.querySelectorAll("#recommended-tags .search-tag").forEach((tag) => {
+    tag.style.cursor = "pointer";
+    tag.onclick = (e) => {
+      e.preventDefault();
+      window.addSearchTag(tag.innerText.trim());
+    };
+  });
 });
+// =================================================================
+// 8. 검색 태그 영역 드래그 스크롤 로직
+// =================================================================
+if (tInner) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-function switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    // 탭 전환 시 시각적 활성화 (두 번째 버튼이 좋아요 목록이라고 가정)
-    const btns = document.querySelectorAll('.tab-btn');
-    if (tabId === 'favorites' && btns.length > 1) {
-        btns[1].classList.add('active');
-    } else if (btns.length > 0) {
-        btns[0].classList.add('active');
-    }
-    console.log(tabId + " 탭으로 전환됨");
+    tInner.addEventListener('mousedown', (e) => {
+        isDown = true;
+        tInner.classList.add('active'); // 커서 스타일 변경용 (필요시 CSS 추가)
+        startX = e.pageX - tInner.offsetLeft;
+        scrollLeft = tInner.scrollLeft;
+    });
+
+    tInner.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    tInner.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    tInner.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - tInner.offsetLeft;
+        const walk = (x - startX) * 2; // 스크롤 속도 조절
+        tInner.scrollLeft = scrollLeft - walk;
+    });
+
+    // 모바일 터치 대응 (선택 사항이지만 추천)
+    tInner.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX - tInner.offsetLeft;
+        scrollLeft = tInner.scrollLeft;
+    }, { passive: true });
+
+    tInner.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX - tInner.offsetLeft;
+        const walk = (x - startX) * 2;
+        tInner.scrollLeft = scrollLeft - walk;
+    }, { passive: true });
 }
 
-function scrollToContent() {
-  const contentSection = document.getElementById("content");
-  if (contentSection) {
-    contentSection.scrollIntoView({ behavior: "smooth" });
-  }
-}
-
-
-// 전역 노출
-window.toggleFilter = toggleFilter;
-window.toggleFavorite = toggleFavorite;
-window.handleLoadMore = handleLoadMore;
-window.scrollToContent = scrollToContent;
-window.switchTab = switchTab;
+window.handleLikeClick = handleLikeClick;
+window.showLoginModal = showLoginModal;
+window.handleLogout = handleLogout;
+window.scrollToContent = () => {
+  const el = document.getElementById("content");
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
+window.handleFavoriteClick = () => {
+  if (localStorage.getItem("isLoggedIn") === "true")
+    location.href = "mypage.html";
+  else showLoginModal();
+};

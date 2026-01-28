@@ -413,12 +413,20 @@
                 }
             }
 
-            likeBtn.onclick = () => {
-                if (typeof toggleFavorite === 'function') {
-                    toggleFavorite(articleId);
-                    updateLikeState();
-                }
-            };
+         likeBtn.onclick = () => {
+            // 1. 로그인 여부 확인 (script.js의 상태 사용)
+            const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+            if (!isLoggedIn) {
+                // 2. 로그인 안됐으면 script.js에 정의된 모달 띄우기
+                showLoginModal();
+            } else {
+                // 3. 로그인 됐으면 찜하기 실행 (내부에서 showLikeToast 자동 실행됨)
+                toggleFavorite(articleId);
+                // 4. 하트 색상 변경
+                updateLikeState();
+            }
+        };
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
             updateLikeState();
@@ -563,70 +571,79 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Lucide 아이콘 렌더링
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 
     const floatingLikeBtn = document.getElementById('floating-like-btn');
-    const favoriteCountBadge = document.getElementById('favorite-count'); // 네비게이션 배지
+    const favoriteCountBadge = document.getElementById('favorite-count'); 
     const articleId = new URLSearchParams(window.location.search).get('id');
-    
-    // 기존 script.js와 맞추기 위해 키 이름을 통일해야 합니다. 
-    // 만약 script.js에서 다른 키를 쓴다면 그에 맞춰 수정하세요.
     const LIKE_KEY = 'favorites'; 
 
-    // 카운트 배지를 업데이트하는 함수
-    function updateNavbarBadge() {
+    // 2. 카운트 배지 및 UI 상태 동기화 함수
+    function refreshFavoriteUI() {
         const likedArticles = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
+        const stringId = String(articleId);
+
+        // 네비게이션 배지 업데이트
         if (favoriteCountBadge) {
             const count = likedArticles.length;
             favoriteCountBadge.textContent = count;
-            
-            // 0개일 때는 숨기고, 1개 이상일 때만 표시
-            if (count > 0) {
-                favoriteCountBadge.style.display = 'flex';
+            favoriteCountBadge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        // 플로팅 버튼 활성화 상태 동기화
+        if (floatingLikeBtn) {
+            if (likedArticles.includes(stringId)) {
+                floatingLikeBtn.classList.add('active');
             } else {
-                favoriteCountBadge.style.display = 'none';
+                floatingLikeBtn.classList.remove('active');
             }
+        }
+
+        // 상단 상세 페이지 하트 버튼(있다면) 동기화
+        if (typeof updateLikeState === 'function') {
+            updateLikeState();
         }
     }
 
-    // 초기 로드 시 배지 상태 업데이트
-    updateNavbarBadge();
+    // 초기 로드 시 실행
+    refreshFavoriteUI();
 
-    // 초기 좋아요 버튼 상태 복원
-    let likedArticles = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
-    if (floatingLikeBtn && articleId && likedArticles.includes(articleId)) {
-        floatingLikeBtn.classList.add('active');
-    }
-
-    // 플로팅 좋아요 클릭 이벤트
+    // 3. 플로팅 좋아요 클릭 이벤트
     if (floatingLikeBtn && articleId) {
-        floatingLikeBtn.addEventListener('click', () => {
-            const isActive = floatingLikeBtn.classList.toggle('active');
-            let currentLikes = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
+    floatingLikeBtn.addEventListener('click', () => {
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-            if (isActive) {
-                if (!currentLikes.includes(articleId)) {
-                    currentLikes.push(articleId);
-                }
-            } else {
-                currentLikes = currentLikes.filter(id => id !== articleId);
-            }
-
-            localStorage.setItem(LIKE_KEY, JSON.stringify(currentLikes));
+        if (!isLoggedIn) {
+            showLoginModal();
+        } else {
+            // 저장/삭제 로직 실행 (토스트 메시지는 toggleFavorite 안에서 자동으로 뜸)
+            toggleFavorite(articleId);
             
-            // ★ 중요: 클릭 직후 네비게이션 배지 업데이트 호출
-            updateNavbarBadge(); 
+            // UI 동기화 (상단 하트와 플로팅 하트 둘 다 갱신)
+            refreshFavoriteUI(); 
+            if (typeof updateLikeState === 'function') updateLikeState();
+        }
+    });
+}
+    // Floating share button logic
+    const floatingShareBtn = document.getElementById('floating-share-btn');
 
-            // 만약 상단에 다른 하트 아이콘(detail-like-btn)이 있다면 그것도 동기화
-            const detailLikeBtn = document.getElementById('detail-like-btn');
-            if(detailLikeBtn && typeof updateLikeState === 'function') {
-                updateLikeState();
+    if (floatingShareBtn) {
+        floatingShareBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                if (typeof showLikeToast === 'function') {
+                    showLikeToast("🔗 URL 주소가 복사되었습니다!");
+                }
+            } catch {
+                if (typeof showLikeToast === 'function') {
+                    showLikeToast("❌ 주소 복사에 실패했습니다.");
+                }
             }
         });
     }
 });
-    </script>
+</script>
 </html>

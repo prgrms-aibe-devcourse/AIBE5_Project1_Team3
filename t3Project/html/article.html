@@ -34,14 +34,6 @@
                     <i data-lucide="dices" class="nav-icon"></i>
                     <span class="nav-label">룰렛</span>
                 </a>
-                
-                <a href="javascript:void(0)" onclick="handleFavoriteClick()" class="nav-item favorite-wrapper">
-                    <div class="icon-rel">
-                        <i data-lucide="heart" class="nav-icon"></i>
-                        <span id="favorite-count" class="nav-badge" style="display: none">0</span>
-                    </div>
-                    <span class="nav-label">찜</span>
-                </a>
 
                 <a href="login.html" id="nav-login-btn" class="btn-login">로그인</a>
 
@@ -375,61 +367,61 @@
                 });
             }
 
-            // 공유하기 버튼
-            // const shareBtn = document.getElementById('share-btn');
-            // function handleShare() {
-            //     if (navigator.share) {
-            //         navigator.share({
-            //             title: art.title,
-            //             subtitle: art.subtitle,
-            //             url: window.location.href
-            //         }).catch(() => {});
-            //     } else {
-            //         navigator.clipboard.writeText(window.location.href)
-            //         .then(() => {
-            //             if (typeof showToast === 'function') {
-            //                 showToast('링크가 클립보드에 복사되었습니다.', 'success');
-            //             } else {
-            //                 alert('링크가 클립보드에 복사되었습니다.');
-            //             }
-            //         });
-            //     }
-            // }
-            // shareBtn.onclick = () => {
-            //     handleShare();
-            // };
+            //공유하기 버튼
+            const shareBtn = document.getElementById('share-btn');
+            function handleShare() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: art.title,
+                        subtitle: art.subtitle,
+                        url: window.location.href
+                    }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(window.location.href)
+                    .then(() => {
+                        if (typeof showToast === 'function') {
+                            showToast('링크가 클립보드에 복사되었습니다.', 'success');
+                        } else {
+                            alert('링크가 클립보드에 복사되었습니다.');
+                        }
+                    });
+                }
+            }
+            shareBtn.onclick = () => {
+                handleShare();
+            };
 
-            // Like button logic
-            // const likeBtn = document.getElementById('detail-like-btn');
-            // const heartIcon = likeBtn.querySelector('i');
-            // likeBtn.dataset.id = articleId;
+            //Like button logic
+            const likeBtn = document.getElementById('detail-like-btn');
+            const heartIcon = likeBtn.querySelector('i');
+            likeBtn.dataset.id = articleId;
             
-            // function updateLikeState() {
-            //     if (typeof getFavorites !== 'function') return;
+            function updateLikeState() {
+                if (typeof getFavorites !== 'function') return;
 
-            //     const favorites = getFavorites();
-            //     const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
-            //     if (!heartIcon) return;
+                const favorites = getFavorites();
+                const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
+                if (!heartIcon) return;
 
-            //     if (favorites.includes(articleId)) {
-            //         likeBtn.style.backgroundColor = 'var(--red-500)';
-            //         likeBtn.style.borderColor = 'var(--red-500)';
-            //         heartIcon.style.color = 'white';
-            //         heartIcon.setAttribute('fill', 'currentColor');
-            //     } else {
-            //         heartIcon.setAttribute('fill', 'none');
-            //     }
-            // }
+                if (favorites.includes(articleId)) {
+                    likeBtn.style.backgroundColor = 'var(--red-500)';
+                    likeBtn.style.borderColor = 'var(--red-500)';
+                    heartIcon.style.color = 'white';
+                    heartIcon.setAttribute('fill', 'currentColor');
+                } else {
+                    heartIcon.setAttribute('fill', 'none');
+                }
+            }
 
-            // likeBtn.onclick = () => {
-            //     if (typeof toggleFavorite === 'function') {
-            //         toggleFavorite(articleId);
-            //         updateLikeState();
-            //     }
-            // };
+            likeBtn.onclick = () => {
+                if (typeof toggleFavorite === 'function') {
+                    toggleFavorite(articleId);
+                    updateLikeState();
+                }
+            };
             
-            // if (typeof lucide !== 'undefined') lucide.createIcons();
-            // updateLikeState();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            updateLikeState();
 
             // article-nav 스크롤 배경 제어 로직
             const articleNav = document.getElementById('article-nav');
@@ -558,4 +550,83 @@
         </script>
 
 </body>
+
+    <!-- Floating Action Buttons -->
+    <div class="floating-actions">
+        <button id="floating-like-btn" aria-label="좋아요">
+            <i data-lucide="heart"></i>
+        </button>
+
+        <button id="floating-share-btn" aria-label="공유">
+            <i data-lucide="paperclip"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const floatingLikeBtn = document.getElementById('floating-like-btn');
+    const favoriteCountBadge = document.getElementById('favorite-count'); // 네비게이션 배지
+    const articleId = new URLSearchParams(window.location.search).get('id');
+    
+    // 기존 script.js와 맞추기 위해 키 이름을 통일해야 합니다. 
+    // 만약 script.js에서 다른 키를 쓴다면 그에 맞춰 수정하세요.
+    const LIKE_KEY = 'favorites'; 
+
+    // 카운트 배지를 업데이트하는 함수
+    function updateNavbarBadge() {
+        const likedArticles = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
+        if (favoriteCountBadge) {
+            const count = likedArticles.length;
+            favoriteCountBadge.textContent = count;
+            
+            // 0개일 때는 숨기고, 1개 이상일 때만 표시
+            if (count > 0) {
+                favoriteCountBadge.style.display = 'flex';
+            } else {
+                favoriteCountBadge.style.display = 'none';
+            }
+        }
+    }
+
+    // 초기 로드 시 배지 상태 업데이트
+    updateNavbarBadge();
+
+    // 초기 좋아요 버튼 상태 복원
+    let likedArticles = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
+    if (floatingLikeBtn && articleId && likedArticles.includes(articleId)) {
+        floatingLikeBtn.classList.add('active');
+    }
+
+    // 플로팅 좋아요 클릭 이벤트
+    if (floatingLikeBtn && articleId) {
+        floatingLikeBtn.addEventListener('click', () => {
+            const isActive = floatingLikeBtn.classList.toggle('active');
+            let currentLikes = JSON.parse(localStorage.getItem(LIKE_KEY)) || [];
+
+            if (isActive) {
+                if (!currentLikes.includes(articleId)) {
+                    currentLikes.push(articleId);
+                }
+            } else {
+                currentLikes = currentLikes.filter(id => id !== articleId);
+            }
+
+            localStorage.setItem(LIKE_KEY, JSON.stringify(currentLikes));
+            
+            // ★ 중요: 클릭 직후 네비게이션 배지 업데이트 호출
+            updateNavbarBadge(); 
+
+            // 만약 상단에 다른 하트 아이콘(detail-like-btn)이 있다면 그것도 동기화
+            const detailLikeBtn = document.getElementById('detail-like-btn');
+            if(detailLikeBtn && typeof updateLikeState === 'function') {
+                updateLikeState();
+            }
+        });
+    }
+});
+    </script>
 </html>

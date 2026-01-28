@@ -1,5 +1,4 @@
 
-
 // --- 상태 관리 (STATE) ---
 let state = {
     query: '', // 검색어
@@ -23,7 +22,7 @@ let routeLayerGroup = null;
 let routingControl = null;
 
 // --- 필터 정의 (FILTER DEFINITIONS) ---
-// 요청된 키워드 로직 적용
+
 const FILTER_DEFINITIONS = {
     domestic: {
         id: 'domestic',
@@ -38,7 +37,7 @@ const FILTER_DEFINITIONS = {
         id: 'overseas',
         label: '해외여행',
         keywords: [
-            "해외", "태국", "일본", "베트남", "방콕", "오사카", "교토", "고베", "나랏마사", "도톤보리",
+            "태국", "일본", "베트남", "방콕", "오사카", "교토", "고베", "나랏마사", "도톤보리",
             "난바", "우메다", "신사이바시", "코사무이", "괌", "GUAM", "유럽", "스페인", "방콕사원",
             "짜뚜짝", "카오산", "실롬", "와불상", "천수각", "도요토미", "간사이", "투몬", "하갓냐"
         ]
@@ -117,28 +116,6 @@ function injectDokdoData() {
     // 이미 존재하는지 확인
     if (ARTICLES.some(a => a.title === '독도')) return;
 
-    const dokdo = {
-        id: 'dokdo-kr',
-        title: '독도',
-        subtitle: '대한민국의 아름다운 영토',
-        name: '독도',
-        description: '독도는 동해의 해저 지형 중 울릉분지의 북쪽 가장자리에 형성된 화산섬입니다. 천연기념물 제336호로 지정되어 있으며, 역사적, 지리적, 국제법적으로 명백한 대한민국의 고유 영토입니다.',
-        content: `독도는 동도와 서도를 비롯한 89개의 부속 도서로 이루어져 있습니다. 괭이갈매기, 바다제비 등 다양한 조류의 번식지이며, 독특한 식생을 자랑합니다. 
-        날씨가 좋을 때는 울릉도에서 육안으로 볼 수 있습니다. 입도하기 위해서는 미리 입도 신청을 해야 하며, 기상 상황에 따라 접안이 어려울 수 있습니다. 대한민국의 아침이 가장 먼저 시작되는 곳입니다.`,
-        imageUrl: '../article_picture/article-50.jpg', // 바위섬 이미지 대체
-        lat: 37.2429, 
-        lng: 131.8669,
-        category: '자연',
-        tags: ['국내', '자연', '관광지', '섬', '역사', '독도'],
-        address: '경상북도 울릉군 울릉읍 독도이사부길 55',
-        rating: 5.0,
-        reviews: [
-            { user: '대한민국만세', rating: 5, text: '가슴이 웅장해지는 우리 땅 독도!' },
-            { user: '여행자', rating: 5, text: '날씨가 좋아서 접안 성공했습니다. 정말 아름답네요.' }
-        ],
-        mainTags: ['자연', '역사', '대한민국']
-    };
-
     ARTICLES.push(dokdo);
     // state.filteredArticles 업데이트
     state.filteredArticles = [...ARTICLES];
@@ -182,8 +159,6 @@ function initMap() {
     }).addTo(map);
 
     routeLayerGroup = L.layerGroup().addTo(map);
-
-
 }
 
 
@@ -255,6 +230,20 @@ function updateFilteredArticles() {
             subTagMatch = state.activeSubTags.some(keyword => {
                 return article.tags.some(t => t.includes(keyword));
             });
+        }
+        
+        // 3. 교차 오염 방지 (중요!)
+        // '해외여행' 필터가 켜져있을 때, 국내 태그(서울, 제주 등)를 가진 항목은 제외
+        // 예: '일본' 키워드 선택 시 '일본식 가옥(국내)' 같은 항목이 나오는 것을 방지
+        if (state.activeFilters.includes('overseas')) {
+             const isDomestic = checkArticleMatchesFilter(article, 'domestic');
+             if (isDomestic) return false;
+        }
+
+        // 반대의 경우: '국내여행' 필터 켜져있을 때 해외 태그 가진 항목 제외
+        if (state.activeFilters.includes('domestic')) {
+             const isOverseas = checkArticleMatchesFilter(article, 'overseas');
+             if (isOverseas) return false;
         }
 
         return mainFilterMatch && subTagMatch;
@@ -688,7 +677,7 @@ function createCoursePinIcon(index, locationName) {
  * 일반 아티클 핀 아이콘 생성
  */
 function createArticlePinIcon(isSelected, title, planIndex = -1) {
-    const pinColor = isSelected ? 'bg-blue-600 border-white text-white' : 'bg-white border-white text-blue-600';
+    const pinColor = isSelected ? 'bg-blue-600 border-white text-white' : 'bg-white border-white text-sky-600';
     const stemColor = isSelected ? 'bg-blue-600' : 'bg-white shadow-sm';
     
     // 핀 선택 시 체크 표시 제거 (planIndex가 있을 때만 번호 표시, 그 외엔 뱃지 없음)
@@ -835,7 +824,7 @@ function renderFilters() {
         const tags = visibleKeywords.map(keyword => {
             const isActive = state.activeSubTags.includes(keyword);
             const activeClass = isActive ? "active" : "";
-            return `<button onclick="toggleSubTag('${keyword}')" class="sub-tag-btn ${activeClass}">#${keyword}</button>`;
+            return `<button onclick="toggleSubTag('${keyword}')" class="sub-tag-btn ${activeClass}">${keyword}</button>`;
         }).join('');
 
         let toggleBtn = '';

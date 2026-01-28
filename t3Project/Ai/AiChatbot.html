@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 챗봇 (클라이언트 전용)</title>
-    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="Aichatbot.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="chat-container" id="chat-container">
         <div class="message ai">
-            <div class="message-bubble">안녕하세요! 저는 여행 플래너 입니다. 무엇을 도와드릴까요?</div>
+            <div class="message-bubble">
+                안녕하세요!<br/> 
+                전 여기저기의 AI 쪼꼬마이 입니다 😎<br/> 
+                무엇을 도와드릴까요?</div>
         </div>
     </div>
 
@@ -22,7 +25,7 @@
 
     <script src="../js/data.js"></script>
 
-    <script type="module" src="AIchat.js"></script>
+    <script type="module" src="AIchatbot.js"></script>
 
     <script>
         // [의도] 기존에 HTML 안에 있던 fetch()나 sendMessage() 함수는 

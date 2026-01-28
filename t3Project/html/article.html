@@ -49,7 +49,7 @@
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
                 </a>
                 
-                <div id="nav-user-avatar" class="user-avatar" style="display: none">
+                <div class="user-avatar" style="display: none">
                     <i data-lucide="user-circle"></i>
                 </div>
             </div>
@@ -78,7 +78,7 @@
         <div id="d-tags" class="tags-container"></div>
 
         <!-- 태그 더보기 버튼 추가 -->
-        <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: center;">
             <button id="tag-toggle-btn" class="tag-toggle">
                 <i data-lucide="chevron-down" width="20" height="20"></i>
             </button>
@@ -186,6 +186,7 @@
     <!-- Data Script Loaded Before Logic -->
     <script src="../js/data.js"></script>
     <script src="../js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     
     <!-- Navbar Scroll Event -->
     <script>
@@ -355,13 +356,14 @@
                                 <span class="text-sm font-bold">${review.user}</span>
                             </div>
                             <span class="text-xs text-gray-400">
-                                <i data-lucide="star" width="16" height="16" fill="currentColor" style="vertical-align: middle; transform: translateY(-1px);"></i>
+                                <i data-lucide="star" width="16" height="16" fill="var(--point)" stroke="none" style="vertical-align: middle; transform: translateY(-1px);"></i>
                                 ${review.rating}
                                 </span>
                         </div>
                         <p class="text-sm text-gray-700">${review.comment}</p>
                     `;
                     reviewContainer.appendChild(div);
+                    lucide.createIcons();
                 });
             }
 
@@ -374,60 +376,60 @@
             }
 
             // 공유하기 버튼
-            const shareBtn = document.getElementById('share-btn');
-            function handleShare() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: art.title,
-                        subtitle: art.subtitle,
-                        url: window.location.href
-                    }).catch(() => {});
-                } else {
-                    navigator.clipboard.writeText(window.location.href)
-                    .then(() => {
-                        if (typeof showToast === 'function') {
-                            showToast('링크가 클립보드에 복사되었습니다.', 'success');
-                        } else {
-                            alert('링크가 클립보드에 복사되었습니다.');
-                        }
-                    });
-                }
-            }
-            shareBtn.onclick = () => {
-                handleShare();
-            };
+            // const shareBtn = document.getElementById('share-btn');
+            // function handleShare() {
+            //     if (navigator.share) {
+            //         navigator.share({
+            //             title: art.title,
+            //             subtitle: art.subtitle,
+            //             url: window.location.href
+            //         }).catch(() => {});
+            //     } else {
+            //         navigator.clipboard.writeText(window.location.href)
+            //         .then(() => {
+            //             if (typeof showToast === 'function') {
+            //                 showToast('링크가 클립보드에 복사되었습니다.', 'success');
+            //             } else {
+            //                 alert('링크가 클립보드에 복사되었습니다.');
+            //             }
+            //         });
+            //     }
+            // }
+            // shareBtn.onclick = () => {
+            //     handleShare();
+            // };
 
             // Like button logic
-            const likeBtn = document.getElementById('detail-like-btn');
-            const heartIcon = likeBtn.querySelector('i');
-            likeBtn.dataset.id = articleId;
+            // const likeBtn = document.getElementById('detail-like-btn');
+            // const heartIcon = likeBtn.querySelector('i');
+            // likeBtn.dataset.id = articleId;
             
-            function updateLikeState() {
-                if (typeof getFavorites !== 'function') return;
+            // function updateLikeState() {
+            //     if (typeof getFavorites !== 'function') return;
 
-                const favorites = getFavorites();
-                const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
-                if (!heartIcon) return;
+            //     const favorites = getFavorites();
+            //     const heartIcon = likeBtn.querySelector('svg') || likeBtn.querySelector('i');
+            //     if (!heartIcon) return;
 
-                if (favorites.includes(articleId)) {
-                    likeBtn.style.backgroundColor = 'var(--red-500)';
-                    likeBtn.style.borderColor = 'var(--red-500)';
-                    heartIcon.style.color = 'white';
-                    heartIcon.setAttribute('fill', 'currentColor');
-                } else {
-                    heartIcon.setAttribute('fill', 'none');
-                }
-            }
+            //     if (favorites.includes(articleId)) {
+            //         likeBtn.style.backgroundColor = 'var(--red-500)';
+            //         likeBtn.style.borderColor = 'var(--red-500)';
+            //         heartIcon.style.color = 'white';
+            //         heartIcon.setAttribute('fill', 'currentColor');
+            //     } else {
+            //         heartIcon.setAttribute('fill', 'none');
+            //     }
+            // }
 
-            likeBtn.onclick = () => {
-                if (typeof toggleFavorite === 'function') {
-                    toggleFavorite(articleId);
-                    updateLikeState();
-                }
-            };
+            // likeBtn.onclick = () => {
+            //     if (typeof toggleFavorite === 'function') {
+            //         toggleFavorite(articleId);
+            //         updateLikeState();
+            //     }
+            // };
             
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            updateLikeState();
+            // if (typeof lucide !== 'undefined') lucide.createIcons();
+            // updateLikeState();
 
             // article-nav 스크롤 배경 제어 로직
             const articleNav = document.getElementById('article-nav');
@@ -449,100 +451,111 @@
     </script>
 
             <!-- 추천 여행지 좌우 버튼 / 슬라이드 로직 (부드러운 무한 루프) -->
-            <script>
+        <script>
             (function(){
                 const track = document.getElementById('advise-content');
                 const prev = document.querySelector('.advise-prev');
                 const next = document.querySelector('.advise-next');
-                if (!track || !prev || !next) return;
+                const viewport = document.querySelector('.advise-viewport');
+                if (!track || !prev || !next || !viewport) return;
 
                 let index = 0;
                 const getItems = () => track.querySelectorAll('.content-inner');
-                
-                // 무한 루프를 위해 카드 복제
+
                 function cloneItems() {
                     const items = Array.from(getItems());
-                    if (items.length === 0) return;
-                    
-                    // 마지막 카드를 처음에 추가
                     const firstClone = items[items.length - 1].cloneNode(true);
-                    track.insertBefore(firstClone, items[0]);
-                    
-                    // 첫 카드를 마지막에 추가
                     const lastClone = items[0].cloneNode(true);
+                    track.insertBefore(firstClone, items[0]);
                     track.appendChild(lastClone);
-                    
-                    // 처음 위치는 1로 설정 (복제된 마지막 카드 위치)
                     index = 1;
                 }
-
+            
                 function getGapPx(){
-                    const list = getItems();
-                    if (list.length < 2) return 0;
-                    const a = list[0].getBoundingClientRect();
-                    const b = list[1].getBoundingClientRect();
-                    return Math.max(0, b.left - a.right);
+                    const a = getItems()[0].getBoundingClientRect();
+                    const b = getItems()[1].getBoundingClientRect();
+                    return b.left - a.right;
                 }
-
+            
                 function slide(animate = true){
-                    const it = getItems()[0];
-                    if(!it) return;
-                    const gap = getGapPx();
-                    const shift = index * (it.getBoundingClientRect().width + gap);
-                    
-                    if (animate) {
-                        track.style.transition = 'transform 0.4s ease';
-                    }
+                    const item = getItems()[0];
+                    const shift = index * (item.offsetWidth + getGapPx());
+                    track.style.transition = animate ? 'transform .4s ease' : 'none';
                     track.style.transform = `translateX(-${shift}px)`;
                 }
-
-                function handleNext() {
-                    index++;
-                    slide(true);
-                    
-                    // 마지막 복제본에 도달하면 처음으로 리셋
-                    setTimeout(() => {
-                        const itemCount = getItems().length;
-                        if (index === itemCount - 1) {
-                            track.style.transition = 'none'; // 애니메이션 제거
-                            index = 1;
-                            slide(false); // 애니메이션 없이 리셋
-                        }
-                    }, 400);
+            
+                function nextSlide(){ index++; slide(true); }
+                function prevSlide(){ index--; slide(true); }
+            
+                // 무한 루프 핵심
+                track.addEventListener('transitionend', () => {
+                    const items = getItems();
+                    if (index === 0) {
+                        index = items.length - 2;
+                        slide(false);
+                    }
+                    if (index === items.length - 1) {
+                        index = 1;
+                        slide(false);
+                    }
+                });
+            
+                // ===== 중복 방지 락 =====
+                let lastActionTime = 0;
+                function safeNext() {
+                    const now = Date.now();
+                    if (now - lastActionTime < 300) return;
+                    lastActionTime = now;
+                    nextSlide();
                 }
-
-                function handlePrev() {
-                    index--;
-                    slide(true);
-                    
-                    // 처음 복제본에 도달하면 마지막으로 리셋
-                    setTimeout(() => {
-                        const itemCount = getItems().length;
-                        if (index === 0) {
-                            track.style.transition = 'none'; // 애니메이션 제거
-                            index = itemCount - 2;
-                            slide(false); // 애니메이션 없이 리셋
-                        }
-                    }, 400);
+                function safePrev() {
+                    const now = Date.now();
+                    if (now - lastActionTime < 300) return;
+                    lastActionTime = now;
+                    prevSlide();
                 }
-
-                next.addEventListener('click', handleNext);
-                prev.addEventListener('click', handlePrev);
-
-                window.addEventListener('resize', ()=>{
-                    slide(false);
-                    truncateCardTexts();
+            
+                next.addEventListener('click', safeNext);
+                prev.addEventListener('click', safePrev);
+            
+                const hammer = new Hammer(track, {
+                    direction: Hammer.DIRECTION_HORIZONTAL,
+                    threshold: 10,
+                    inputClass: Hammer.TouchMouseInput
                 });
 
-                // initial render after layout
-                setTimeout(()=>{ 
-                    cloneItems(); // 카드 복제
-                    if(window.lucide) window.lucide.createIcons(); 
-                    slide(false); 
-                    truncateCardTexts(); 
-                }, 60);
+                // PC 마우스 휠로 좌우 이동
+                let wheelLock = false;
+                            
+                viewport.addEventListener('wheel', (e) => {
+                    e.preventDefault(); // 세로 스크롤 막고 캐러셀 제어
+                
+                    if (wheelLock) return;
+                    wheelLock = true;
+                
+                    if (e.deltaY > 0) safeNext();   // 휠 내리면 다음
+                    else safePrev();               // 휠 올리면 이전
+                
+                    setTimeout(() => wheelLock = false, 400);
+                }, { passive: false });
+
+
+            
+                hammer.on('swipeleft', safeNext);
+                hammer.on('swiperight', safePrev);
+            
+                hammer.on('panend', (e) => {
+                    if (Math.abs(e.deltaX) < 50) return;
+                    if (e.deltaX < 0) safeNext();
+                    else safePrev();
+                });
+            
+                setTimeout(() => {
+                    cloneItems();
+                    slide(false);
+                }, 50);
             })();
-            </script>
+        </script>
 
 </body>
 </html>

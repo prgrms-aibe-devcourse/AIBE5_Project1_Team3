@@ -29,9 +29,9 @@ const FILTER_DEFINITIONS = {
         id: 'domestic',
         label: '국내여행',
         keywords: [
-            "국내", "한국", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천",
+            "국내", "대한민국", "제주", "서울", "부산", "강릉", "경주", "가평", "춘천",
             "여수", "강원도", "경기도", "경포대", "주문진", "초당", "황리단길", "대릉원", "불국사",
-            "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장", "전통한식"
+            "첨성대", "보문단지", "설악면", "상면", "아침고요수목원", "양떼목장"
         ]
     },
     overseas: {
@@ -121,11 +121,11 @@ function injectDokdoData() {
         id: 'dokdo-kr',
         title: '독도',
         subtitle: '대한민국의 아름다운 영토',
+        name: '독도',
         description: '독도는 동해의 해저 지형 중 울릉분지의 북쪽 가장자리에 형성된 화산섬입니다. 천연기념물 제336호로 지정되어 있으며, 역사적, 지리적, 국제법적으로 명백한 대한민국의 고유 영토입니다.',
         content: `독도는 동도와 서도를 비롯한 89개의 부속 도서로 이루어져 있습니다. 괭이갈매기, 바다제비 등 다양한 조류의 번식지이며, 독특한 식생을 자랑합니다. 
-        
         날씨가 좋을 때는 울릉도에서 육안으로 볼 수 있습니다. 입도하기 위해서는 미리 입도 신청을 해야 하며, 기상 상황에 따라 접안이 어려울 수 있습니다. 대한민국의 아침이 가장 먼저 시작되는 곳입니다.`,
-        imageUrl: 'https://images.unsplash.com/photo-1548685913-fe6678b4268c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', // 바위섬 이미지 대체
+        imageUrl: '../article_picture/article-50.jpg', // 바위섬 이미지 대체
         lat: 37.2429, 
         lng: 131.8669,
         category: '자연',
@@ -158,6 +158,7 @@ window.toggleItineraryItem = toggleItineraryItem;
 window.toggleFavoriteInMap = toggleFavoriteInMap; // 찜하기 기능 추가
 window.savePlanToMyPage = savePlanToMyPage; // 마이페이지 계획 추가
 window.showLoginModal = showLoginModal; // 모달 함수 노출
+window.showAlertModal = showAlertModal; // 알림 모달 함수 노출
 
 // --- 로직 (LOGIC) ---
 
@@ -251,10 +252,8 @@ function updateFilteredArticles() {
         // 2. 서브 태그(키워드) 체크
         let subTagMatch = true;
         if (state.activeSubTags.length > 0) {
-            subTagMatch = state.activeSubTags.some(tag => {
-                return article.tags.some(t => t.includes(tag)) || 
-                       article.title.includes(tag) || 
-                       article.description.includes(tag);
+            subTagMatch = state.activeSubTags.some(keyword => {
+                return article.tags.some(t => t.includes(keyword));
             });
         }
 
@@ -313,7 +312,7 @@ function savePlanToMyPage() {
     }
 
     if (state.itinerary.length === 0) {
-        alert('선택된 여행지가 없습니다. 지도에서 여행지를 선택해주세요.');
+        showAlertModal('선택된 여행지가 없습니다.<br>지도에서 여행지를 선택해주세요.');
         return;
     }
 
@@ -341,8 +340,12 @@ function savePlanToMyPage() {
     currentTrips.push(newTrip);
     localStorage.setItem('myTrips', JSON.stringify(currentTrips));
 
-    alert('마이페이지에 계획이 추가되었습니다.');
-    window.location.href = 'mypage.html';
+    // 기존 native alert 대신 커스텀 모달 사용 (콜백으로 페이지 이동)
+    // 2번째 인자: 확인 버튼 콜백 (페이지 이동)
+    // 3번째 인자: 취소/지도보기 버튼 텍스트
+    showAlertModal('마이페이지에 계획이 추가되었습니다.', () => {
+        window.location.href = 'mypage.html';
+    }, '계속 지도 보기');
 }
 
 /**
@@ -688,7 +691,7 @@ function createArticlePinIcon(isSelected, title, planIndex = -1) {
     const pinColor = isSelected ? 'bg-blue-600 border-white text-white' : 'bg-white border-white text-blue-600';
     const stemColor = isSelected ? 'bg-blue-600' : 'bg-white shadow-sm';
     
-    // 1. 요청사항 반영: 핀 선택 시 체크 표시 제거 (planIndex가 있을 때만 번호 표시, 그 외엔 뱃지 없음)
+    // 핀 선택 시 체크 표시 제거 (planIndex가 있을 때만 번호 표시, 그 외엔 뱃지 없음)
     const badge = isSelected && planIndex > -1 ? 
         `<div class="absolute -top-2 -right-2 w-5 h-5 bg-green-500 rounded-full text-white flex items-center justify-center text-[10px] border-2 border-white shadow-sm z-50">
             ${planIndex + 1}
@@ -743,16 +746,16 @@ function renderHeader() {
         // 플래너 모드일 때 버튼 변경
         planToggleBtnContainer.innerHTML = `
             <div class="flex flex-col gap-2">
-                <button onclick="savePlanToMyPage()" class="w-full py-3 bg-blue-600 border border-transparent text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-md">
+                <button onclick="savePlanToMyPage()" class="w-full py-3 bg-sky-500 border border-transparent text-white rounded-xl text-sm font-bold hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-md">
                     <i data-lucide="save" class="w-4 h-4"></i> 마이 페이지 계획 추가
                 </button>
-                <button onclick="togglePlanMode()" class="w-full py-2 bg-white border border-gray-200 text-red-500 rounded-xl text-sm font-bold hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-2">
+                <button onclick="togglePlanMode()" class="w-full py-2 bg-white border border-gray-200 text-black-500 rounded-xl text-sm font-bold hover:bg-gray-100 hover:border-gray-200 transition-all flex items-center justify-center gap-2">
                     <i data-lucide="x" class="w-4 h-4"></i> 계획 종료
                 </button>
             </div>
         `;
         
-        // 6. 요청사항: X 버튼 왼쪽, 드래그 핸들 오른쪽, 드래그 기능 추가
+        // X 버튼 왼쪽, 드래그 핸들 오른쪽, 드래그 기능 추가
         if (state.itinerary.length === 0) {
             itineraryList.innerHTML = '<p class="text-xs text-gray-400 italic py-1">지도에서 장소를 선택하여 경로를 만드세요.</p>';
         } else {
@@ -780,10 +783,9 @@ function renderHeader() {
 
     } else {
         plannerHeader.classList.add('hidden');
-        // 기본 '여행 계획하기' 버튼으로 복구
         planToggleBtnContainer.innerHTML = `
             <button id="plan-toggle-btn" onclick="togglePlanMode()" class="w-full py-3 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-50 hover:border-blue-400 hover:text-blue-600 transition-all flex items-center justify-center gap-2 shadow-sm">
-                <i data-lucide="map" class="w-4 h-4"></i> 여행 계획하기
+                <i data-lucide="map" class="w-4 h-4"></i> 여행 동선 계획
             </button>
         `;
     }
@@ -956,11 +958,6 @@ function renderMarkers() {
 
 /**
  * 상세 모달 열기
- * 1. 핑을 선택했을 때 1번 png가 보이는데 하트 뒷 배경이 클릭했을 때 화이트로 바뀜 (수정: 버튼 배경 고정)
- * 2. undefined가 data.js의 카테고리를 가져오는데 아예 없애버리기 (수정: 카테고리 태그 제거)
- * 3. 제목 위에 undefined도 없애기 (수정: 위와 동일)
- * 4. 상세 정보 밑에 description 정보 가져오는 것도 없애기 (수정: description 제거)
- * 5. 자세히 보기 버튼 우측으로 이동 (수정: justify-end)
  */
 function openModal(article) {
     if (state.isEmbed) return;
@@ -973,15 +970,11 @@ function openModal(article) {
     const isFav = favorites.includes(article.id);
     
     // 버튼 스타일 설정 (찜 여부에 따라 배경색/투명도 변경)
-    // 찜함(True): 흰색 배경 (3번 png 스타일)
-    // 찜안함(False): 검정 투명 배경 + 흰색 텍스트 (1번 png 스타일)
     const btnClass = isFav 
         ? 'bg-white hover:bg-white/90' 
         : 'bg-black/20 hover:bg-black/40 text-white';
 
     // 아이콘 스타일 설정
-    // 찜함(True): 빨간색 채우기 + 빨간색 선
-    // 찜안함(False): 흰색 선 (채우기 없음)
     const iconClass = isFav
         ? 'fill-red-500 text-red-500'
         : 'text-white';
@@ -1005,7 +998,6 @@ function openModal(article) {
         </button>
         <div class="absolute bottom-4 left-6 right-6 text-white">
             <div class="flex items-center gap-2 mb-2 text-xs font-medium opacity-90">
-                <!-- 2, 3: 카테고리 태그 제거 -->
                 <span class="flex items-center gap-1">
                     <i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400"></i> ${article.rating}
                 </span>
@@ -1018,29 +1010,24 @@ function openModal(article) {
     <!-- Content -->
     <div class="flex-1 overflow-y-auto custom-scrollbar bg-white">
         <div class="p-6 space-y-8">
-            
              <div class="space-y-4">
+                <div class="flex items-start gap-3 text-sm text-gray-700">
+                    <i data-lucide="store" class="w-5 h-5 text-gray-400 shrink-0 mt-0.5"></i>
+                        ${article.name}
+                </div>
                 <div class="flex items-start gap-3 text-sm text-gray-700">
                     <i data-lucide="map-pin" class="w-5 h-5 text-gray-400 shrink-0 mt-0.5"></i>
                     <p>${article.address}</p>
                 </div>
                  <div class="flex items-start gap-3 text-sm text-gray-700">
-                    <i data-lucide="tag" class="w-5 h-5 text-gray-400 shrink-0 mt-0.5"></i>
+                    <i data-lucide="tags" class="w-5 h-5 text-gray-400 shrink-0 mt-0.5"></i>
                     <p class="text-blue-600 font-medium">${article.mainTags.join(', ')}</p>
                 </div>
              </div>
 
-            <div>
-                <h3 class="font-bold text-gray-900 text-lg mb-2">소개</h3>
-                <!-- 4: description 정보 제거 -->
-                <div class="text-gray-600 leading-relaxed text-sm bg-gray-50 p-4 rounded-xl border border-gray-100">
-                    ${article.content || '상세 내용이 없습니다.'}
-                </div>
-            </div>
-
             <div class="space-y-4">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2 text-lg">
-                    <i data-lucide="message-square" class="w-5 h-5 text-amber-500"></i> 후기
+                    <i data-lucide="message-square" class="w-5 h-5 text-gray-400"></i> 후기
                 </h3>
                 <div class="space-y-3">
                     ${article.reviews.length > 0 ? article.reviews.map(r => `
@@ -1115,4 +1102,51 @@ function showLoginModal(message = '찜하기 기능은 로그인 후<br>이용�
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+/**
+ * 알림 모달 생성 함수 (일반 Alert 대체)
+ */
+function showAlertModal(message, callback = null, cancelText = null, cancelCallback = null) {
+    if (document.getElementById('alert-modal')) {
+        document.getElementById('alert-modal').remove();
+    }
+
+    let buttonsHtml;
+    
+    if (cancelText) {
+         buttonsHtml = `
+            <div style="display:flex; gap:10px;">
+                <button id="alert-cancel-btn" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; color:#333; cursor:pointer; font-weight:bold; font-size:14px;">${cancelText}</button>
+                <button id="alert-confirm-btn" style="flex:1; padding:12px; border:none; border-radius:8px; background:#3b82f6; color:#fff; cursor:pointer; font-weight:bold; font-size:14px;">확인</button>
+            </div>
+        `;
+    } else {
+         buttonsHtml = `
+            <button id="alert-confirm-btn" style="width:100%; padding:12px; border:none; border-radius:8px; background:#3b82f6; color:#fff; cursor:pointer; font-weight:bold; font-size:14px;">확인</button>
+        `;
+    }
+
+    const modalHtml = `
+        <div id="alert-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:#fff; padding:30px; border-radius:15px; text-align:center; width:90%; max-width:320px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold; color:#333;">알림</h3>
+                <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">${message}</p>
+                ${buttonsHtml}
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    document.getElementById('alert-confirm-btn').onclick = function() {
+        document.getElementById('alert-modal').remove();
+        if (callback) callback();
+    }
+    
+    if (cancelText) {
+        document.getElementById('alert-cancel-btn').onclick = function() {
+            document.getElementById('alert-modal').remove();
+            if (cancelCallback) cancelCallback();
+        }
+    }
 }

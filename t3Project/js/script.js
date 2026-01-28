@@ -21,7 +21,7 @@ let visibleCount = 9;
 let isInfiniteScroll = false;
 let searchQuery = "";
 let shuffledArticles = [];
-const selectedTags = new Set();
+const selectedTags = new Set(); // 선택된 태그 관리
 
 function shuffleArray(array) {
   const newArray = [...array];
@@ -161,7 +161,7 @@ function showLoginModal() {
             <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">찜하기 기능은 로그인 후<br>이용하실 수 있습니다.</p>
             <div style="display:flex; gap:10px;">
                 <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
-                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#3b82f6; color:#fff; cursor:pointer; font-weight:bold;">로그인하기</button>
+                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6;; cursor:pointer; font-weight:bold;">로그인하기</button>
             </div>
         </div>
     </div>`;
@@ -191,8 +191,12 @@ async function handleLogout() {
 }
 
 // =================================================================
-// 4. 찜하기 & 상세 페이지 UI 연동 + 토스트
+// 4. 찜하기(Favorite) & 상세 페이지 UI 연동 + 토스트 알림
 // =================================================================
+
+/**
+ * 토스트 메시지를 화면에 띄우는 함수
+ */
 function showLikeToast(message) {
   let container = document.getElementById("toast-container");
   if (!container) {
@@ -216,6 +220,7 @@ function showLikeToast(message) {
     toast.style.transform = "translateY(0)";
   });
 
+  // 2초 후 삭제
   setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translateY(-10px)";
@@ -243,6 +248,7 @@ function toggleFavorite(id) {
 
   if (index === -1) {
     favorites.push(stringId);
+    // [수정] 메시지 변경 완료
     showLikeToast("📂 마이페이지에 저장됐습니다!");
   } else {
     favorites.splice(index, 1);
@@ -288,6 +294,28 @@ function updateFavoriteUI() {
   });
 }
 
+function updateDetailLikeUI(articleId) {
+  const likeBtn = document.getElementById("detail-like-btn");
+  if (!likeBtn) return;
+  const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+  const isFav = favorites.includes(String(articleId));
+  const icon = likeBtn.querySelector("svg");
+  if (isFav) {
+    likeBtn.style.backgroundColor = "#ef4444";
+    if (icon) {
+      icon.style.fill = "white";
+      icon.style.stroke = "white";
+    }
+  } else {
+    likeBtn.style.backgroundColor = "";
+    if (icon) {
+      icon.style.fill = "none";
+      icon.style.stroke = "currentColor";
+    }
+  }
+}
+
+// [유지] 최근 본 항목 추가 로직
 function addToRecent(articleId) {
   let recent = JSON.parse(localStorage.getItem("recentArticles") || "[]");
   recent = recent.filter((id) => id !== articleId);
@@ -295,10 +323,11 @@ function addToRecent(articleId) {
   if (recent.length > 5) recent.pop();
   localStorage.setItem("recentArticles", JSON.stringify(recent));
 }
-
 // =================================================================
 // 5. 카드 렌더링 & 필터/검색 통합 로직
 // =================================================================
+
+// 카테고리 데이터 (함수 밖으로 빼서 관리)
 const categories = {
   domestic: [
     "국내",
@@ -485,7 +514,9 @@ function renderArticles() {
 
   if (shuffledArticles.length === 0) shuffledArticles = shuffleArray(ARTICLES);
 
+  // [중요] 6번 영역에서 관리하는 window.searchQuery와 window.selectedTags를 직접 참조
   const filtered = shuffledArticles.filter((article) => {
+    // 1. 카테고리 필터 체크
     let matchesFilter = true;
     if (activeFilters.size > 0) {
       matchesFilter = Array.from(activeFilters).some((fId) => {
@@ -496,17 +527,21 @@ function renderArticles() {
       });
     }
 
+    // 2. 검색어 + 태그 필터 체크
     let matchesSearch = true;
-    const combinedQuery = (
-      searchQuery +
-      " " +
-      Array.from(selectedTags).join(" ")
+    const typedText = (
+      document.getElementById("main-search-input")?.value || ""
     )
       .trim()
       .toLowerCase();
-    if (combinedQuery) {
-      const queries = combinedQuery
-        .split(" ")
+    const tagsText = Array.from(window.selectedTags || [])
+      .join(" ")
+      .toLowerCase();
+    const fullQuery = (typedText + " " + tagsText).trim();
+
+    if (fullQuery) {
+      const queries = fullQuery
+        .split(/\s+/)
         .filter((q) => q !== "")
         .map((q) => q.replace("#", ""));
       const articleText = (
@@ -515,8 +550,11 @@ function renderArticles() {
         article.tags.join("") +
         (article.mainTags || []).join("")
       ).toLowerCase();
+
+      // 모든 검색 단어가 포함되어야 하는 경우(AND)는 every, 하나라도 포함되면 되는 경우(OR)는 some
       matchesSearch = queries.some((q) => articleText.includes(q));
     }
+
     return matchesFilter && matchesSearch;
   });
 
@@ -530,24 +568,24 @@ function renderArticles() {
     const card = document.createElement("div");
     card.className = "article-card";
     card.innerHTML = `
-      <div class="card-img-wrap">
-        <img src="${article.imageUrl}" class="card-img">
-        <div class="card-overlay"></div>
-      </div>
-      <div class="card-like-btn-wrap">
-        <button class="nav-icon-btn btn-like" data-id="${article.id}" onclick="handleLikeClick(event, '${article.id}')">
-          <i data-lucide="heart" width="20"></i>
-        </button>
-      </div>
-      <div class="card-content">
-        <div class="card-badge-area">
-          ${(article.mainTags || []).map((t) => `<span class="card-badge">#${t}</span>`).join("")}
-        </div>
-        <h3 class="card-title">${article.title}</h3>
-        <div class="card-subtitle-wrapper">
-          <p class="card-subtitle">${article.subtitle || "자세히 보기"}</p>
-        </div>
-      </div>`;
+            <div class="card-img-wrap">
+                <img src="${article.imageUrl}" class="card-img">
+                <div class="card-overlay"></div>
+            </div>
+            <div class="card-like-btn-wrap">
+                <button class="nav-icon-btn btn-like" data-id="${article.id}" onclick="handleLikeClick(event, '${article.id}')">
+                    <i data-lucide="heart" width="20"></i>
+                </button>
+            </div>
+            <div class="card-content">
+                <div class="card-badge-area">
+                    ${(article.mainTags || []).map((t) => `<span class="card-badge">#${t}</span>`).join("")}
+                </div>
+                <h3 class="card-title">${article.title}</h3>
+                <div class="card-subtitle-wrapper">
+                    <p class="card-subtitle">${article.subtitle || "자세히 보기"}</p>
+                </div>
+            </div>`;
     card.onclick = () => {
       addToRecent(article.id);
       location.href = `article.html?id=${article.id}`;
@@ -559,127 +597,135 @@ function renderArticles() {
 }
 
 // =================================================================
-// 6. 검색창 태그 관리 (핵심 수정)
+// 6. 검색창 태그 관리 & 필터 제어 (통합 수정 버전)
 // =================================================================
-const mainSearchInput = document.getElementById("main-search-input");
-const searchDropdown = document.getElementById("search-dropdown");
-const clearBtn = document.getElementById("search-clear-btn");
-const tagContainer = document.getElementById("selected-tags-inner");
 
-function handleCombinedSearch() {
-  if (!mainSearchInput) return;
-  searchQuery = mainSearchInput.value.trim();
-  renderArticles();
-}
+// 전역 변수 초기화
+window.selectedTags = window.selectedTags || new Set();
 
-function updateTagBoxes() {
-  if (!tagContainer || !mainSearchInput) return;
+const mInput = document.getElementById("main-search-input");
+const sDropdown = document.getElementById("search-dropdown");
+const cBtn = document.getElementById("search-clear-btn");
+const tInner = document.getElementById("selected-tags-inner");
 
-  const oldTags = tagContainer.querySelectorAll(".search-tag.active-tag");
-  oldTags.forEach((tag) => tag.remove());
+function refreshTags() {
+  if (!tInner || !mInput) return;
+  tInner.querySelectorAll(".search-tag.active-tag").forEach((t) => t.remove());
 
-  selectedTags.forEach((tagName) => {
+  window.selectedTags.forEach((tagName) => {
     const span = document.createElement("span");
     span.className = "search-tag active-tag";
+    span.style.cssText =
+      "background:#3b82f6; color:white; white-space:nowrap; flex-shrink:0; padding:6px 12px; border-radius:20px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; font-size:14px; margin: 2px 4px;";
     span.innerHTML = `${tagName} <span style="font-size:10px; opacity:0.8;">✕</span>`;
 
     span.onclick = (e) => {
       e.stopPropagation();
-      selectedTags.delete(tagName);
-      // 드롭다운 내 태그 상태 업데이트
+      window.selectedTags.delete(tagName);
       document.querySelectorAll("#search-dropdown .search-tag").forEach((t) => {
-        if (t.textContent.trim() === tagName) t.classList.remove("active-tag");
+        if (t.textContent.trim().replace("#", "") === tagName)
+          t.classList.remove("active-tag");
       });
-      updateTagBoxes();
-      handleCombinedSearch();
+      refreshTags();
+      renderArticles(); // UI 갱신 후 즉시 검색 실행
     };
-    tagContainer.insertBefore(span, mainSearchInput);
+    tInner.insertBefore(span, mInput);
   });
 
-  mainSearchInput.placeholder =
-    selectedTags.size > 0 ? "" : "어디로 떠나고 싶으신가요?";
+  mInput.placeholder =
+    window.selectedTags.size > 0 ? "" : "어디로 떠나고 싶으신가요?";
+  if (cBtn)
+    cBtn.style.display =
+      window.selectedTags.size > 0 || mInput.value.length > 0 ? "flex" : "none";
+
   requestAnimationFrame(() => {
-    tagContainer.scrollLeft = tagContainer.scrollWidth;
+    tInner.scrollLeft = tInner.scrollWidth;
   });
 }
 
-// 전역 태그 추가 함수 (HTML 내 onclick 대응)
 window.addSearchTag = function (tagName) {
   if (!tagName) return;
-  if (selectedTags.has(tagName)) {
-    selectedTags.delete(tagName);
-  } else {
-    selectedTags.add(tagName);
+  const clean = tagName.replace("#", "").trim();
+  if (!window.selectedTags.has(clean)) {
+    window.selectedTags.add(clean);
+    document.querySelectorAll("#search-dropdown .search-tag").forEach((t) => {
+      if (t.textContent.trim().replace("#", "") === clean)
+        t.classList.add("active-tag");
+    });
+    refreshTags();
+    renderArticles();
   }
-
-  // 드롭다운 내 UI 상태 연동
-  document.querySelectorAll("#search-dropdown .search-tag").forEach((t) => {
-    if (t.textContent.trim() === tagName) {
-      t.classList.toggle("active-tag", selectedTags.has(tagName));
-    }
-  });
-
-  updateTagBoxes();
-  handleCombinedSearch();
 };
 
-if (mainSearchInput) {
-  mainSearchInput.addEventListener("input", handleCombinedSearch);
-  mainSearchInput.addEventListener("focus", () =>
-    searchDropdown?.classList.remove("hidden"),
-  );
-  mainSearchInput.addEventListener("keydown", (e) => {
+if (mInput) {
+  mInput.addEventListener("input", () => {
+    refreshTags();
+    renderArticles();
+  });
+  mInput.addEventListener("focus", () => sDropdown?.classList.remove("hidden"));
+  mInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      searchDropdown?.classList.add("hidden");
-      handleCombinedSearch();
+      sDropdown?.classList.add("hidden");
+      renderArticles();
     }
-    // 백스페이스로 태그 삭제 기능
     if (
       e.key === "Backspace" &&
-      mainSearchInput.value === "" &&
-      selectedTags.size > 0
+      mInput.value === "" &&
+      window.selectedTags.size > 0
     ) {
-      const lastTag = Array.from(selectedTags).pop();
-      selectedTags.delete(lastTag);
-      updateTagBoxes();
-      handleCombinedSearch();
+      const lastTag = Array.from(window.selectedTags).pop();
+      window.selectedTags.delete(lastTag);
+      refreshTags();
+      renderArticles();
     }
   });
 }
 
-// 클릭 이벤트 통합 관리
 document.addEventListener("click", (e) => {
-  const isSearchContainer = e.target.closest(".search-container");
+  const isSearch = e.target.closest(".search-container");
   const tagItem = e.target.closest(".search-tag");
-
-  if (tagItem && searchDropdown?.contains(tagItem)) {
+  if (tagItem && sDropdown?.contains(tagItem)) {
     window.addSearchTag(tagItem.textContent.trim());
-    return;
-  }
-
-  if (!isSearchContainer) {
-    searchDropdown?.classList.add("hidden");
-  } else {
-    searchDropdown?.classList.remove("hidden");
+  } else if (!isSearch) {
+    sDropdown?.classList.add("hidden");
   }
 });
 
-if (clearBtn) {
-  clearBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    selectedTags.clear();
-    if (mainSearchInput) mainSearchInput.value = "";
+if (cBtn) {
+  cBtn.onclick = (e) => {
+    e.preventDefault();
+    window.selectedTags.clear();
+    if (mInput) mInput.value = "";
     document
-      .querySelectorAll(".search-tag")
+      .querySelectorAll("#search-dropdown .search-tag")
       .forEach((t) => t.classList.remove("active-tag"));
-    updateTagBoxes();
-    handleCombinedSearch();
-  });
+    refreshTags();
+    renderArticles();
+  };
 }
 
 // =================================================================
 // 7. 기타 기능 및 초기화
 // =================================================================
+
+window.toggleFilter = (id) => {
+    // 1. 현재 클릭한 ID를 전역 변수에 저장 (단일 선택)
+    activeFilterId = id;
+
+    // 2. UI 업데이트 (버튼 활성화 상태 변경)
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+        if (btn.dataset.id === id) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+
+    // 3. 목록 다시 그리기
+    visibleCount = 9; // 다시 9개부터 보여주기
+    renderArticles();
+};
+
 window.handleLoadMore = function () {
   isInfiniteScroll = true;
   const btn = document.querySelector(".load-more-container");
@@ -695,44 +741,12 @@ function handleInfiniteLoad() {
   }
 }
 
-window.toggleFilter = (id) => {
-  const btn = document.querySelector(`.filter-btn[data-id="${id}"]`);
-  if (!btn) return;
-  if (id === "all") {
-    activeFilters.clear();
-    document
-      .querySelectorAll(".filter-btn")
-      .forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-  } else {
-    const allBtn = document.querySelector('.filter-btn[data-id="all"]');
-    if (allBtn) allBtn.classList.remove("active");
-    activeFilters.has(id) ? activeFilters.delete(id) : activeFilters.add(id);
-    btn.classList.toggle("active");
-    if (activeFilters.size === 0 && allBtn) allBtn.classList.add("active");
-  }
-  visibleCount = 9;
-  renderArticles();
-};
-
-window.scrollToContent = () => {
-  const el = document.getElementById("content");
-  if (el) el.scrollIntoView({ behavior: "smooth" });
-};
-
-window.handleFavoriteClick = () => {
-  if (localStorage.getItem("isLoggedIn") === "true")
-    location.href = "mypage.html";
-  else showLoginModal();
-};
-
-// 최종 초기화
 window.addEventListener("DOMContentLoaded", async () => {
   await checkLoginStatus();
   if (document.getElementById("article-grid")) renderArticles();
-  updateTagBoxes();
+  refreshTags(); // updateTagBoxes 대신 refreshTags 호출
 
-  // 추천 태그들에 클릭 이벤트 연결
+  // 추천 태그 클릭 이벤트
   document.querySelectorAll("#recommended-tags .search-tag").forEach((tag) => {
     tag.style.cursor = "pointer";
     tag.onclick = (e) => {
@@ -741,3 +755,59 @@ window.addEventListener("DOMContentLoaded", async () => {
     };
   });
 });
+// =================================================================
+// 8. 검색 태그 영역 드래그 스크롤 로직
+// =================================================================
+if (tInner) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    tInner.addEventListener('mousedown', (e) => {
+        isDown = true;
+        tInner.classList.add('active'); // 커서 스타일 변경용 (필요시 CSS 추가)
+        startX = e.pageX - tInner.offsetLeft;
+        scrollLeft = tInner.scrollLeft;
+    });
+
+    tInner.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    tInner.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    tInner.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - tInner.offsetLeft;
+        const walk = (x - startX) * 2; // 스크롤 속도 조절
+        tInner.scrollLeft = scrollLeft - walk;
+    });
+
+    // 모바일 터치 대응 (선택 사항이지만 추천)
+    tInner.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX - tInner.offsetLeft;
+        scrollLeft = tInner.scrollLeft;
+    }, { passive: true });
+
+    tInner.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX - tInner.offsetLeft;
+        const walk = (x - startX) * 2;
+        tInner.scrollLeft = scrollLeft - walk;
+    }, { passive: true });
+}
+
+window.handleLikeClick = handleLikeClick;
+window.showLoginModal = showLoginModal;
+window.handleLogout = handleLogout;
+window.scrollToContent = () => {
+  const el = document.getElementById("content");
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+};
+window.handleFavoriteClick = () => {
+  if (localStorage.getItem("isLoggedIn") === "true")
+    location.href = "mypage.html";
+  else showLoginModal();
+};

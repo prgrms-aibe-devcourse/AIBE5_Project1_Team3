@@ -413,12 +413,20 @@
                 }
             }
 
-            likeBtn.onclick = () => {
-                if (typeof toggleFavorite === 'function') {
-                    toggleFavorite(articleId);
-                    updateLikeState();
-                }
-            };
+         likeBtn.onclick = () => {
+            // 1. 로그인 여부 확인 (script.js의 상태 사용)
+            const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+            if (!isLoggedIn) {
+                // 2. 로그인 안됐으면 script.js에 정의된 모달 띄우기
+                showLoginModal();
+            } else {
+                // 3. 로그인 됐으면 찜하기 실행 (내부에서 showLikeToast 자동 실행됨)
+                toggleFavorite(articleId);
+                // 4. 하트 색상 변경
+                updateLikeState();
+            }
+        };
             
             if (typeof lucide !== 'undefined') lucide.createIcons();
             updateLikeState();
@@ -604,33 +612,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. 플로팅 좋아요 클릭 이벤트
     if (floatingLikeBtn && articleId) {
-        floatingLikeBtn.addEventListener('click', () => {
-            let favorites = JSON.parse(localStorage.getItem(LIKE_KEY) || "[]");
-            const stringId = String(articleId);
-            const index = favorites.indexOf(stringId);
+    floatingLikeBtn.addEventListener('click', () => {
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-            if (index === -1) {
-                // 저장 로직
-                favorites.push(stringId);
-                if (typeof showLikeToast === 'function') {
-                    showLikeToast("📂 마이페이지에 저장됐습니다!");
-                }
-            } else {
-                // 삭제 로직
-                favorites.splice(index, 1);
-                if (typeof showLikeToast === 'function') {
-                    showLikeToast("🗑️ 마이페이지에서 삭제됐습니다!");
-                }
-            }
-
-            // 데이터 저장 및 UI 즉시 갱신
-            localStorage.setItem(LIKE_KEY, JSON.stringify(favorites));
-            refreshFavoriteUI(); 
+        if (!isLoggedIn) {
+            showLoginModal();
+        } else {
+            // 저장/삭제 로직 실행 (토스트 메시지는 toggleFavorite 안에서 자동으로 뜸)
+            toggleFavorite(articleId);
             
-            // 전역 UI 업데이트 함수가 script.js에 있다면 호출
-            if (typeof updateFavoriteUI === 'function') updateFavoriteUI();
-        });
-    }
+            // UI 동기화 (상단 하트와 플로팅 하트 둘 다 갱신)
+            refreshFavoriteUI(); 
+            if (typeof updateLikeState === 'function') updateLikeState();
+        }
+    });
+}
     // Floating share button logic
     const floatingShareBtn = document.getElementById('floating-share-btn');
 

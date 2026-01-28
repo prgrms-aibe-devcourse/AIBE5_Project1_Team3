@@ -161,7 +161,7 @@ function showLoginModal() {
             <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">찜하기 기능은 로그인 후<br>이용하실 수 있습니다.</p>
             <div style="display:flex; gap:10px;">
                 <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
-                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6;; cursor:pointer; font-weight:bold;">로그인하기</button>
+                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6; cursor:pointer; font-weight:bold; color:#ffffff;">로그인하기</button>
             </div>
         </div>
     </div>`;
@@ -514,20 +514,21 @@ function renderArticles() {
 
   if (shuffledArticles.length === 0) shuffledArticles = shuffleArray(ARTICLES);
 
-  // [중요] 6번 영역에서 관리하는 window.searchQuery와 window.selectedTags를 직접 참조
   const filtered = shuffledArticles.filter((article) => {
-    // 1. 카테고리 필터 체크
+    // --- [수정 구간: 카테고리 필터 체크] ---
     let matchesFilter = true;
-    if (activeFilters.size > 0) {
-      matchesFilter = Array.from(activeFilters).some((fId) => {
-        const targetKeys = categories[fId] || [];
-        return article.tags.some((tag) =>
-          targetKeys.some((key) => tag.includes(key)),
-        );
-      });
-    }
 
-    // 2. 검색어 + 태그 필터 체크
+    // 'all'이 아니거나 activeFilterId가 설정되어 있을 때
+    if (window.activeFilterId && window.activeFilterId !== "all") {
+      const targetKeys = categories[window.activeFilterId] || [];
+      // article.tags 중에 카테고리 키워드가 하나라도 포함되어 있는지 확인
+      matchesFilter = article.tags.some((tag) =>
+        targetKeys.some((key) => tag.includes(key)),
+      );
+    }
+    // --------------------------------------
+
+    // 2. 검색어 + 태그 필터 체크 (기존 로직 유지)
     let matchesSearch = true;
     const typedText = (
       document.getElementById("main-search-input")?.value || ""
@@ -550,8 +551,6 @@ function renderArticles() {
         article.tags.join("") +
         (article.mainTags || []).join("")
       ).toLowerCase();
-
-      // 모든 검색 단어가 포함되어야 하는 경우(AND)는 every, 하나라도 포함되면 되는 경우(OR)는 some
       matchesSearch = queries.some((q) => articleText.includes(q));
     }
 
@@ -709,21 +708,21 @@ if (cBtn) {
 // =================================================================
 
 window.toggleFilter = (id) => {
-    // 1. 현재 클릭한 ID를 전역 변수에 저장 (단일 선택)
-    activeFilterId = id;
+  // 1. 현재 클릭한 ID 저장
+  window.activeFilterId = id;
 
-    // 2. UI 업데이트 (버튼 활성화 상태 변경)
-    document.querySelectorAll(".filter-btn").forEach((btn) => {
-        if (btn.dataset.id === id) {
-            btn.classList.add("active");
-        } else {
-            btn.classList.remove("active");
-        }
-    });
+  // 2. UI 업데이트 (버튼 활성화 상태 변경)
+  document.querySelectorAll(".filter-btn").forEach((btn) => {
+    if (btn.dataset.id === id) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
 
-    // 3. 목록 다시 그리기
-    visibleCount = 9; // 다시 9개부터 보여주기
-    renderArticles();
+  // 3. 목록 다시 그리기
+  visibleCount = 9;
+  renderArticles();
 };
 
 window.handleLoadMore = function () {
@@ -759,45 +758,65 @@ window.addEventListener("DOMContentLoaded", async () => {
 // 8. 검색 태그 영역 드래그 스크롤 로직
 // =================================================================
 if (tInner) {
-    let isDown = false;
-    let startX;
-    let scrollLeft;
+  let isDown = false;
+  let startX;
+  let scrollLeft;
 
-    tInner.addEventListener('mousedown', (e) => {
-        isDown = true;
-        tInner.classList.add('active'); // 커서 스타일 변경용 (필요시 CSS 추가)
-        startX = e.pageX - tInner.offsetLeft;
-        scrollLeft = tInner.scrollLeft;
-    });
+  tInner.addEventListener("mousedown", (e) => {
+    isDown = true;
+    tInner.classList.add("active"); // 커서 스타일 변경용 (필요시 CSS 추가)
+    startX = e.pageX - tInner.offsetLeft;
+    scrollLeft = tInner.scrollLeft;
+  });
 
-    tInner.addEventListener('mouseleave', () => {
-        isDown = false;
-    });
+  tInner.addEventListener("mouseleave", () => {
+    isDown = false;
+  });
 
-    tInner.addEventListener('mouseup', () => {
-        isDown = false;
-    });
+  tInner.addEventListener("mouseup", () => {
+    isDown = false;
+  });
 
-    tInner.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - tInner.offsetLeft;
-        const walk = (x - startX) * 2; // 스크롤 속도 조절
-        tInner.scrollLeft = scrollLeft - walk;
-    });
+  tInner.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - tInner.offsetLeft;
+    const walk = (x - startX) * 2; // 스크롤 속도 조절
+    tInner.scrollLeft = scrollLeft - walk;
+  });
 
-    // 모바일 터치 대응 (선택 사항이지만 추천)
-    tInner.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].pageX - tInner.offsetLeft;
-        scrollLeft = tInner.scrollLeft;
-    }, { passive: true });
+  // 모바일 터치 대응 (선택 사항이지만 추천)
+  tInner.addEventListener(
+    "touchstart",
+    (e) => {
+      startX = e.touches[0].pageX - tInner.offsetLeft;
+      scrollLeft = tInner.scrollLeft;
+    },
+    { passive: true },
+  );
 
-    tInner.addEventListener('touchmove', (e) => {
-        const x = e.touches[0].pageX - tInner.offsetLeft;
-        const walk = (x - startX) * 2;
-        tInner.scrollLeft = scrollLeft - walk;
-    }, { passive: true });
+  tInner.addEventListener(
+    "touchmove",
+    (e) => {
+      const x = e.touches[0].pageX - tInner.offsetLeft;
+      const walk = (x - startX) * 2;
+      tInner.scrollLeft = scrollLeft - walk;
+    },
+    { passive: true },
+  );
 }
+
+// 검색 영역(inner) 클릭 시 내부 input에 포커스 주기
+if (tInner && mInput) {
+  tInner.addEventListener("click", (e) => {
+    // 클릭한 대상이 이미 input이라면 무시하고, 배경 영역을 눌렀을 때만 실행
+    if (e.target !== mInput) {
+      mInput.focus();
+    }
+  });
+}
+
+
 
 window.handleLikeClick = handleLikeClick;
 window.showLoginModal = showLoginModal;

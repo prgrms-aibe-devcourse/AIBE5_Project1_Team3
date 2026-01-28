@@ -121,15 +121,23 @@ function showAuthModal(title, message, icon = '🔔') {
     const modalHtml = `
         <div id="auth-custom-modal" 
              onclick="if(event.target === this) this.remove()" 
-             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
-            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter: blur(4px);">
+            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
                 <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
-                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold; color:#1a1a1a;">${title}</h3>
                 <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
                 <button onclick="document.getElementById('auth-custom-modal').remove()" 
-                        style="width:100%; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-size:14px; font-weight:bold;">확인</button>
+                        style="width:100%; padding:14px; border:none; border-radius:12px; background:#3b82f6; color:#fff; cursor:pointer; font-size:14px; font-weight:bold; transition: background 0.2s;"
+                        onmouseover="this.style.background='#2563eb'"
+                        onmouseout="this.style.background='#3b82f6'"> 확인 </button>
             </div>
         </div>
+        <style>
+            @keyframes modalPop {
+                from { opacity: 0; transform: scale(0.9) translateY(20px); }
+                to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+        </style>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
@@ -140,26 +148,35 @@ function showConfirmModal(title, message, onConfirm, icon = '❓') {
 
     const modalHtml = `
         <div id="auth-confirm-modal" 
-             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000;">
-            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+             style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10000; backdrop-filter: blur(4px);">
+            <div style="background:#fff; padding:30px; border-radius:24px; text-align:center; width:90%; max-width:320px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
                 <div style="font-size:48px; margin-bottom:15px;">${icon}</div>
-                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold;">${title}</h3>
+                <h3 style="margin-bottom:10px; font-size:18px; font-weight:bold; color:#1a1a1a;">${title}</h3>
                 <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.6;">${message}</p>
                 <div style="display:flex; gap:12px;">
                     <button onclick="document.getElementById('auth-confirm-modal').remove()" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600;">취소</button>
+                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#f3f4f6; color:#4b5563; cursor:pointer; font-weight:600; transition: background 0.2s;"
+                            onmouseover="this.style.background='#e5e7eb'"
+                            onmouseout="this.style.background='#f3f4f6'">취소</button>
                     <button id="modal-confirm-btn" 
-                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#000; color:#fff; cursor:pointer; font-weight:bold;">확인</button>
+                            style="flex:1; padding:14px; border:none; border-radius:12px; background:#3b82f6; color:#fff; cursor:pointer; font-weight:bold; transition: background 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);"
+                            onmouseover="this.style.background='#2563eb'"
+                            onmouseout="this.style.background='#3b82f6'">확인</button>
                 </div>
             </div>
         </div>
+        <style>
+            @keyframes modalPop {
+                from { opacity: 0; transform: scale(0.9) translateY(20px); }
+                to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+        </style>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // 확인 버튼 클릭 시 실행할 로직 연결
     document.getElementById('modal-confirm-btn').onclick = () => {
         document.getElementById('auth-confirm-modal').remove();
-        onConfirm(); // 전달받은 함수 실행
+        if (onConfirm) onConfirm();
     };
 }
 

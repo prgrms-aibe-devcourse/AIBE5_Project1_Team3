@@ -124,7 +124,7 @@
     <div class="bg-white px-6 py-8 mb-2">
         <div class="flex items-center gap-4">
             <div class="relative group">
-                <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-accent to-purple-500">
+                <div class="w-20 h-20 rounded-full p-[2px] bg-gradient-to-tr from-blue-400 via-blue-500 to-blue-600">
                     <img id="profile-img" src="" class="w-full h-full rounded-full border-2 border-white bg-gray-100 object-cover" alt="Profile">
                 </div>
                 </div>
@@ -141,7 +141,7 @@
         <div class="flex justify-between mt-8 px-2">
             <div class="text-center w-1/3 cursor-pointer border-r border-gray-100" onclick="switchTab('saved')">
                 <p class="text-xs text-gray-400 font-medium mb-1">찜한 여행</p>
-                <p class="text-lg font-black text-accent" id="stat-likes">0</p>
+                <p class="text-lg font-black text-[#2563EB]" id="stat-likes">0</p>
             </div>
             <div class="text-center w-1/3 border-r border-gray-100" onclick="switchTab('trips')">
                 <p class="text-xs text-gray-400 font-medium mb-1">다녀온 여행</p>
@@ -179,7 +179,7 @@
                 
                 <div class="flex gap-2">
                     <!-- 1. 기본 상태 버튼 -->
-                    <button id="btn-start-selection" onclick="toggleSelectionMode(true)" class="bg-accent text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:bg-red-600 transition-colors flex items-center gap-1">
+                    <button id="btn-start-selection" onclick="toggleSelectionMode(true)" class="bg-[#2563EB] text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:brightness-95 transition flex items-center gap-1">
                         <i data-lucide="calendar-plus" width="14"></i>
                         일정 만들기
                     </button>
@@ -189,7 +189,7 @@
                         <button onclick="toggleSelectionMode(false)" class="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-300 transition-colors">
                             취소
                         </button>
-                        <button onclick="generateTripFromSelection()" class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:bg-gray-800 transition-colors flex items-center gap-1">
+                        <button onclick="generateTripFromSelection()" class="bg-[#62B6FF] text-white px-4 py-2 rounded-full text-xs font-bold shadow-md hover:bg-[#4FA8F0] transition-colors flex items-center gap-1">
                             <i data-lucide="check" width="14"></i>
                             선택 완료
                         </button>
@@ -209,9 +209,9 @@
         <div id="tab-trips" class="tab-content space-y-6">
             <div class="flex justify-between items-end mb-4 border-b border-gray-100 pb-2">
                 <h3 class="font-bold text-lg flex items-center gap-2">
-                    다가오는 여행 <span class="text-accent text-sm" id="upcoming-count">0</span>
+                    다가오는 여행 <span class="text-[#2563EB]accent text-sm" id="upcoming-count">0</span>
                 </h3>
-                <button onclick="openManualCreateModal()" class="flex items-center gap-1 px-3 py-1.5 bg-black text-white rounded-full text-xs font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-200">
+                <button onclick="openManualCreateModal()" class="flex items-center gap-1 px-3 py-1.5 bg-[#2563EB] text-white rounded-full text-xs font-bold hover:bg-[#1D4ED8] transition-colors shadow-lg shadow-gray-200">
                     <i data-lucide="plus" width="14"></i> 임의 작성
                 </button>
             </div>
@@ -223,8 +223,8 @@
         </div>
 
         <div id="tab-reviews" class="tab-content">
-             <div class="bg-blue-50 p-4 rounded-xl mb-6 flex items-start gap-3">
-                <i data-lucide="info" class="text-blue-500 mt-0.5" width="16"></i>
+             <div class="bg-blue-50 p-4 rounded-xl mb-6 flex items-center gap-3">
+                <i data-lucide="info" class="text-blue-500" width="16"></i>
                 <p class="text-xs text-blue-800 leading-relaxed">
                     별점과 함께 생생한 후기를 남겨주세요.
                 </p>
@@ -235,7 +235,7 @@
     </div>
 
     <div id="profile-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeProfileModal()"></div>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
         <div class="bg-white w-full max-w-md rounded-3xl p-6 z-10 relative animate-slide-up max-h-[85vh] overflow-y-auto modal-scroll">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-black">프로필 편집</h3>
@@ -244,13 +244,11 @@
             <div class="flex flex-col items-center mb-6">
                 <div class="relative w-24 h-24 mb-3">
                     <img id="edit-profile-img" src="" class="w-full h-full rounded-full bg-gray-100 object-cover border border-gray-200">
-                    <button type="button" onclick="refreshAvatar()" class="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full shadow-lg hover:bg-gray-800 transition-colors"><i data-lucide="refresh-cw" width="14"></i></button>
                 </div>
-                <p class="text-xs text-gray-400">주사위 버튼을 눌러 아바타를 변경해보세요.</p>
             </div>
             <form onsubmit="saveProfile(event)" class="space-y-4">
                 <div><label class="block text-xs font-bold text-gray-500 mb-1">닉네임</label><input type="text" id="edit-name" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:outline-none font-bold" required></div>
-                <div><label class="block text-xs font-bold text-gray-500 mb-1">한줄 소개</label><input type="text" id="edit-bio" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:outline-none"></div>
+                <div><label class="block text-xs font-bold text-gray-500 mb-1">한줄 소개</label><input type="text" id="edit-bio" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-black focus:outline-none" placeholder="프로필을 편집해보세요."></div>
                 <div><label class="block text-xs font-bold text-gray-500 mb-1">이메일</label><input type="email" id="edit-email" class="w-full p-3 bg-gray-100 rounded-xl border border-transparent text-gray-400 cursor-not-allowed" readonly></div>
                 <button type="submit" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 mt-2">저장하기</button>
             </form>
@@ -258,7 +256,7 @@
     </div>
 
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeDetailModal()"></div>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
         <div class="bg-white w-full max-w-5xl rounded-3xl p-6 md:p-8 z-10 relative animate-fade-in h-[90vh] flex flex-col">
              <div class="flex justify-between items-center mb-6 flex-shrink-0">
                 <div class="flex items-center gap-3">
@@ -292,7 +290,7 @@
              </div>
              
              <div class="mt-6 pt-4 border-t border-gray-100 flex-shrink-0 text-right">
-                 <button onclick="closeDetailModal()" class="px-8 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors">닫기</button>
+                 <button onclick="closeDetailModal()" class="px-8 py-3 bg-bg-[#2563EB] text-white rounded-xl font-bold hover:bg-gray-800 transition-colors">닫기</button>
              </div>
         </div>
     </div>
@@ -349,50 +347,57 @@
                 </div>
 
                 <div class="mt-6 pt-4 border-t border-gray-100 flex-shrink-0">
-                    <button type="submit" id="btn-save-trip" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all shadow-lg active:scale-[0.99]">
+                    <button type="submit" id="btn-save-trip" class="w-full bg-[#2563EB] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#1D4ED8] transition-all shadow-lg active:scale-[0.99]">
                         일정 저장하기
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    <!-- [New] Trip Places Review List Modal -->
+    <!-- Trip Places Review List Modal -->
     <div id="review-list-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewListModal()"></div>
-        <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 z-10 relative animate-slide-up h-[80vh] flex flex-col">
-            
-            <div class="flex justify-between items-center mb-2 flex-shrink-0">
-                <h3 class="text-xl font-black text-gray-900">후기 작성할 장소 선택</h3>
-                <button onclick="closeReviewListModal()" class="p-2 hover:bg-gray-100 rounded-full transition-colors"><i data-lucide="x" width="24"></i></button>
-            </div>
-            <p class="text-xs text-gray-500 mb-6 flex-shrink-0">다녀온 여행지의 추억을 각각 남겨보세요.</p>
-            
-            <!-- 장소 리스트 영역 -->
-            <div id="review-places-list" class="flex-1 overflow-y-auto modal-scroll space-y-3 pr-2">
-                <!-- JS로 주입됨 -->
-            </div>
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 md:p-8 z-10 relative animate-slide-up h-[80vh] flex flex-col">
         
-    <!-- ✅ 추가: 모든 장소 후기 작성 완료 버튼 -->
-            <div class="pt-4 border-t border-gray-100 flex-shrink-0">
-                <button
-                    id="btn-review-complete"
-                    type="button"
-                    onclick="completeAllReviewsAndClose()"
-                    class="w-full py-3 rounded-xl font-bold transition-colors bg-gray-200 text-gray-400 cursor-not-allowed"
-                    disabled
-                >
-                    모든 장소 후기 작성 완료
-                </button>
-                <p id="review-complete-hint" class="text-[11px] text-gray-400 mt-2 text-center">
-                    모든 장소의 후기를 작성하면 활성화됩니다.
-                </p>
-            </div>
+        <!-- 헤더 -->
+        <div class="flex justify-between items-center mb-2 flex-shrink-0">
+        <h3 class="text-xl font-black text-gray-900">후기 작성할 장소 선택</h3>
+        <button onclick="closeReviewListModal()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <i data-lucide="x" width="24"></i>
+        </button>
         </div>
+
+        <p class="text-xs text-gray-500 mb-6 flex-shrink-0">
+        다녀온 여행지의 추억을 각각 남겨보세요.
+        </p>
+
+        <!-- 장소 리스트 -->
+        <div id="review-places-list" class="flex-1 overflow-y-auto modal-scroll space-y-3 pr-2">
+        <!-- JS로 주입 -->
+        </div>
+
+        <!-- ✅ 완료 버튼 영역 (이게 빠지면 안 됨) -->
+        <div class="pt-4 border-t border-gray-100 flex-shrink-0">
+        <button
+            id="btn-review-complete"
+            type="button"
+            onclick="completeAllReviewsAndClose()"
+            class="w-full py-3 rounded-xl font-bold transition-colors bg-gray-200 text-gray-400 cursor-not-allowed"
+            disabled
+        >
+            모든 장소 후기 작성 완료
+        </button>
+        <p id="review-complete-hint" class="text-[11px] text-gray-400 mt-2 text-center">
+            모든 장소의 후기를 작성하면 활성화됩니다.
+        </p>
+        </div>
+    </div>
     </div>
 
     <!-- Review Write/Edit Modal (Fixed) -->
     <div id="review-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
         <div class="bg-white w-full max-w-md rounded-2xl p-6 z-10 relative animate-fade-in">
              <div class="flex justify-between items-center mb-4">
                  <h3 class="text-lg font-bold" id="review-modal-title">후기 작성</h3>
@@ -423,18 +428,45 @@
                  <p id="rating-text" class="text-xs font-bold text-accent mt-2">5점 - 최고였어요!</p>
              </div>
 
+             <!-- [New] 사진/동영상 업로드 UI -->
+             <div class="mb-4">
+                <label class="block text-xs text-gray-400 font-bold mb-2">사진 및 동영상 첨부</label>
+                <div class="flex items-center gap-2">
+                    <label for="review-file-input" class="cursor-pointer flex items-center justify-center w-16 h-16 bg-gray-50 border border-dashed border-gray-300 rounded-xl hover:bg-gray-100 transition-colors">
+                        <i data-lucide="camera" width="20" class="text-gray-400"></i>
+                    </label>
+                    <!-- accept 속성으로 이미지/비디오만 허용 -->
+                    <input type="file" id="review-file-input" class="hidden" accept="image/*,video/*" multiple onchange="handleFileSelect(event)">
+                    
+                    <!-- 미리보기 영역 -->
+                    <div id="file-preview-container" class="flex gap-2 overflow-x-auto h-16 items-center no-scrollbar"></div>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-1">* 최대 5개까지 업로드 가능</p>
+             </div>
+             <!-- 기존 업로드 미디어 목록(수정 시 표시) -->
+            <div id="existing-media-section" class="mb-4 hidden">
+                <label class="block text-xs text-gray-400 font-bold mb-2">기존 첨부파일</label>
+                <div id="existing-media-container" class="flex gap-2 overflow-x-auto pb-2 no-scrollbar"></div>
+                <p class="text-[10px] text-gray-400 mt-1">삭제(X)한 항목은 저장 시 반영됩니다.</p>
+            </div>
              <textarea id="review-text" class="w-full h-32 p-3 bg-gray-50 rounded-xl resize-none focus:outline-none mb-4 border border-gray-200" placeholder="여행의 생생한 후기를 남겨주세요."></textarea>
-             <button onclick="submitReview()" id="btn-save-review" class="w-full bg-black text-white py-3 rounded-xl font-bold">작성 완료</button>
+             <button onclick="submitReview()" id="btn-save-review" class="w-full bg-[#2563EB] text-white py-3 rounded-xl font-bold">작성 완료</button>
         </div>
     </div>
 
-    <button onclick="resetAllData()" class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg z-50 text-xs font-bold hover:bg-red-600 transition-colors">
+    <button onclick="resetAllData()" class="fixed bottom-4 right-4 bg-[#2563EB] text-white px-4 py-2 rounded-full text-xs font-bold
+shadow-md hover:shadow-lg hover:brightness-95 transition
+flex items-center gap-1">
         데이터 초기화
     </button>
 
     <script src="../js/script.js"></script>
     <script src="../js/data.js"></script>
     <script>
+        // [New] 파일 업로드용 전역 변수
+        let selectedFiles = [];
+        let existingMedia = []; // 수정 모드에서 남길 기존 미디어 목록
+        
         // --- 0. Global Variables ---
         var currentSelectedPlaces = (typeof currentSelectedPlaces !== 'undefined') ? currentSelectedPlaces : [];
 
@@ -478,19 +510,20 @@
 
         // 로컬 편집값이 있으면 그걸 우선 사용
         const name = local?.name ?? baseName;
-        const bio = local?.bio ?? (md.bio ?? '프로필을 편집해보세요');
+        const bio = local?.bio ?? (md.bio ?? '프로필을 편집해보세요.');
         const avatarSeed = local?.avatarSeed ?? (name || 'seed');
 
         document.getElementById('profile-name').textContent = name;
         document.getElementById('profile-email').textContent = email;
         document.getElementById('profile-bio').textContent = bio;
+        
         const avatarUrl =
-        local?.avatarUrl ||
         md.avatar_url ||
         md.picture ||
-        `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`;
+        `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`;
 
         document.getElementById('profile-img').src = avatarUrl;
+
 
         currentAvatarSeed = avatarSeed;
         }
@@ -509,12 +542,12 @@
             const bio = local?.bio ?? '';
             const avatarSeed = local?.avatarSeed ?? (name || 'seed');
 
-            // ✅ 메인과 동일한 아바타 결정 로직
             const avatarUrl =
-                local?.avatarUrl ||
-                md.avatar_url ||
-                md.picture ||
-                `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`;
+            md.avatar_url ||
+            md.picture ||
+            `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`;
+
+            document.getElementById('edit-profile-img').src = avatarUrl;
 
             document.getElementById('edit-name').value = name;
             document.getElementById('edit-bio').value = bio;
@@ -593,12 +626,12 @@
                     actionButtonHtml =
                         `<button type="button"
                             onclick="event.stopPropagation(); openCreateReviewModal('${trip.id}')"
-                            class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-black transition-colors relative z-20 shadow-md">
+                            class="px-4 py-2 bg-[#2563EB] text-white text-xs font-bold rounded-lg hover:bg-[#1D4ED8] transition-colors relative z-20 shadow-md">
                             후기 쓰기
                         </button>`;
                 } else {
                     actionButtonHtml =
-                        `<div class="flex gap-1 relative z-20">
+                        `<div class="flex gap-2 relative z-20">
                             <button type="button"
                                 onclick="event.stopPropagation(); openEditModal('${trip.id}')"
                                 class="p-2 bg-gray-100 rounded-full font-bold rounded-lg text-gray-500 text-xs hover:text-black hover:bg-gray-200 transition-colors">
@@ -608,7 +641,8 @@
                             
                             <button type="button"
                                 onclick="event.stopPropagation(); deleteTrip(${index})"
-                                class="p-2 bg-gray-100 rounded-full font-bold rounded-lg text-gray-500 text-xs hover:text-red-500 hover:bg-red-50 transition-colors">
+                                class="p-2 bg-gray-100 rounded-full font-bold rounded-lg text-gray-500 text-xs
+hover:text-[#62B6FF] hover:bg-[#62B6FF]/10 transition-colors">
                                 삭제
                             </button>
                         </div>`;
@@ -617,7 +651,28 @@
                 // [Modified] Location logic fallback (since input was removed, might be empty in new trips)
                 const displayLocation = trip.location || '여행'; 
                 
-                const cardHtml = `<div onclick="openDetailModal('${trip.id}')" class="trip-card bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-between items-center group relative overflow-hidden cursor-pointer hover:shadow-md"><div class="relative z-10"><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-bold px-2 py-0.5 rounded bg-${isPast ? 'gray-100 text-gray-400' : 'red-50 text-accent'}">${isPast ? '여행완료' : (dDay <= 0 ? (dDay === 0 ? 'D-Day' : '여행중') : `D-${dDay}`)}</span><span class="text-xs text-gray-400">${trip.startDate} ~ ${trip.endDate}</span></div><h4 class="font-bold text-lg text-gray-900 flex items-center gap-2">${trip.title} ${trip.isAI ? '<i data-lucide="sparkles" width="14" class="text-violet-500"></i>' : ''}</h4><p class="text-sm text-gray-500 flex items-center gap-1 mt-1"><i data-lucide="map-pin" width="12"></i> ${displayLocation}</p></div><div class="relative z-10 flex flex-col items-end gap-2">${actionButtonHtml}</div></div>`;
+                const cardHtml = `
+                <div onclick="openDetailModal('${trip.id}')" class="trip-card bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex justify-between items-center group relative overflow-hidden cursor-pointer hover:shadow-md">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded ${isPast ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-700'}">
+                        ${isPast ? '여행완료' : (dDay <= 0 ? (dDay === 0 ? 'D-Day' : '여행중') : `D-${dDay}`)}
+                    </span>
+                    <span class="text-xs text-gray-400">${trip.startDate} ~ ${trip.endDate}</span>
+                    </div>
+
+                    <h4 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                    ${trip.title} ${trip.isAI ? '<i data-lucide="sparkles" width="14" class="text-violet-500"></i>' : ''}
+                    </h4>
+
+                    <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                    <i data-lucide="map-pin" width="12"></i> ${displayLocation}
+                    </p>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-end gap-2">${actionButtonHtml}</div>
+                </div>
+                `;
                 
                 if (isPast) { pastList.innerHTML += cardHtml; } else { upcomingList.innerHTML += cardHtml; }
             });
@@ -1075,7 +1130,12 @@ function openCreateReviewModal(tripId) {
                     <button
                         type="button"
                         onclick="openWriteModal('${safeName}', '${safeId}', null)"
-                        class="px-4 py-2 bg-black text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-colors shadow-sm"
+                        class="px-4 py-2
+bg-[#62B6FF] text-white
+text-xs font-bold rounded-lg
+hover:bg-[#4FA8F0]
+transition-colors
+shadow-sm"
                     >
                         작성하기
                     </button>`;
@@ -1137,8 +1197,9 @@ function openCreateReviewModal(tripId) {
 
     // ✅ 모든 장소가 리뷰 작성됐는지 체크
     const allDone = places.every(p => {
-    const pid = p.id;
-    return myReviews.some(r => r.tripId === tripId && r.articleId === pid);
+    const pid = (p && typeof p === 'object') ? String(p.id ?? '') : String(p ?? '');
+    if (!pid) return false;
+    return myReviews.some(r => r.tripId === tripId && String(r.articleId) === pid);
     });
 
     if (allDone) {
@@ -1157,13 +1218,62 @@ function openCreateReviewModal(tripId) {
     showAuthModal('완료', '모든 장소 후기가 작성되었습니다.', '✅');
     }
 
+    function renderExistingMedia() {
+        const section = document.getElementById('existing-media-section');
+        const container = document.getElementById('existing-media-container');
+        if (!section || !container) return;
 
-        // ✅ [REPLACE] 2단계: 글쓰기 모달 열기 (placeName + articleId를 전역에 저장)
+        if (!existingMedia || existingMedia.length === 0) {
+            section.classList.add('hidden');
+            container.innerHTML = '';
+            return;
+        }
+
+        section.classList.remove('hidden');
+        container.innerHTML = '';
+
+        existingMedia.forEach((m, idx) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'relative w-16 h-16 flex-shrink-0 group';
+
+            let el;
+            if (m.type === 'video') {
+            el = document.createElement('video');
+            el.src = m.url;
+            el.controls = true;
+            } else {
+            el = document.createElement('img');
+            el.src = m.url;
+            }
+            el.className = 'w-full h-full object-cover rounded-lg border border-gray-200 bg-black';
+
+            const del = document.createElement('button');
+            del.type = 'button';
+            del.className = 'absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity';
+            del.innerHTML = '✕';
+            del.onclick = (e) => {
+            e.stopPropagation();
+            existingMedia.splice(idx, 1);
+            renderExistingMedia();
+            };
+
+            wrap.appendChild(el);
+            wrap.appendChild(del);
+            container.appendChild(wrap);
+        });
+        }
+    
+    // ✅ [REPLACE] 2단계: 글쓰기 모달 열기 (placeName + articleId를 전역에 저장)
     function openWriteModal(placeName, articleId, reviewId) {
     targetPlaceTitle = placeName;
+    selectedFiles = []; 
+    const previewContainer = document.getElementById('file-preview-container');
+    if (previewContainer) previewContainer.innerHTML = '';
+    
     currentReviewArticleId = articleId;   // ✅ 핵심
     editingReviewId = reviewId;
-
+    existingMedia = [];
+    document.getElementById('existing-media-section')?.classList.add('hidden');
     document.getElementById('review-modal-title').textContent = reviewId ? '후기 수정' : '후기 작성';
     document.getElementById('btn-save-review').textContent = reviewId ? '수정 완료' : '작성 완료';
 
@@ -1173,13 +1283,18 @@ function openCreateReviewModal(tripId) {
 
     // 내용 세팅
     if (reviewId) {
-        const reviews = getMyReviews();
-        const review = reviews.find(r => r.id === reviewId);
-        if (review) {
-            document.getElementById('review-text').value = review.text || '';
-            // ✅ 기존 리뷰에 articleId가 있으면 그걸 우선 사용
-            currentReviewArticleId = review.articleId || currentReviewArticleId;
-            setRating(review.rating || 5);
+    const reviews = getMyReviews();
+    const review = reviews.find(r => r.id === reviewId);
+    if (review) {
+        document.getElementById('review-text').value = review.text || '';
+        // ✅ 기존 리뷰에 articleId가 있으면 그걸 우선 사용
+        currentReviewArticleId = review.articleId || currentReviewArticleId;
+        setRating(review.rating || 5);
+
+        // ✅🔥 여기 추가 (기존 첨부파일 불러오기)
+        existingMedia = Array.isArray(review.media) ? [...review.media] : [];
+        renderExistingMedia();
+
         } else {
             document.getElementById('review-text').value = '';
             setRating(5);
@@ -1196,16 +1311,24 @@ function openCreateReviewModal(tripId) {
     }
 
     // ✅ [REPLACE] 리뷰 저장 (articleId 같이 저장)
-    function submitReview() {
-        const text = document.getElementById('review-text').value;
-        if (!text) {
-            showAuthModal('입력 필요', '내용을 입력해주세요.', '✏️');
-            return;
-            }
+    async function submitReview() {
+            const text = document.getElementById('review-text').value;
+            if(!text) return alert('내용을 입력해주세요.');
+            
+            const btn = document.getElementById('btn-save-review');
+            const originalBtnText = btn.textContent;
+            
+            // 로딩 표시
+            btn.textContent = '업로드 중...';
+            btn.disabled = true;
 
-        let reviews = getMyReviews();
+            try {
+                // [추가됨] 파일 업로드 수행
+                const newMedia = await uploadFilesToSupabase();
 
-        if (editingReviewId) {
+                let reviews = getMyReviews();
+
+                if (editingReviewId) {
             const index = reviews.findIndex(r => r.id === editingReviewId);
             if (index !== -1) {
                 reviews[index].text = text;
@@ -1214,6 +1337,8 @@ function openCreateReviewModal(tripId) {
                 // ✅ articleId 없던 예전 데이터 보정
                 reviews[index].articleId = reviews[index].articleId || currentReviewArticleId || '';
                 reviews[index].targetPlace = reviews[index].targetPlace || targetPlaceTitle;
+                 // [추가됨] 미디어 추가 (기존 미디어 유지 + 새 미디어)
+                reviews[index].media = (existingMedia || []).concat(newMedia);
             }
         } else {
             const trips = getTrips();
@@ -1224,22 +1349,110 @@ function openCreateReviewModal(tripId) {
                 tripId: currentReviewTripId,
                 tripTitle: trip ? trip.title : '여행',
                 targetPlace: targetPlaceTitle,
-                articleId: currentReviewArticleId || '',   // ✅ 핵심
+                articleId: currentReviewArticleId ? String(currentReviewArticleId) : '',   // ✅ 핵심
                 text: text,
                 rating: currentRating,
-                date: new Date().toLocaleDateString()
+                date: new Date().toLocaleDateString(),
+                media: newMedia // [추가됨] 미디어 저장
             });
         }
 
         localStorage.setItem('myReviews', JSON.stringify(reviews));
-        showAuthModal('저장 완료', '후기가 저장되었습니다.', '✅');
-        closeReviewModal();
+                showAuthModal('저장 완료', '후기가 저장되었습니다.', '❗');
+                closeReviewModal();
+                
+                openCreateReviewModal(currentReviewTripId);
+                renderReviews();
+                renderTrips();
 
-        // 목록 모달 갱신 (상태 업데이트)
-        openCreateReviewModal(currentReviewTripId);
-        renderReviews();
-        renderTrips();
-    }
+            } catch (err) {
+                console.error(err);
+                alert('저장 중 오류가 발생했습니다.');
+            } finally {
+                // 버튼 복구
+                btn.textContent = originalBtnText;
+                btn.disabled = false;
+            }
+        }
+        // [New] 파일 선택 핸들러 (미리보기 생성)
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            const previewContainer = document.getElementById('file-preview-container');
+            
+            // 최대 5개 제한
+            if (selectedFiles.length + files.length > 5) {
+                alert('최대 5개까지만 업로드 가능합니다.');
+                return;
+            }
+            
+            files.forEach(file => {
+                selectedFiles.push(file);
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative w-16 h-16 flex-shrink-0 group';
+                
+                const el = document.createElement(file.type.startsWith('video') ? 'video' : 'img');
+                el.src = URL.createObjectURL(file);
+                el.className = 'w-full h-full object-cover rounded-lg border border-gray-200';
+                
+                // 삭제 버튼
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity';
+                closeBtn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                closeBtn.onclick = () => {
+                    const idx = selectedFiles.indexOf(file);
+                    if(idx > -1) selectedFiles.splice(idx, 1);
+                    wrapper.remove();
+                };
+
+                wrapper.appendChild(el);
+                wrapper.appendChild(closeBtn);
+                previewContainer.appendChild(wrapper);
+            });
+            
+            // input 초기화 (같은 파일 다시 선택 가능하게)
+            event.target.value = '';
+        }
+
+        // [New] Supabase Storage 업로드 함수
+        function safeExt(name) {
+        const m = name.match(/\.([a-zA-Z0-9]+)$/);
+        return m ? m[1].toLowerCase() : "bin";
+        }
+
+        async function uploadFilesToSupabase() {
+        if (selectedFiles.length === 0) return [];
+
+        const uploadedUrls = [];
+        for (const file of selectedFiles) {
+            const ext = safeExt(file.name);
+            const fileName = `reviews/${Date.now()}_${crypto.randomUUID()}.${ext}`; // ✅ 한글 제거
+
+            const { error } = await supabaseClient
+            .storage
+            .from("reviews")
+            .upload(fileName, file, { upsert: false });
+
+            if (error) {
+            console.error("Upload Error:", error);
+            alert(`업로드 실패: ${file.name}\n${error.message || ""}`);
+            continue;
+            }
+
+            const { data: publicData } = supabaseClient
+            .storage
+            .from("reviews")
+            .getPublicUrl(fileName);
+
+            uploadedUrls.push({
+            url: publicData.publicUrl,
+            type: file.type.startsWith("video") ? "video" : "image",
+            });
+        }
+
+        return uploadedUrls;
+        }   
+
 
         // [수정됨] 별점 UI (안전장치 추가)
         function setRating(rating) {
@@ -1275,76 +1488,154 @@ function openCreateReviewModal(tripId) {
 
         // ✅ [REPLACE] renderReviews() - 카드 전체 클릭 시 아티클 상세로 이동
         function renderReviews() {
-            const reviews = getMyReviews();
-            const list = document.getElementById('review-list');
-            const empty = document.getElementById('review-empty');
+        const reviews = getMyReviews();
+        const list = document.getElementById('review-list');
+        const empty = document.getElementById('review-empty');
 
-            // 통계 숫자 업데이트
-            const statEl = document.getElementById('stat-reviews');
-            if (statEl) statEl.textContent = reviews.length;
+        const statEl = document.getElementById('stat-reviews');
+        if (statEl) statEl.textContent = reviews.length;
 
-            list.innerHTML = '';
+        list.innerHTML = '';
 
-            if (reviews.length === 0) {
-                empty.classList.remove('hidden');
-                return;
-            }
-            empty.classList.add('hidden');
-
-            reviews.forEach(review => {
-                let starsHtml = '';
-                for (let i = 0; i < 5; i++) {
-                    starsHtml += `<i data-lucide="star" width="12" class="${i < (review.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}"></i>`;
-                }
-
-                // ✅ 장소 배지(클릭하면 이동) - articleId 없으면 그냥 표시만
-                const placeBadge = review.targetPlace
-                    ? (review.articleId
-                        ? `<span
-                                onclick="event.stopPropagation(); goToReviewArticle('${String(review.articleId).replace(/'/g, "\\'")}')"
-                                class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded ml-2 cursor-pointer hover:bg-gray-200"
-                        >📍 ${review.targetPlace}</span>`
-                        : `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded ml-2">📍 ${review.targetPlace}</span>`)
-                    : '';
-
-                // ✅ 카드 전체 클릭 시 이동 (articleId 없으면 이동 막고 안내)
-                const clickAttr = review.articleId
-                    ? `onclick="goToReviewArticle('${String(review.articleId).replace(/'/g, "\\'")}')"`
-                    : `onclick="alert('이 리뷰는 연결된 아티클 정보(articleId)가 없어 이동할 수 없습니다.');"`;
-
-                list.innerHTML += `
-                    <div ${clickAttr} class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm animate-fade-in relative group cursor-pointer hover:shadow-md transition-shadow">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <div class="flex items-center">
-                                    <h4 class="font-bold text-sm text-gray-900">${review.tripTitle || '여행'}</h4>
-                                    ${placeBadge}
-                                </div>
-                                <div class="flex items-center gap-1 mt-1">${starsHtml}</div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-gray-400">${review.date || ''}</span>
-                                <div class="flex gap-1 pl-2 border-l border-gray-100">
-                                    <button
-                                        type="button"
-                                        onclick="event.stopPropagation(); openEditReviewModal(${review.id})"
-                                        class="p-1 text-gray-400 hover:text-blue-500 transition-colors"
-                                    ><i data-lucide="pencil" width="14"></i></button>
-                                    <button
-                                        type="button"
-                                        onclick="event.stopPropagation(); deleteReview(${review.id})"
-                                        class="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                                    ><i data-lucide="trash-2" width="14"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed mt-2">${review.text || ''}</p>
-                    </div>
-                `;
-            });
-
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+        if (reviews.length === 0) {
+            empty.classList.remove('hidden');
+            return;
         }
+        empty.classList.add('hidden');
+
+        reviews.forEach((review) => {
+            // 별점
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+            starsHtml += `<i data-lucide="star" width="12" class="${
+                i < (review.rating || 0) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+            }"></i>`;
+            }
+
+            // 미디어
+            let mediaHtml = '';
+            if (review.media && review.media.length > 0) {
+    mediaHtml = `<div class="flex gap-2 mt-3 overflow-x-auto pb-2 no-scrollbar">`;
+    review.media.forEach((m) => {
+        const safeUrl = String(m.url || '').replace(/'/g, "\\'");
+        const safeType = (m.type === 'video') ? 'video' : 'image';
+
+        if (m.type === 'video') {
+        mediaHtml += `
+            <video
+            src="${m.url}"
+            class="w-20 h-20 rounded-lg object-cover flex-shrink-0 border border-gray-100 bg-black cursor-pointer"
+            onclick="event.stopPropagation(); openMediaLightbox('${safeUrl}','${safeType}')"
+            muted
+            ></video>`;
+        } else {
+        mediaHtml += `
+            <img
+            src="${m.url}"
+            class="w-20 h-20 rounded-lg object-cover flex-shrink-0 border border-gray-100 cursor-pointer"
+            onclick="event.stopPropagation(); openMediaLightbox('${safeUrl}','${safeType}')"
+            />`;
+        }
+    });
+    mediaHtml += `</div>`;
+    }
+
+            const safeArticleId = review.articleId ? String(review.articleId).replace(/'/g, "\\'") : '';
+            const safePlace = (review.targetPlace || '').replace(/'/g, "\\'");
+
+            // 카드 클릭 이동
+            const clickAttr = review.articleId
+            ? `onclick="goToReviewArticle('${safeArticleId}')"`
+            : `onclick="alert('이 리뷰는 연결된 아티클 정보(articleId)가 없어 이동할 수 없습니다.');"`;
+
+            const placeBadge = review.targetPlace
+            ? `<span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded ml-2">📍 ${review.targetPlace}</span>`
+            : '';
+
+            // ✅ 수정/삭제 버튼(전파 방지)
+            const actionBtns = `
+            <div class="flex gap-2">
+                <button
+                type="button"
+                onclick="event.stopPropagation(); openWriteModal('${safePlace}', '${safeArticleId}', ${review.id})"
+                class="p-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200 transition-colors"
+                >수정</button>
+                <button
+                type="button"
+                onclick="event.stopPropagation(); deleteReview(${review.id})"
+                class="p-2 bg-gray-50 text-gray-600 text-xs font-bold rounded-lg hover:text-[#62B6FF] hover:bg-[#62B6FF]/10 transition-colors"
+                >삭제</button>
+            </div>
+            `;
+
+            list.innerHTML += `
+            <div ${clickAttr} class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm animate-fade-in relative group cursor-pointer hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start mb-2">
+                <div>
+                    <div class="flex items-center">
+                    <h4 class="font-bold text-sm text-gray-900">${review.tripTitle || '여행'}</h4>
+                    ${placeBadge}
+                    </div>
+                    <div class="flex items-center gap-1 mt-1">${starsHtml}</div>
+                </div>
+                <div class="flex flex-col items-end gap-2">
+                    <span class="text-xs text-gray-400">${review.date || ''}</span>
+                    ${actionBtns}
+                </div>
+                </div>
+
+                <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed mt-2">${review.text || ''}</p>
+                ${mediaHtml}
+            </div>
+            `;
+        });
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function openMediaLightbox(url, type) {
+            const modal = document.getElementById('media-lightbox');
+            const body = document.getElementById('media-lightbox-body');
+            if (!modal || !body) return;
+
+            body.innerHTML = '';
+
+            if (type === 'video') {
+                const v = document.createElement('video');
+                v.src = url;
+                v.controls = true;
+                v.autoplay = true;
+                v.className = 'w-full h-full object-contain bg-black';
+                body.appendChild(v);
+            } else {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'review media';
+                img.className = 'w-full h-full object-contain bg-black';
+                body.appendChild(img);
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // ESC로 닫기
+            document.addEventListener('keydown', onLightboxKeydown);
+            }
+
+            function closeMediaLightbox() {
+            const modal = document.getElementById('media-lightbox');
+            const body = document.getElementById('media-lightbox-body');
+            if (body) body.innerHTML = ''; // 영상 멈춤
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+            document.removeEventListener('keydown', onLightboxKeydown);
+            }
+
+            function onLightboxKeydown(e) {
+            if (e.key === 'Escape') closeMediaLightbox();
+            }   
 
         function openTripFromReview(tripId) {
             if (!tripId) return;
@@ -1546,42 +1837,47 @@ function openCreateReviewModal(tripId) {
         }
         function removeFavoriteFromMyPage(id) { toggleFavorite(id); renderSaved(); }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('isLoggedIn') !== 'true') {
-            showAuthModal(
-                '로그인 필요',
-                '로그인이 필요한 서비스입니다.',
-                '❗'
-            );
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
 
-            setTimeout(() => {
-                location.href = 'login.html';
-            }, 800);
-
-            return;
+            if (!session) {
+                showAuthModal('로그인 필요', '로그인이 필요한 서비스입니다.', '❗');
+                setTimeout(() => location.href = 'login.html', 800);
+                return;
             }
 
-            supabaseClient.auth.onAuthStateChange(() => {
             loadProfile();
-            });
             renderTrips();
             renderSaved();
             renderReviews();
             lucide.createIcons();
             setRating(5);
 
-            // ✅ 탭 우선순위: querystring(tab) > hash > 기본(saved)
             const tabParam = new URLSearchParams(location.search).get('tab');
             const hash = window.location.hash.replace('#', '');
-
             let targetTab = 'saved';
-
             if (tabParam === 'favorites') targetTab = 'saved';
-            else if (tabParam === 'saved' || tabParam === 'trips' || tabParam === 'reviews') targetTab = tabParam;
-            else if (hash === 'saved' || hash === 'trips' || hash === 'reviews') targetTab = hash;
-
+            else if (['saved','trips','reviews'].includes(tabParam)) targetTab = tabParam;
+            else if (['saved','trips','reviews'].includes(hash)) targetTab = hash;
             switchTab(targetTab);
             });
     </script>
+    <!-- Media Lightbox Modal -->
+    <div id="media-lightbox" class="fixed inset-0 z-[999] hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/70" onclick="closeMediaLightbox()"></div>
+
+    <div class="relative z-10 w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl">
+        <button
+        type="button"
+        onclick="closeMediaLightbox()"
+        class="absolute top-3 right-3 z-20 bg-white/10 hover:bg-white/20 text-white rounded-full px-3 py-1 text-sm font-bold"
+        >
+        닫기
+        </button>
+
+        <!-- 이미지/영상이 여기 들어감 -->
+        <div id="media-lightbox-body" class="w-full h-[70vh] flex items-center justify-center bg-black"></div>
+    </div>
+    </div>
 </body>
 </html>

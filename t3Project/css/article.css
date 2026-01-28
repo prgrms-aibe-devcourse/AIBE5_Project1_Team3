@@ -1,4 +1,12 @@
-
+:root {
+    --primary: #2563eb;
+    --secondary: #62B6FF;
+    --point: #FFD850;
+    --accent: #F1F5F9;
+}
+body {
+    background-color: var(--accent);
+}
 /* ==========================================================================
    네비게이션 바 ( index.css 에서 퍼옴 )
    ========================================================================== */
@@ -187,7 +195,7 @@
 
 /* 마우스를 올렸을 때 (Hover) */
 .btn-login:hover {
-  background-color: #2563eb !important; /* 조금 더 진한 파란색 */
+  background-color: var(--primary) !important; /* 조금 더 진한 파란색 */
   transform: translateY(-2px); /* 살짝 떠오르는 효과 */
   box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
   color: #ffffff !important;
@@ -442,7 +450,7 @@
 }
 
 .advise-prev:hover, .advise-next:hover {
-    background-color: #2563eb;
+    background-color: var(--primary);
     box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
 }
 

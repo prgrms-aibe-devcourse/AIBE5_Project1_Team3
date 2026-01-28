@@ -52,7 +52,7 @@ window.setMode = function(mode) {
         stepInput.classList.remove('hidden');
         // Update Header Text
         const backText = document.getElementById('header-back-text');
-        if (backText) backText.textContent = '게임 선택으로';
+        if (backText) backText.textContent = '룰렛 선택으로';
         
         // 찜한 목록 불러오기
         loadFavoritesIntoInputs();
@@ -128,7 +128,7 @@ function switchToGameView() {
     
     // Update Header Text
     const backText = document.getElementById('header-back-text');
-    if (backText) backText.textContent = '게임 선택으로';
+    if (backText) backText.textContent = '룰렛 선택으로';
     
     // Small delay for fade-in effect
     setTimeout(() => {
@@ -381,10 +381,10 @@ function showResult(item) {
         titleEl.textContent = item.title;
         subtitleEl.textContent = item.subtitle || item.description;
         
-        // Render Main Tags (Sky Blue)
+        // Render Main Tags
         if (item.mainTags && item.mainTags.length > 0) {
             tagsEl.innerHTML = item.mainTags.map(tag => `
-                <span class="px-3 py-1 rounded-full bg-sky-500 text-white text-xs font-bold shadow-sm border border-sky-400/50 backdrop-blur-sm">
+                <span class="px-3 py-1.5 rounded-lg bg-[#6e7662] text-white text-sm font-bold shadow-md backdrop-blur-md tracking-tight">
                     ${tag}
                 </span>
             `).join('');

@@ -14,7 +14,7 @@
 
 
 
-본 프로젝트의 분위기를 표현한 AI 생성 배경음악입니다.  [▶️ Suno에서 듣기](https://suno.com/s/s4zLD41etWcHTiw7)
+본 프로젝트의 분위기를 표현한 AI 생성 테마곡입니다.  [▶️ Suno에서 듣기](https://suno.com/s/s4zLD41etWcHTiw7)
 
 - **개발 기간 : 2026.01.23 ~ 2026.01.29 (7일)**
 - **개발 담당 :** 
@@ -27,16 +27,20 @@
 
 ### 📽️ 프로젝트 기능
 
-- 
+| 태그 필터링 |
+| ----------- |
+| AI 추천     |
+| 룰렛        |
+| 일정 관리   |
+| 후기 작성   |
+| 지도        |
 
 ### 🔧 기술 스택
 
-| 구분                      | 기술                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| FrontEnd                  | ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) |
-| AI Chat Bot               | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white) |
-| Database                  | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) |
-| Version Control / Hosting | ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
+| 구분  | 기술                                                         |
+| ----- | ------------------------------------------------------------ |
+| Skill | ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) |
+| AI    | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white)![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)![Claude](https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white)![GitHub Copilot](https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white) |
 
 ### 📂 폴더 구조 
 

@@ -930,7 +930,7 @@ const ARTICLES = [
 },
     {
     id: 'article-51',
-    imageUrl: 'https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-51.jpeg',
     title: '신촌의 매콤한 전설, 홍콩식 매운홍합',
     subtitle: '완차이에서만 맛볼 수 있는 화끈한 불맛의 향연',
     mainTags: ['홍콩음식', '매운홍합', 'AIBE5'],
@@ -950,7 +950,7 @@ const ARTICLES = [
   },
   {
     id: 'article-77',
-    imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-77.jpeg',
     title: '동대문의 밤을 수놓는 루프탑 피자 맛집',
     subtitle: '힙한 감성과 을지로의 야경을 동시에 즐기는 공간',
     mainTags: ['피맥맛집', '루프탑바', 'AIBE5'],
@@ -978,7 +978,7 @@ const ARTICLES = [
   },
   {
     id: 'article-52',
-    imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-52.jpeg',
     title: '세계가 인정한 나폴리 피자의 정석',
     subtitle: '일산에서 만나는 이탈리아 본토의 맛, 포폴로피자',
     mainTags: ['화덕피자', '일산맛집', 'AIBE5'],
@@ -998,7 +998,7 @@ const ARTICLES = [
   },
   {
     id: 'article-53',
-    imageUrl: 'https://images.unsplash.com/photo-1544124499-58912cbddaad?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-53.jpeg',
     title: '울산 대학로의 쫄깃한 뒷고기 성지',
     subtitle: '가성비와 맛을 동시에 잡은 서민의 고기집',
     mainTags: ['뒷고기', '울산맛집', 'AIBE5'],
@@ -1018,7 +1018,7 @@ const ARTICLES = [
   },
   {
     id: 'article-54',
-    imageUrl: 'https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-54.jpeg',
     title: '종로 골목의 마늘 가득 원조 닭볶음탕',
     subtitle: '50년 세월이 녹아든 알싸하고 진한 국물 맛',
     mainTags: ['닭볶음탕', '종로맛집', 'AIBE5'],
@@ -1038,7 +1038,7 @@ const ARTICLES = [
   },
   {
     id: 'article-55',
-    imageUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-55.jpeg',
     title: '용인의 향기로운 플라워 카페 휴식처',
     subtitle: '꽃과 커피가 어우러진 도심 속 작은 정원',
     mainTags: ['용인카페', '플라워카페', 'AIBE5'],
@@ -1058,7 +1058,7 @@ const ARTICLES = [
   },
   {
     id: 'article-56',
-    imageUrl: 'https://images.unsplash.com/photo-1544124499-58912cbddaad?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-56.jpeg',
     title: '부평의 쫄깃한 막창 구이 전문점',
     subtitle: '숯불 향이 살아있는 인생 막창 맛집',
     mainTags: ['부평맛집', '숯불막창', 'AIBE5'],
@@ -1078,7 +1078,7 @@ const ARTICLES = [
   },
   {
     id: 'article-78',
-    imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-78.jpeg',
     title: '광주에서 만나는 정통 멕시칸의 풍미',
     subtitle: '전대후문을 사로잡은 힙한 타코 전문점',
     mainTags: ['타코맛집', '전대후문', 'AIBE5'],
@@ -1106,7 +1106,7 @@ const ARTICLES = [
   },
   {
     id: 'article-57',
-    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-57.jpeg',
     title: '부천의 합리적인 명품 스시 전문점',
     subtitle: '신선한 재료와 정통 장인의 손맛이 깃든 초밥',
     mainTags: ['부천초밥', '스시맛집', 'AIBE5'],
@@ -1126,7 +1126,7 @@ const ARTICLES = [
   },
   {
     id: 'article-58',
-    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-58.jpeg',
     title: '천안 불당동의 유럽풍 감성 베이커리',
     subtitle: '건강한 재료로 매일 굽는 향긋한 빵의 세계',
     mainTags: ['천안카페', '베이커리', 'AIBE5'],
@@ -1146,7 +1146,7 @@ const ARTICLES = [
   },
   {
     id: 'article-59',
-    imageUrl: 'https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-59.jpeg',
     title: '군산의 자부심, 깊은 국물의 명품 면요리',
     subtitle: '나운동 주민들이 아끼는 전통의 맛집',
     mainTags: ['군산맛집', '고래면옥', 'AIBE5'],
@@ -1166,7 +1166,7 @@ const ARTICLES = [
   },
   {
     id: 'article-60',
-    imageUrl: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-60.jpeg',
     title: '전주 덕진구의 아늑한 집밥 감성 식당',
     subtitle: '추억을 떠올리게 하는 정성 가득한 한 상',
     mainTags: ['전주맛집', '가정식', 'AIBE5'],
@@ -1186,7 +1186,7 @@ const ARTICLES = [
   },
   {
     id: 'article-61',
-    imageUrl: 'https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-61.jpeg',
     title: '영등포를 대표하는 70년 전통 중식당',
     subtitle: '고추짬뽕의 전설, 백종원이 인정한 송죽장',
     mainTags: ['영등포맛집', '중화요리', 'AIBE5'],
@@ -1206,7 +1206,7 @@ const ARTICLES = [
   },
   {
     id: 'article-62',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-62.jpeg',
     title: '인천 신포동의 품격 있는 정통 중식당',
     subtitle: '100년 역사를 이어가는 화상 중식의 진수',
     mainTags: ['인천맛집', '정통중식', 'AIBE5'],
@@ -1226,7 +1226,7 @@ const ARTICLES = [
   },
   {
     id: 'article-63',
-    imageUrl: 'https://images.unsplash.com/photo-1617196034183-421b4917c92d?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-63.jpeg',
     title: '김천에서 만나는 정갈한 일본식 가정식',
     subtitle: '정성을 담은 한 그릇으로 전하는 따뜻한 응원',
     mainTags: ['김천맛집', '일본가정식', 'AIBE5'],
@@ -1246,7 +1246,7 @@ const ARTICLES = [
   },
   {
     id: 'article-64',
-    imageUrl: 'https://images.unsplash.com/photo-1569058242253-92a9c73f49bc?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-64.jpeg',
     title: '평양냉면의 명가, 역사가 살아있는 우래옥',
     subtitle: '진한 육향과 메밀의 풍미가 어우러진 최고의 평냉',
     mainTags: ['평양냉면', '을지로맛집', 'AIBE5'],
@@ -1266,7 +1266,7 @@ const ARTICLES = [
   },
   {
     id: 'article-65',
-    imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-65.jpeg',
     title: '대전의 문화가 된 빵의 성지, 성심당',
     subtitle: '튀김소보로와 부추빵으로 전국을 사로잡은 명소',
     mainTags: ['대전맛집', '성심당', 'AIBE5'],
@@ -1286,7 +1286,7 @@ const ARTICLES = [
   },
   {
     id: 'article-66',
-    imageUrl: 'https://images.unsplash.com/photo-1594970544991-6ef70e8cb830?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-66.jpeg',
     title: '수원천변에서 즐기는 바삭한 옛날 돈까스',
     subtitle: '추억의 경양식 소스와 두툼한 고기의 완벽한 만남',
     mainTags: ['수원맛집', '옛날돈까스', 'AIBE5'],
@@ -1306,7 +1306,7 @@ const ARTICLES = [
   },
   {
     id: 'article-67',
-    imageUrl: 'https://images.unsplash.com/photo-1563245159-f793f19d8c37?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-67.jpeg',
     title: '용인 수지의 중식 성지, 미가훠궈양고기',
     subtitle: '화려한 중국 현지의 맛과 압도적인 분위기',
     mainTags: ['수지맛집', '훠궈양고기', 'AIBE5'],
@@ -1326,7 +1326,7 @@ const ARTICLES = [
   },
   {
     id: 'article-68',
-    imageUrl: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-68.jpeg',
     title: '영등포의 숨은 보석, 정통 중화요리 복만루',
     subtitle: '가성비와 내공을 겸비한 로컬 중식의 정수',
     mainTags: ['영등포중식', '가성비맛집', 'AIBE5'],
@@ -1346,7 +1346,7 @@ const ARTICLES = [
   },
   {
     id: 'article-69',
-    imageUrl: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-69.jpeg',
     title: '부산의 이색적인 라멘 명소, 쿠지라스토랑',
     subtitle: '고래의 꿈을 담은 특별한 일본식 라멘의 세계',
     mainTags: ['부산맛집', '일본라멘', 'AIBE5'],
@@ -1366,7 +1366,7 @@ const ARTICLES = [
   },
   {
     id: 'article-70',
-    imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-70.jpeg',
     title: '일산 성석동의 베이커리 명소, 골드핸즈',
     subtitle: '장인의 손길로 구워낸 달콤한 디저트와 향기로운 커피',
     mainTags: ['일산카페', '디저트맛집', 'AIBE5'],
@@ -1386,7 +1386,7 @@ const ARTICLES = [
   },
   {
     id: 'article-71',
-    imageUrl: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-71.jpeg',
     title: '강릉 초당동의 흑임자 라떼 성지, 툇마루',
     subtitle: '기다림조차 즐거워지는 마성의 고소함',
     mainTags: ['강릉카페', '흑임자라떼', 'AIBE5'],
@@ -1406,7 +1406,7 @@ const ARTICLES = [
   },
   {
     id: 'article-72',
-    imageUrl: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-72.jpeg',
     title: '신촌에서 즐기는 정통 미국식 파이, 파이홀',
     subtitle: '매일 직접 굽는 바삭한 파이와 달콤한 크림의 향연',
     mainTags: ['신촌카페', '파이맛집', 'AIBE5'],
@@ -1426,7 +1426,7 @@ const ARTICLES = [
   },
   {
     id: 'article-73',
-    imageUrl: 'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-73.jpeg',
     title: '동탄에서 맛보는 아메리칸 스타일 피자앨리',
     subtitle: '풍부한 토핑과 쫄깃한 도우가 선사하는 피자의 정석',
     mainTags: ['동탄맛집', '피자앨리', 'AIBE5'],
@@ -1446,7 +1446,7 @@ const ARTICLES = [
   },
   {
     id: 'article-74',
-    imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-74.jpeg',
     title: '옥수동의 숨은 미식 공간, 수울래',
     subtitle: '전통주와 정갈한 요리가 어우러지는 다이닝 바',
     mainTags: ['옥수동맛집', '전통주바', 'AIBE5'],
@@ -1466,7 +1466,7 @@ const ARTICLES = [
   },
   {
     id: 'article-75',
-    imageUrl: 'https://images.unsplash.com/photo-1610614819513-58e34989848b?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-75.jpeg',
     title: '종로의 정겨운 칼국수와 보쌈 대련집',
     subtitle: '두툼한 수육과 진한 사골 국물의 칼국수가 주는 행복',
     mainTags: ['종로맛집', '보쌈맛집', 'AIBE5'],
@@ -1486,7 +1486,7 @@ const ARTICLES = [
   },
   {
     id: 'article-76',
-    imageUrl: 'https://images.unsplash.com/photo-1542820229-081e0c12af0b?auto=format&fit=crop&q=80&w=1000',
+    imageUrl: '../article_picture/article-76.jpeg',
     title: '가톨릭의 심장, 경이로운 성 베드로 대성전',
     subtitle: '르네상스 예술의 정수와 영적 감동이 공존하는 곳',
     mainTags: ['바티칸', '관광명소', 'AIBE5'],
@@ -1506,7 +1506,7 @@ const ARTICLES = [
   },
   {
         id: 'article-80',
-        title: '독도',
+        title: '대한민국 가장 동쪽에 위치한 섬, 독도',
         subtitle: '대한민국의 아름다운 영토',
         name: '독도',
         description: '독도는 동해의 해저 지형 중 울릉분지의 북쪽 가장자리에 형성된 화산섬입니다. 천연기념물 제336호로 지정되어 있으며, 역사적, 지리적, 국제법적으로 명백한 대한민국의 고유 영토입니다.',

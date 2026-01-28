@@ -37,13 +37,13 @@ body {
 
 /* 2. 마우스를 올렸을 때 (Hover) */
 .nav-item:hover {
-  color: #3b82f6 !important;
+  color: var(--secondary) !important;
   transform: translateY(-3px) scale(1.05);
 }
 
 /* 3. 아이콘에도 색상 변화 같이 적용 */
 .nav-item:hover .nav-icon {
-  stroke: #3b82f6 !important;
+  stroke: var(--secondary) !important;
   filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.2));
 }
 
@@ -293,7 +293,7 @@ body {
 .tag-toggle {
     background: none;
     border: none;
-    color: #3b82f6;
+    color: var(--secondary);
     cursor: pointer;
     padding: 0.5rem;
     display: flex;
@@ -305,7 +305,7 @@ body {
 }
 
 .tag-toggle i {
-    color: #3b82f6;
+    color: var(--secondary);
     transition: transform 0.35s ease, color 0.35s ease, stroke 0.35s ease;
 }
 

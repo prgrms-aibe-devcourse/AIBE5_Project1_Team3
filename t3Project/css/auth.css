@@ -81,3 +81,33 @@
     border-color: var(--primary);
     background-color: var(--white);
 }
+
+/* auth.css */
+
+/* 1. 로그인 버튼 색상 강제 변경 */
+#btn-submit {
+    background-color: #2563EB !important; /* 검정색에서 블루로 */
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39) !important;
+}
+
+#btn-submit:hover {
+    background-color: #1d4ed8 !important; /* 호버 시 약간 더 어두운 블루 */
+}
+
+/* 2. 이메일/비밀번호 입력창 포커스(클릭) 색상 변경 */
+#form-auth input:focus {
+    border-color: #2563EB !important; /* 검정 테두리에서 블루로 */
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* 3. '회원가입' 및 '홈' 아이콘 호버 색상 변경 */
+#btn-switch-mode:hover, 
+.auth-box a:hover {
+    color: #2563EB !important;
+}
+
+/* 4. 제목 '여기저기' 로고 색상 강조 (선택사항) */
+.auth-box h1 {
+    color: #2563EB;
+}

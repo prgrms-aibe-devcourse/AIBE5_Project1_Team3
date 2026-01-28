@@ -285,10 +285,10 @@ function setLoading(isLoading) {
 function handleExtraction(tripData) {
     window.latestTripData = tripData; // 임시 보관
     if(tripData.title !== ""){
-        showSaveButton();
+
     }
 }
-
+        showSaveButton();
 function showSaveButton() {
     // 기존 버튼 있으면 제거
     const existing = document.querySelector(".save-btn");
@@ -331,10 +331,10 @@ function dispatchPlanToParent(tripData) {
     localStorage.setItem("myTrips", JSON.stringify(trips));
 
     console.log("[AI] 일정 저장완료 :", data)
-    parent.emitUI("toast" ,"[쪼꼬마이] 추천일정 저장완료!");
+
 }
 
-
+    parent.emitUI("toast" ,"[쪼꼬마이] 추천일정 저장완료!");
 
 // memo 생성 로직
 function updateTripMemo(location, theme, selectedPlaces) {

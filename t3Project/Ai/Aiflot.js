@@ -81,7 +81,7 @@ window.showToast = function(msg) {
     toast.style.position = "fixed";
     toast.style.bottom = "640px";
     toast.style.right = "40px";
-    toast.style.background = "#4B9DA9";
+    toast.style.background = "#2563EB";
     toast.style.color = "white";
     toast.style.padding = "10px 16px";
     toast.style.borderRadius = "12px";
@@ -101,8 +101,8 @@ window.showToast = function(msg) {
     btn.style.borderRadius = "8px";
     btn.style.border = "none";
     btn.style.cursor = "pointer";
-    btn.style.background = "#E37434";
-    btn.style.color = "white";
+    btn.style.background = "#FFD850";
+    btn.style.color = "#000";
 
     btn.onclick = () => toast.remove();
 

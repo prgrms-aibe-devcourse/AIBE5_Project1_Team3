@@ -44,14 +44,16 @@ body {
     line-height: 1.5;
 }
 
+/* 유저 메세지 색상 */
 .message.user .message-bubble {
-    background-color: #4B9DA9;
+    background-color: #2563EB;
     color: white;
     border-bottom-right-radius: 2px;
 }
 
+/* AI 메세지 색상 */
 .message.ai .message-bubble {
-    background-color: #e2e6ea;
+    background-color: #ffd950ab;
     color: #333;
     border-bottom-left-radius: 2px;
 }
@@ -79,10 +81,11 @@ body {
     outline: none;
 }
 
+/* 메세지 전송 버튼 색상 */
 .input-container button {
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #4B9DA9;
+    background-color: #2563EB;
     color: white;
     border: none;
     border-radius: 20px;
@@ -93,7 +96,7 @@ body {
 /* 로딩 애니메이션 */
 .loading-spinner {
     border: 3px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #81BFDA;
+    border-left-color: #2563EB;
     border-radius: 50%;
     width: 16px;
     height: 16px;
@@ -110,7 +113,7 @@ body {
 .save-btn {
     margin-top: 0px;
     padding: 10px 16px;
-    background: linear-gradient(135deg, #91C6BC, #4B9DA9);
+    background: linear-gradient(135deg, #62B6FF, #2563EB);
     color: white;
     border: none;
     border-radius: 10px;
@@ -124,7 +127,7 @@ body {
 .save-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(79, 124, 255, 0.35);
-    background: linear-gradient(135deg, #4B9DA9, #91C6BC);
+    background: linear-gradient(135deg, #2563EB, #62B6FF);
 }
 
 .save-btn:active {

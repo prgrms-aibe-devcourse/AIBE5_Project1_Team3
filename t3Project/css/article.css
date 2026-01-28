@@ -1,4 +1,3 @@
-
 /* ==========================================================================
    네비게이션 바 ( index.css 에서 퍼옴 )
    ========================================================================== */
@@ -582,3 +581,80 @@
 /* ==========================================================================
    추천 여행지 관련 끝
    ========================================================================== */
+
+/* ==========================================================================
+   Floating Like / Share Buttons
+   ========================================================================== */
+
+/* 컨테이너 */
+.floating-actions {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 3000;
+}
+
+/* 버튼 공통 */
+.floating-actions button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* hover */
+.floating-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+/* 아이콘 기본 상태 */
+#floating-like-btn svg,
+#floating-share-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: #111827;
+    fill: none;
+}
+
+/* ===============================
+   ❤️ 좋아요 버튼 (핵심)
+   =============================== */
+
+/*
+ lucide heart는 path에 fill="none"이 직접 들어있기 때문에
+ active 상태에서 path를 명시적으로 채워야 한다
+*/
+
+/* 활성화 색상 소스 */
+#floating-like-btn.active {
+    color: #ef4444;
+}
+
+/* 테두리 */
+#floating-like-btn.active svg {
+    stroke: currentColor;
+}
+
+/* 🔥 실제 채움 */
+#floating-like-btn.active svg path {
+    fill: #ef4444 !important;
+    stroke: #ef4444 !important;
+}
+
+/* ===============================
+   🔗 공유 버튼
+   =============================== */
+#floating-share-btn svg {
+    stroke: #111827;
+}

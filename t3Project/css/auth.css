@@ -82,32 +82,36 @@
     background-color: var(--white);
 }
 
-/* auth.css */
+/* auth.css - 일관성 있는 블루 테마 적용 */
 
-/* 1. 로그인 버튼 색상 강제 변경 */
-#btn-submit {
-    background-color: #2563EB !important; /* 검정색에서 블루로 */
+/* 1. 모든 주요 버튼 (로그인, 비밀번호 변경 등) 색상 통일 */
+#btn-submit, #btn-send, #btn-update {
+    background-color: #3b82f6 !important; /* 모달 버튼과 동일한 블루 */
     color: #ffffff !important;
-    box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39) !important;
+    border: none;
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3) !important;
+    transition: all 0.2s ease;
 }
 
-#btn-submit:hover {
-    background-color: #1d4ed8 !important; /* 호버 시 약간 더 어두운 블루 */
+#btn-submit:hover, #btn-send:hover, #btn-update:hover {
+    background-color: #2563eb !important; /* 호버 시 약간 진하게 */
+    transform: translateY(-1px);
 }
 
-/* 2. 이메일/비밀번호 입력창 포커스(클릭) 색상 변경 */
-#form-auth input:focus {
-    border-color: #2563EB !important; /* 검정 테두리에서 블루로 */
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+/* 2. 입력창 포커스(클릭) 테두리 색상 통일 */
+#form-auth input:focus, 
+#forgot-form input:focus, 
+#reset-form input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    outline: none;
 }
 
-/* 3. '회원가입' 및 '홈' 아이콘 호버 색상 변경 */
+/* 3. '회원가입' 링크나 '뒤로가기' 아이콘 호버 색상 */
 #btn-switch-mode:hover, 
-.auth-box a:hover {
-    color: #2563EB !important;
+.auth-box a:hover,
+.absolute.top-6.left-6:hover {
+    color: #3b82f6 !important;
 }
 
-/* 4. 제목 '여기저기' 로고 색상 강조 (선택사항) */
-.auth-box h1 {
-    color: #2563EB;
-}
+/* 4. (선택) 모달창 확인 버튼도 이 클래스를 따르게 하거나 직접 수정 */

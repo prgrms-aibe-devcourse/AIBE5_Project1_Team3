@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지 - 여기저기</title>
+    <title>여기저기 : 마이페이지</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -173,7 +173,8 @@
 
         <!-- Tab 1: Saved -->
         <div id="tab-saved" class="tab-content active">
-            <div class="flex justify-between items-center mb-4 sticky top-28 bg-gray-50/90 backdrop-blur z-20 p-3 rounded-xl border border-gray-100 shadow-sm">
+            <div class="flex justify-between items-center mb-4 bg-gray-50/90 backdrop-blur p-3 rounded-xl border border-gray-100 shadow-sm">
+
                 <p class="text-xs text-gray-500 pl-1" id="selection-guide-text">마음에 드는 여행지로 일정을 만들어보세요.</p>
                 
                 <div class="flex gap-2">
@@ -297,7 +298,7 @@
     </div>
 
     <div id="create-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeCreateModal()"></div>
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
         <div class="bg-white w-full max-w-5xl rounded-3xl p-6 md:p-8 z-10 relative animate-slide-up h-[90vh] flex flex-col">
             
             <div class="flex justify-between items-center mb-6 flex-shrink-0">
@@ -439,41 +440,118 @@
 
         // --- 1. Data Reset Logic ---
         function resetAllData() {
-            if(confirm('모든 찜한 목록과 여행 일정을 삭제하시겠습니까?\n(데이터 버전 불일치 해결용)')) {
+            showConfirmModal(
+                '데이터 초기화',
+                '모든 찜한 목록과 여행 일정을 삭제하시겠습니까?\n(데이터 버전 불일치 해결용)',
+                () => {
                 localStorage.removeItem('myTrips');
                 localStorage.removeItem('myReviews');
                 localStorage.removeItem('favorites');
-                alert('초기화되었습니다. 다시 찜하기를 시도해주세요.');
+
+                showAuthModal('초기화 완료', '초기화되었습니다. 다시 찜하기를 시도해주세요.', '✅');
                 location.reload();
+                },
+                '⚠️'
+            );
             }
-        }
 
         // --- 2. Settings & Profile Logic ---
         let currentAvatarSeed = 'Felix';
         const defaultProfile = { name: '여행하는 김철수', email: 'traveler_kim@example.com', bio: '여행은 나를 찾는 여정', avatarSeed: 'Felix' };
 
-        function loadProfile() {
-            const profile = JSON.parse(localStorage.getItem('userProfile')) || defaultProfile;
-            const nameEl = document.getElementById('profile-name');
-            if(nameEl) {
-                document.getElementById('profile-name').textContent = profile.name;
-                document.getElementById('profile-email').textContent = profile.email;
-                document.getElementById('profile-bio').textContent = profile.bio;
-                document.getElementById('profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatarSeed}`;
+        function getProfileKey(userId) {
+        return `userProfile:${userId}`;
+        }
+
+        async function loadProfile() {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        if (error || !user) return;
+
+        const key = getProfileKey(user.id);
+        const local = JSON.parse(localStorage.getItem(key) || 'null');
+
+        const email = user.email || '';
+        const md = user.user_metadata || {};
+
+        const baseName =
+            md.full_name || md.name || (email ? email.split('@')[0] : '사용자');
+
+        // 로컬 편집값이 있으면 그걸 우선 사용
+        const name = local?.name ?? baseName;
+        const bio = local?.bio ?? (md.bio ?? '프로필을 편집해보세요');
+        const avatarSeed = local?.avatarSeed ?? (name || 'seed');
+
+        document.getElementById('profile-name').textContent = name;
+        document.getElementById('profile-email').textContent = email;
+        document.getElementById('profile-bio').textContent = bio;
+        const avatarUrl =
+        local?.avatarUrl ||
+        md.avatar_url ||
+        md.picture ||
+        `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`;
+
+        document.getElementById('profile-img').src = avatarUrl;
+
+        currentAvatarSeed = avatarSeed;
+        }
+        async function openProfileModal() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return;
+
+            const key = getProfileKey(user.id);
+            const local = JSON.parse(localStorage.getItem(key) || 'null');
+
+            const email = user.email || '';
+            const md = user.user_metadata || {};
+            const baseName = md.full_name || md.name || (email ? email.split('@')[0] : '사용자');
+
+            const name = local?.name ?? baseName;
+            const bio = local?.bio ?? '';
+            const avatarSeed = local?.avatarSeed ?? (name || 'seed');
+
+            // ✅ 메인과 동일한 아바타 결정 로직
+            const avatarUrl =
+                local?.avatarUrl ||
+                md.avatar_url ||
+                md.picture ||
+                `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`;
+
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-bio').value = bio;
+            document.getElementById('edit-email').value = email;
+            document.getElementById('edit-profile-img').src = avatarUrl;
+
+            currentAvatarSeed = avatarSeed;
+
+            document.getElementById('profile-modal').classList.remove('hidden');
+            document.getElementById('profile-modal').classList.add('flex');
             }
-            currentAvatarSeed = profile.avatarSeed;
-        }
-        function openProfileModal() {
-            const profile = JSON.parse(localStorage.getItem('userProfile')) || defaultProfile;
-            document.getElementById('edit-name').value = profile.name; document.getElementById('edit-email').value = profile.email; document.getElementById('edit-bio').value = profile.bio; document.getElementById('edit-profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatarSeed}`;
-            document.getElementById('profile-modal').classList.remove('hidden'); document.getElementById('profile-modal').classList.add('flex');
-        }
         function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); document.getElementById('profile-modal').classList.remove('flex'); }
-        function saveProfile(e) { e.preventDefault(); const newProfile = { name: document.getElementById('edit-name').value, email: document.getElementById('edit-email').value, bio: document.getElementById('edit-bio').value, avatarSeed: currentAvatarSeed }; localStorage.setItem('userProfile', JSON.stringify(newProfile)); loadProfile(); closeProfileModal(); alert('프로필이 저장되었습니다.'); }
+        async function saveProfile(e) {
+            e.preventDefault();
+
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) return;
+
+            const key = getProfileKey(user.id);
+
+            const newProfile = {
+                name: document.getElementById('edit-name').value,
+                bio: document.getElementById('edit-bio').value,
+                avatarSeed: currentAvatarSeed
+            };
+
+            localStorage.setItem(key, JSON.stringify(newProfile));
+            await loadProfile();
+            closeProfileModal();
+            showAuthModal('저장 완료', '프로필이 저장되었습니다.', '✅');
+            }
+
         function refreshAvatar() { currentAvatarSeed = Math.random().toString(36).substring(7); document.getElementById('edit-profile-img').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentAvatarSeed}`; }
         
         // --- 3. Tab Logic ---
         function switchTab(tabId) {
+             if (tabId === 'favorites') tabId = 'saved'; // ✅ alias 방어
             document.querySelectorAll('.tab-btn').forEach(btn => { const isActive = btn.dataset.tab === tabId; btn.dataset.active = isActive; btn.classList.toggle('text-black', isActive); btn.classList.toggle('text-gray-400', !isActive); });
             const line = document.getElementById('tab-line'); 
             if(tabId === 'saved') line.style.left = '0%'; 
@@ -523,13 +601,15 @@
                         `<div class="flex gap-1 relative z-20">
                             <button type="button"
                                 onclick="event.stopPropagation(); openEditModal('${trip.id}')"
-                                class="p-2 bg-gray-100 rounded-full text-gray-500 hover:text-black hover:bg-gray-200 transition-colors">
-                                <i data-lucide="pencil" width="16"></i>
+                                class="p-2 bg-gray-100 rounded-full font-bold rounded-lg text-gray-500 text-xs hover:text-black hover:bg-gray-200 transition-colors">
+                                수정
                             </button>
+
+                            
                             <button type="button"
                                 onclick="event.stopPropagation(); deleteTrip(${index})"
-                                class="p-2 bg-gray-100 rounded-full text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors">
-                                <i data-lucide="trash-2" width="16"></i>
+                                class="p-2 bg-gray-100 rounded-full font-bold rounded-lg text-gray-500 text-xs hover:text-red-500 hover:bg-red-50 transition-colors">
+                                삭제
                             </button>
                         </div>`;
                 }
@@ -551,9 +631,13 @@
         // [수정됨] 일정 생성 함수 (완료 후 모드 해제)
         function generateTripFromSelection() {
             const checkboxes = document.querySelectorAll('.saved-item-checkbox:checked');
-            if(checkboxes.length === 0) { 
-                alert('일정에 추가할 장소를 최소 1개 이상 선택해주세요.'); 
-                return; 
+            if (checkboxes.length === 0) { 
+            showAuthModal(
+                '선택 필요',
+                '일정에 추가할 장소를 최소 1개 이상 선택해주세요.',
+                '❗'
+            );
+            return;
             }
 
             // ... (기존 데이터 처리 로직 동일) ...
@@ -903,7 +987,7 @@
                 const index = trips.findIndex(t => t.id === editId); 
                 if(index !== -1) { 
                     trips[index] = { ...trips[index], ...tripData }; 
-                    alert('일정이 수정되었습니다.'); 
+                    showAuthModal('수정 완료', '일정이 수정되었습니다.', '✅');
                 } 
             } else { 
                 trips.push({ id: Date.now().toString(), ...tripData }); 
@@ -914,7 +998,14 @@
             renderTrips(); 
             e.target.reset();
         }
-        function deleteTrip(index) { if(confirm('일정을 삭제하시겠습니까?')) { const trips = getTrips(); trips.splice(index, 1); localStorage.setItem('myTrips', JSON.stringify(trips)); renderTrips(); } }
+        function deleteTrip(index) {
+            showConfirmModal('일정 삭제', '일정을 삭제하시겠습니까?', () => {
+                const trips = getTrips();
+                trips.splice(index, 1);
+                localStorage.setItem('myTrips', JSON.stringify(trips));
+                renderTrips();
+            }, '🗑️');
+            }
 
         
         // ✅ [ADD] 전역 변수 1개 추가
@@ -922,11 +1013,11 @@
 
         // ✅ [ADD] 아티클 상세로 이동 헬퍼
         function goToReviewArticle(articleId) {
-            if (!articleId) {
-                alert('연결된 아티클 정보를 찾을 수 없습니다.');
-                return;
+        if (!articleId) {
+            showAuthModal('이동 불가', '연결된 아티클 정보를 찾을 수 없습니다.', '⚠️');
+            return;
             }
-            location.href = `article.html?id=${encodeURIComponent(articleId)}#reviews`;
+        location.href = `article.html?id=${encodeURIComponent(articleId)}#reviews`;
         }
 
         // --- 6. Review Logic (Updated: articleId 연결) ---
@@ -1061,15 +1152,14 @@ function openCreateReviewModal(tripId) {
     }
 }
 
-function completeAllReviewsAndClose() {
-    // 여기서는 “닫기”만. 원하면 완료 처리 로직(예: trip에 flag 저장)도 추가 가능
+    function completeAllReviewsAndClose() {
     closeReviewListModal();
-    alert('모든 장소 후기가 작성되었습니다.');
-}
+    showAuthModal('완료', '모든 장소 후기가 작성되었습니다.', '✅');
+    }
 
 
         // ✅ [REPLACE] 2단계: 글쓰기 모달 열기 (placeName + articleId를 전역에 저장)
-function openWriteModal(placeName, articleId, reviewId) {
+    function openWriteModal(placeName, articleId, reviewId) {
     targetPlaceTitle = placeName;
     currentReviewArticleId = articleId;   // ✅ 핵심
     editingReviewId = reviewId;
@@ -1108,7 +1198,10 @@ function openWriteModal(placeName, articleId, reviewId) {
     // ✅ [REPLACE] 리뷰 저장 (articleId 같이 저장)
     function submitReview() {
         const text = document.getElementById('review-text').value;
-        if (!text) return alert('내용을 입력해주세요.');
+        if (!text) {
+            showAuthModal('입력 필요', '내용을 입력해주세요.', '✏️');
+            return;
+            }
 
         let reviews = getMyReviews();
 
@@ -1139,7 +1232,7 @@ function openWriteModal(placeName, articleId, reviewId) {
         }
 
         localStorage.setItem('myReviews', JSON.stringify(reviews));
-        alert('후기가 저장되었습니다.');
+        showAuthModal('저장 완료', '후기가 저장되었습니다.', '✅');
         closeReviewModal();
 
         // 목록 모달 갱신 (상태 업데이트)
@@ -1266,15 +1359,15 @@ function openWriteModal(placeName, articleId, reviewId) {
             if (!articleId) return;
             location.href = `article.html?id=${encodeURIComponent(articleId)}`;
         }
-        function deleteReview(id) { 
-            if(confirm('정말 이 후기를 삭제하시겠습니까?')) { 
-                let reviews = getMyReviews(); 
-                reviews = reviews.filter(r => r.id !== id); 
-                localStorage.setItem('myReviews', JSON.stringify(reviews)); 
-                renderReviews(); 
-                renderTrips(); // 버튼 상태 갱신
-            } 
-        }
+        function deleteReview(id) {
+            showConfirmModal('후기 삭제', '정말 이 후기를 삭제하시겠습니까?', () => {
+                let reviews = getMyReviews();
+                reviews = reviews.filter(r => r.id !== id);
+                localStorage.setItem('myReviews', JSON.stringify(reviews));
+                renderReviews();
+                renderTrips();
+                }, '🗑️');
+            }
         
         function openEditReviewModal(reviewId) { 
             const reviews = getMyReviews(); 
@@ -1385,29 +1478,34 @@ function openWriteModal(placeName, articleId, reviewId) {
                     const cardClass = isChecked ? 'group relative rounded-xl overflow-hidden aspect-[4/3] cursor-pointer shadow-sm border border-gray-100 transition-all hover:shadow-md card-selected' : 'group relative rounded-xl overflow-hidden aspect-[4/3] cursor-pointer shadow-sm border border-gray-100 transition-all hover:shadow-md';
 
                     grid.innerHTML += `
-                    <div id="card-${item.id}" onclick="onCardClick('${item.id}')" class="${cardClass}">
-                        
-                        <!-- [Hidden] 체크박스 (상태 유지 위해 checked 속성 추가 가능하나, JS로 제어됨) -->
-                        <input type="checkbox" id="cb-${item.id}" class="saved-item-checkbox" data-id="${item.id}"> 
+                    <div id="card-${item.id}" onclick="onCardClick('${item.id}')" class="${cardClass} relative overflow-hidden isolate">
+                    <input type="checkbox" id="cb-${item.id}" class="saved-item-checkbox" data-id="${item.id}">
 
-                        <div class="absolute top-3 right-3 z-30" style="display: ${deleteBtnDisplay};">
-                            <button onclick="event.stopPropagation(); removeFavoriteFromMyPage('${item.id}')" class="bg-black/30 backdrop-blur p-2 rounded-full text-white hover:bg-red-500 transition-colors shadow-sm">
-                                <i data-lucide="x" width="16"></i>
-                            </button>
-                        </div>
+                    <div class="w-full h-full relative">
+                    <button
+                        type="button"
+                        style="display:${deleteBtnDisplay};"
+                        onclick="event.stopPropagation(); removeFavoriteFromMyPage('${item.id}')"
+                        class="absolute top-3 right-3 z-[999] bg-black/30 backdrop-blur p-2 rounded-full text-white hover:bg-red-500 transition-colors shadow-sm"
+                    >
+                        <i data-lucide="x" width="16" height="16"></i>
+                    </button>
 
-                        <div class="w-full h-full relative">
-                            <img src="${item.imageUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-                            
-                            <div class="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
-                                <span class="inline-block px-2 py-0.5 rounded-md bg-black/30 backdrop-blur-sm text-[10px] font-bold mb-1 border border-white/20">${category}</span>
-                                <h4 class="font-bold text-sm leading-tight line-clamp-2 drop-shadow-md">${item.title}</h4>
-                            </div>
-                        </div>
-                    </div>`; 
+                    <img src="${item.imageUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+
+                    <div class="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
+                        <span class="inline-block px-2 py-0.5 rounded-md bg-black/30 backdrop-blur-sm text-[10px] font-bold mb-1 border border-white/20">${category}</span>
+                        <h4 class="font-bold text-sm leading-tight line-clamp-2 drop-shadow-md">${item.title}</h4>
+                    </div>
+                    </div>
+                </div>
+                `;
+
                 }); 
+                if (window.lucide) {
                 lucide.createIcons();
+                }
             }
         }
         // [New] 통합 카드 클릭 핸들러 (선택/이동 분기)
@@ -1449,10 +1547,41 @@ function openWriteModal(placeName, articleId, reviewId) {
         function removeFavoriteFromMyPage(id) { toggleFavorite(id); renderSaved(); }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('isLoggedIn') !== 'true') { alert('로그인이 필요한 서비스입니다.'); location.href = 'login.html'; return; }
-            loadProfile(); renderTrips(); renderSaved(); renderReviews(); lucide.createIcons(); setRating(5); 
-            const hash = window.location.hash.replace('#', ''); if(['trips', 'saved', 'reviews'].includes(hash)) switchTab(hash); else switchTab('saved');
-        });
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+            showAuthModal(
+                '로그인 필요',
+                '로그인이 필요한 서비스입니다.',
+                '❗'
+            );
+
+            setTimeout(() => {
+                location.href = 'login.html';
+            }, 800);
+
+            return;
+            }
+
+            supabaseClient.auth.onAuthStateChange(() => {
+            loadProfile();
+            });
+            renderTrips();
+            renderSaved();
+            renderReviews();
+            lucide.createIcons();
+            setRating(5);
+
+            // ✅ 탭 우선순위: querystring(tab) > hash > 기본(saved)
+            const tabParam = new URLSearchParams(location.search).get('tab');
+            const hash = window.location.hash.replace('#', '');
+
+            let targetTab = 'saved';
+
+            if (tabParam === 'favorites') targetTab = 'saved';
+            else if (tabParam === 'saved' || tabParam === 'trips' || tabParam === 'reviews') targetTab = tabParam;
+            else if (hash === 'saved' || hash === 'trips' || hash === 'reviews') targetTab = hash;
+
+            switchTab(targetTab);
+            });
     </script>
 </body>
 </html>

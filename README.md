@@ -4,13 +4,17 @@
 
 <h3 align="center"> 태그 선택만으로 개인 맞춤 여행지를 추천해주는, AI 기반 여행 계획 플랫폼. </h3>
 
-### 🦖 프로젝트 소개 
+## 🦖 프로젝트 소개 
 
 여행 정보는 넘치지만, 어디를 가야 할지 결정하기는 점점 어려워지고 있습니다.   
 
 ‘여기저기’는 막막한 여행 계획 과정을 **태그 선택과 AI 추천**으로 단순화하여,  
 
 누구나 부담 없이 여행을 시작할 수 있도록 돕는 서비스입니다.
+
+
+
+본 프로젝트의 분위기를 표현한 AI 생성 배경음악입니다.  [▶️ Suno에서 듣기](https://suno.com/s/s4zLD41etWcHTiw7)
 
 - **개발 기간 : 2026.01.23 ~ 2026.01.29 (7일)**
 - **개발 담당 :** 
@@ -21,13 +25,71 @@
   - **마이페이지 : 이소연**
   - **챗봇 AI : 신문규**
 
-### 📽️ 프로젝트 시연
+## 🔧 기술 스택
+
+| 구분                      | 기술                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| FrontEnd                  | ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) |
+| AI Chat Bot               | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white) |
+| Database                  | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) |
+| Version Control / Hosting | ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
+
+### 🎨 UI / UX
+
+- 컬러 팔레트
+  
+  <img src="./t3Project/readme_img/color_pallete.jpeg" />
+  
+  - PRIMARY ( 주요 강조 ) : 신뢰감을 주는 진한 블루
+    - 핵심 액션 ( 로그인, 시작하기, 계획 완료 )
+  - SECONDARY ( 보조 강조 ) : 청량한 스카이 블루
+    - 보조 액션 ( 인증요청, 필터선택, 자세히보기 )
+  - POINT ( 주의 / 포인트 ) : 따뜻한 옐로우
+    - 경고 / 초기화
+  - ACCENT ( 배경 / 중립 ) : 연한 그레이 / 화이트톤
+
+### 📂 폴더 구조 
+
+~~~text
+```
+.
+└── 여기저기!/
+    ├── Ai/
+    │   ├── Aichatbot.css
+    │   ├── AiChatbot.html
+    │   ├── AIchatbot.js
+    │   ├── Aiflot.css
+    │   └── Aiflot.js
+    ├── css/
+    │   ├── article.css
+    │   ├── auth.css
+    │   ├── global.css
+    │   ├── index.css
+    │   ├── map.css
+    │   ├── mypage.css
+    │   └── roulette.css
+    ├── html/
+    │   ├── article.html
+    │   ├── favorites.html
+    │   ├── forgotPassword.html
+    │   ├── index.html
+    │   ├── login.html
+    │   ├── map.html
+    │   ├── mypage.html
+    │   ├── resetPassword.html
+    │   └── roulette.html
+    └── js/
+        ├── data.js
+        ├── map.js
+        ├── roulette.js
+        └── script.js
+```
+~~~
+
+## 📽️ 프로젝트 시연
 
 - ( 메인 페이지 ) - index.html
-
-  <img src="https://i.imgur.com/6QW9FxR.gif" />
-
-
+  - gif 임베디드
 
 ( 로그인 / 회원가입 )
 
@@ -41,22 +103,11 @@
 
 ( 룰렛 페이지 )
 
-### 🔧 기술 스택
-
-| 구분            | 기술                                                         |
-| --------------- | ------------------------------------------------------------ |
-| FrontEnd        | ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) |
-| AI Chat Bot     | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white) |
-| Database        | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) |
-| Version Control | ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
-
-### 🗂️ 프로젝트 설치 및 실행 방법
-
-별도의 설치가 필요없습니다! ( 부연설명 )
+## 🗂️ 프로젝트 설치 및 실행 방법
 
 사이트 링크 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
 
-### 🦖 About "Team 박치기공룡" 
+## 🦖 About "Team 박치기공룡" 
 
 | 류태우                                                       | 이소연                                                       | 이석민                                                       | 김세준                                                       | 최준영                                                       | 신문규                                                       | 표지민                                                       | 홍가현                                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |

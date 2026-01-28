@@ -70,11 +70,12 @@ function showLoginModal(title, message, onConfirm, icon = '❓') {
 
 
 
-// 마이페이지로 저장 완료 알림
+// 마이페이지로 저장 완료 알림 이밴트 핸들링 함수 
 window.emitUI = function(type, msg) {
   if (type === "toast") showToast(msg);
 };
 
+// 마이페이지로 저장 완료 알림창 선언 함수 
 window.showToast = function(msg) {
     const toast = document.createElement("div");
 

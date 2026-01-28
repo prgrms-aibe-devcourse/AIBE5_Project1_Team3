@@ -1,4 +1,5 @@
 
+
 // --- 상태 관리 (STATE) ---
 let state = {
     query: '', // 검색어
@@ -80,6 +81,7 @@ const FILTER_BUTTONS = [
 document.addEventListener('DOMContentLoaded', () => {
     // 독도 데이터 추가 (data.js 수정 불가 시 주입)
     injectDokdoData();
+    injectToastUI(); // 토스트 UI 주입
 
     // 임베드 모드 확인
     const params = new URLSearchParams(window.location.search);
@@ -136,6 +138,7 @@ window.toggleFavoriteInMap = toggleFavoriteInMap; // 찜하기 기능 추가
 window.savePlanToMyPage = savePlanToMyPage; // 마이페이지 계획 추가
 window.showLoginModal = showLoginModal; // 모달 함수 노출
 window.showAlertModal = showAlertModal; // 알림 모달 함수 노출
+window.showLikeToast = showLikeToast; // 토스트 함수 노출
 
 // --- 로직 (LOGIC) ---
 
@@ -520,6 +523,54 @@ function toggleSidebar() {
 }
 
 /**
+ * 토스트 UI 요소 주입
+ */
+function injectToastUI() {
+    if (document.getElementById('like-toast')) return;
+    
+    const toastHtml = `
+        <div id="like-toast" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-blue-600 px-6 py-3 rounded-full shadow-2xl z-[9999] transition-all duration-500 opacity-0 translate-y-10 flex items-center gap-3 backdrop-blur-md border border-white/10 pointer-events-none">
+            <div class="bg-green-500 rounded-full p-1 shadow-lg shadow-green-500/30">
+                <i data-lucide="check" class="w-3 h-3 text-white stroke-[4]"></i>
+            </div>
+            <span id="like-toast-message" class="text-sm font-bold tracking-wide"></span>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', toastHtml);
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+/**
+ * 토스트 알림 표시 함수
+ * @param {string} message - 표시할 메시지
+ */
+function showLikeToast(message) {
+    const toast = document.getElementById('like-toast');
+    const msgBox = document.getElementById('like-toast-message');
+    
+    if (!toast || !msgBox) return;
+
+    msgBox.textContent = message;
+    
+    toast.classList.remove('hidden', 'opacity-0', 'translate-y-10');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    if (window.toastTimer) {
+        clearTimeout(window.toastTimer);
+    }
+
+    window.toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-10');
+        
+        // 트랜지션 완료 후 hidden 처리
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 500); 
+    }, 3000);
+}
+
+/**
  * 모달 내 찜하기(하트) 토글 기능
  */
 function toggleFavoriteInMap(id) {
@@ -535,9 +586,13 @@ function toggleFavoriteInMap(id) {
     const index = favorites.indexOf(id);
     
     if (index === -1) {
+        // 찜 추가
         favorites.push(id);
+        showLikeToast("📂 마이페이지에 저장됐습니다!");
     } else {
+        // 찜 삭제
         favorites.splice(index, 1);
+        showLikeToast("🗑️ 마이페이지에서 삭제됐습니다!");
     }
     
     localStorage.setItem("favorites", JSON.stringify(favorites));

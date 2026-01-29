@@ -185,9 +185,6 @@
 ~~~
 
 <h2 align="center"> 🎨 Colors </h2>
-
-- 컬러 팔레트
-  
   <img src="./t3Project/readme_img/color_pallete.jpeg" />
   
   - PRIMARY ( 주요 강조 ) : 신뢰감을 주는 진한 블루

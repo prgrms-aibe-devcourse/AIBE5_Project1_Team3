@@ -87,7 +87,7 @@
   <blockquote>Gemini 기반 AI 챗봇으로 여행지 추천 기능</blockquote>
   <br/>
 </div>
-<h3 align="center"> ✍️ 아티클 페이지 </h3>
+<h3 align="center"> ✍️ 아티클 </h3>
 <div align="center">
   <img src="./t3Project/readme_img/article-1.gif"/>
   <br/>
@@ -118,7 +118,6 @@
   <img src="https://img.shields.io/badge/css3-%25231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" />
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" />
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
-  <br />
   <br />
   <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
   <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white" />
@@ -185,7 +184,7 @@
 ```
 ~~~
 
-<h2 align="center"> 🎨 Color </h2>
+<h2 align="center"> 🎨 Colors </h2>
 
 - 컬러 팔레트
   

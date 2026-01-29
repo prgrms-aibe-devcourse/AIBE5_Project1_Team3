@@ -4,37 +4,179 @@
 
 <h3 align="center"> 태그 선택만으로 개인 맞춤 여행지를 추천해주는, AI 기반 여행 계획 플랫폼. </h3>
 
-## 🦖 프로젝트 소개 
+<h2 align="center"> 🦖 프로젝트 소개 </h2> 
+<p align="center">
+  여행 정보는 넘치지만, 어디를 가야 할지 결정하기는 점점 어려워지고 있습니다.  <br/>
+  ‘여기저기’는 막막한 여행 계획 과정을 **태그 선택과 AI 추천**으로 단순화하여, <br /> 
+  <strong>누구나 부담 없이 여행을 시작할 수 있도록 돕는 서비스입니다.</strong>
+  <br />
+  <br />
+  <br />
+  개발 기간 : 2026.01.23 ~ 2026.01.29 (7일)
+  <br />
+  <br />
+  <a href="https://suno.com/s/s4zLD41etWcHTiw7">▶️ Suno에서 듣기</a>
+  <br />
+  본 프로젝트의 분위기를 표현한 AI 생성 테마곡입니다.  
+</p>
 
-여행 정보는 넘치지만, 어디를 가야 할지 결정하기는 점점 어려워지고 있습니다.   
 
-‘여기저기’는 막막한 여행 계획 과정을 **태그 선택과 AI 추천**으로 단순화하여,  
+<h2 align="center"> 📽️ 주요 기능 </h2>
 
-누구나 부담 없이 여행을 시작할 수 있도록 돕는 서비스입니다.
+<table align="center">
+  <thead>
+    <tr>
+      <th>기능</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AI 추천</td>
+      <td>Gemini 기반 챗봇으로 여행지를 추천받을 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>룰렛</td>
+      <td>여행지 추천 룰렛</td>
+    </tr>
+    <tr>
+      <td>일정 관리</td>
+      <td>여행 일정을 생성하고, 관리할 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>후기 작성</td>
+      <td>지난 여행의 후기를 작성해보고, 관리할 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>지도</td>
+      <td>원하는 여행지의 경로를 안내받을 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>태그 필터링</td>
+      <td>태그를 통해 검색을 좀 더 원활하게 진행할 수 있습니다.</td>
+    </tr>
+  </tbody>
+</table>
 
+<h2 align="center"> 📽️ 세부 기능 </h2>
+<h3 align="center"> 🔐 소셜 로그인 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/login.gif" width="600" />
+  <br/>
+  <blockquote>Google 로그인 / 이메일 회원가입 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 👤 마이 페이지 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/mypage.gif"/>
+  <br />
+  <blockquote>일정을 관리하고, 커스터마이징 하는 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 📁 태그 필터링 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/index.gif"/>
+  <br/>
+  <blockquote>태그로 필터링을 통한 검색 간편화</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 🤖 AI 챗봇 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/ai.gif"/>
+  <br />
+  <blockquote>Gemini 기반 AI 챗봇으로 여행지 추천 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> ✍️ 아티클 페이지 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/article-1.gif"/>
+  <br/>
+  <blockquote>토글식 태그 버튼</blockquote>
+  <br/>
+  <img src="./t3Project/readme_img/article-2.gif"/>
+  <br/>
+  <blockquote>캐러셀 스와이프 / 마우스 휠 스와이프 / 버튼식 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 🗺️ 지도 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/map.gif"/>
+  <br/>
+  <blockquote>여행지의 경로를 짜고, 관리하는 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 📍 룰렛 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/roulette.gif" />
+  <br/>
+  <blockquote>룰렛을 통한 랜덤하게 여행지를 추천받는 기능</blockquote>
+  <br/>
+</div>
+<h2 align="center"> 🔧 기술 </h2>
+<p align="center">
+  <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/css3-%25231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <br />
+  <br />
+  <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
+  <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white" />
+  <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" />
+  <img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white" />
+</p><br />
+<h4 align="center">🛠️ AI</h4> 
+<p align="center">
+  <img src="https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white" />
+  <img src="https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white" />
+  <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white" />
+  <img src="https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white" />
+  <img src="https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white" />
+</p><br />
 
+<h2 align="center"> 📂 폴더 구조 </h2>
 
-본 프로젝트의 분위기를 표현한 AI 생성 배경음악입니다.  [▶️ Suno에서 듣기](https://suno.com/s/s4zLD41etWcHTiw7)
+~~~text
+```
+.
+└── 📦 여기저기!/
+    ├── 📂 Ai/
+    │   ├── Aichatbot.css              # 챗봇 css
+    │   ├── AiChatbot.html             # 챗봇 페이지
+    │   ├── AIchatbot.js               # 챗봇 로직
+    │   ├── Aiflot.css                 # 메인페이지 챗봇 css
+    │   └── Aiflot.js                  # 메인페이지 챗봇 로직
+    ├── 📂 css/
+    │   ├── article.css                # 아티클 페이지 css
+    │   ├── auth.css                   # 로그인/회원가입 페이지 css
+    │   ├── global.css                 # 공통으로 쓰는 css
+    │   ├── index.css                  # 메인페이지 css
+    │   ├── map.css                    # 지도 css
+    │   ├── mypage.css                 # 마이페이지 css
+    │   └── roulette.css               # 룰렛 css
+    ├── 📂 html/
+    │   ├── article.html               # 아티클 페이지
+    │   ├── favorites.html             # 찜하기 목록
+    │   ├── index.html                 # 메인페이지
+    │   ├── map.html                   # 지도
+    │   ├── roulette.html              # 룰렛
+    │   ├── mypage.html                # 마이페이지
+    │   ├── login.html                 # 로그인
+    │   ├── resetPassword.html         # 비밀번호 초기화
+    │   └── forgotPassword.html        # 비밀번호 찾기
+    └── 📂 js/
+        ├── data.js                    # 아티클, 리뷰 정보, 좌표 등
+        ├── map.js                     # 지도 로직
+        ├── roulette.js                # 룰렛 로직
+        └── script.js                  # 네비게이션, UI 인터렉션/
+                                       ## 인증 및 커스텀 모달 시스템
+                                       ## 찜하기, 상세페이지 UI, 토스트 알림
+                                       ## 카드 렌더링, 필터/검색 통합 로직
+                                       ## 검색창 태그 관리 & 필터 제어
+```
+~~~ 
 
-- **개발 기간 : 2026.01.23 ~ 2026.01.29 (7일)**
-- **개발 담당 :** 
-  - **메인페이지 : 이석민**
-  - **아티클(본문) : 류태우, 최준영, 홍가현**
-  - **로그인 / 회원가입 : 표지민**
-  - **지도(맵), 룰렛 : 김세준**
-  - **마이페이지 : 이소연**
-  - **챗봇 AI : 신문규**
-
-## 🔧 기술 스택
-
-| 구분                      | 기술                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| FrontEnd                  | ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) |
-| AI Chat Bot               | ![Google Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white) |
-| Database                  | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) |
-| Version Control / Hosting | ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white) |
-
-### 🎨 UI / UX
+<h2 align="center"> 🎨 컬러 </h2>
 
 - 컬러 팔레트
   
@@ -48,66 +190,13 @@
     - 경고 / 초기화
   - ACCENT ( 배경 / 중립 ) : 연한 그레이 / 화이트톤
 
-### 📂 폴더 구조 
+<h2 align="center"> 🗂️ 서비스 이용 및 시연 영상 </h2>
 
-~~~text
-```
-.
-└── 여기저기!/
-    ├── Ai/
-    │   ├── Aichatbot.css
-    │   ├── AiChatbot.html
-    │   ├── AIchatbot.js
-    │   ├── Aiflot.css
-    │   └── Aiflot.js
-    ├── css/
-    │   ├── article.css
-    │   ├── auth.css
-    │   ├── global.css
-    │   ├── index.css
-    │   ├── map.css
-    │   ├── mypage.css
-    │   └── roulette.css
-    ├── html/
-    │   ├── article.html
-    │   ├── favorites.html
-    │   ├── forgotPassword.html
-    │   ├── index.html
-    │   ├── login.html
-    │   ├── map.html
-    │   ├── mypage.html
-    │   ├── resetPassword.html
-    │   └── roulette.html
-    └── js/
-        ├── data.js
-        ├── map.js
-        ├── roulette.js
-        └── script.js
-```
-~~~
+- 웹사이트 바로가기 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
+- 프레젠테이션 - [여기저기-PPT](https://www.miricanvas.com/v2/design2/v/7a46caab-c4fb-450b-a81a-32586ce98cc7)
+- 시연 영상 보기 - ( 유튜브 링크 예정 있으면 추가 )
 
-## 📽️ 프로젝트 시연
-
-- ( 메인 페이지 ) - index.html
-  - gif 임베디드
-
-( 로그인 / 회원가입 )
-
-( 마이페이지 )
-
-( AI 챗봇 )
-
-( 아티클 페이지 )
-
-( 지도 페이지 )
-
-( 룰렛 페이지 )
-
-## 🗂️ 프로젝트 설치 및 실행 방법
-
-사이트 링크 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
-
-## 🦖 About "Team 박치기공룡" 
+<h2 align="center"> 🦖 About "Team 박치기공룡"  </h2>
 
 | 류태우                                                       | 이소연                                                       | 이석민                                                       | 김세준                                                       | 최준영                                                       | 신문규                                                       | 표지민                                                       | 홍가현                                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |

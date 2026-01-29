@@ -4,7 +4,7 @@
 
 <h3 align="center"> 태그 선택만으로 개인 맞춤 여행지를 추천해주는, AI 기반 여행 계획 플랫폼. </h3>
 
-<h2 align="center"> 🦖 프로젝트 소개 </h2> 
+<h2 align="center"> 🦖 Project Overview </h2> 
 <p align="center">
   여행 정보는 넘치지만, 어디를 가야 할지 결정하기는 점점 어려워지고 있습니다.  <br/>
   ‘여기저기’는 막막한 여행 계획 과정을 **태그 선택과 AI 추천**으로 단순화하여, <br /> 
@@ -21,7 +21,7 @@
 </p>
 
 
-<h2 align="center"> 📽️ 주요 기능 </h2>
+<h2 align="center"> 📽️ Features </h2>
 
 <table align="center">
   <thead>
@@ -58,7 +58,7 @@
   </tbody>
 </table>
 
-<h2 align="center"> 📽️ 세부 기능 </h2>
+<h2 align="center"> 📽️ Feature Details </h2>
 <h3 align="center"> 🔐 소셜 로그인 </h3>
 <div align="center">
   <img src="./t3Project/readme_img/login.gif" width="600" />
@@ -112,7 +112,7 @@
   <blockquote>룰렛을 통한 랜덤하게 여행지를 추천받는 기능</blockquote>
   <br/>
 </div>
-<h2 align="center"> 🔧 기술 </h2>
+<h2 align="center"> 🔧 Tech </h2>
 <p align="center">
   <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" />
   <img src="https://img.shields.io/badge/css3-%25231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" />
@@ -124,17 +124,27 @@
   <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white" />
   <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" />
   <img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white" />
+  <img src="https://img.shields.io/badge/Zoom-2D8CFF?style=for-the-badge&logo=zoom&logoColor=white"/>
 </p><br />
 <h4 align="center">🛠️ AI</h4> 
 <p align="center">
+  <img src="https://img.shields.io/badge/Google%20AI%20Studio-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" />
   <img src="https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white" />
   <img src="https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white" />
   <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white" />
   <img src="https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white" />
+  <br/>
+  <br/>
   <img src="https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white" />
+  <img src="https://img.shields.io/badge/Grok-000000?style=for-the-badge&logo=x&logoColor=white"/>
+  <img src="https://img.shields.io/badge/perplexity-000000?style=for-the-badge&logo=perplexity&logoColor=088F8F"/>
+  <img src="https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white" />
+  <img src="https://img.shields.io/badge/Genspark-6C63FF?style=for-the-badge&logo=thunderbird&logoColor=white" />
+  <img src="https://img.shields.io/badge/Suno-FF6A00?style=for-the-badge&logo=musicbrainz&logoColor=white" />
+
 </p><br />
 
-<h2 align="center"> 📂 폴더 구조 </h2>
+<h2 align="center"> 📂 Structure </h2>
 
 ~~~text
 ```
@@ -174,9 +184,9 @@
                                        ## 카드 렌더링, 필터/검색 통합 로직
                                        ## 검색창 태그 관리 & 필터 제어
 ```
-~~~ 
+~~~
 
-<h2 align="center"> 🎨 컬러 </h2>
+<h2 align="center"> 🎨 Color </h2>
 
 - 컬러 팔레트
   
@@ -190,13 +200,13 @@
     - 경고 / 초기화
   - ACCENT ( 배경 / 중립 ) : 연한 그레이 / 화이트톤
 
-<h2 align="center"> 🗂️ 서비스 이용 및 시연 영상 </h2>
+<h2 align="center"> 🔗 Demo & Links </h2>
 
 - 웹사이트 바로가기 - [여기저기!](https://prgrms-aibe-devcourse.github.io/AIBE5_Project1_Team3/t3Project/html/index.html)
 - 프레젠테이션 - [여기저기-PPT](https://www.miricanvas.com/v2/design2/v/7a46caab-c4fb-450b-a81a-32586ce98cc7)
 - 시연 영상 보기 - ( 유튜브 링크 예정 있으면 추가 )
 
-<h2 align="center"> 🦖 About "Team 박치기공룡"  </h2>
+<h2 align="center"> 🦖 "Team 박치기공룡" </h2>
 
 | 류태우                                                       | 이소연                                                       | 이석민                                                       | 김세준                                                       | 최준영                                                       | 신문규                                                       | 표지민                                                       | 홍가현                                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |

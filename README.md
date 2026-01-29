@@ -23,38 +23,95 @@
 
 <h2 align="center"> 📽️ 주요 기능 </h2>
 
-<div align="center">
-
-|    기능     |                         설명                          |
-| :---------: | :---------------------------------------------------: |
-|   AI 추천   |  Gemini 기반 챗봇으로 여행지를 추천받을 수 있습니다.  |
-|    룰렛     |                   여행지 추천 룰렛                    |
-|  일정 관리  |       여행 일정을 생성하고, 관리할 수 있습니다.       |
-|  후기 작성  |  지난 여행의 후기를 작성해보고, 관리할 수 있습니다.   |
-|    지도     |     원하는 여행지의 경로를 안내받을 수 있습니다.      |
-| 태그 필터링 | 태그를 통해 검색을 좀 더 원활하게 진행할 수 있습니다. |
-
-</div>
+<table align="center">
+  <thead>
+    <tr>
+      <th>기능</th>
+      <th>설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AI 추천</td>
+      <td>Gemini 기반 챗봇으로 여행지를 추천받을 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>룰렛</td>
+      <td>여행지 추천 룰렛</td>
+    </tr>
+    <tr>
+      <td>일정 관리</td>
+      <td>여행 일정을 생성하고, 관리할 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>후기 작성</td>
+      <td>지난 여행의 후기를 작성해보고, 관리할 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>지도</td>
+      <td>원하는 여행지의 경로를 안내받을 수 있습니다.</td>
+    </tr>
+    <tr>
+      <td>태그 필터링</td>
+      <td>태그를 통해 검색을 좀 더 원활하게 진행할 수 있습니다.</td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 align="center"> 📽️ 세부 기능 </h2>
-
-<h3 align="center"> 📽️ 소셜 로그인 </h3>
+<h3 align="center"> 🔐 소셜 로그인 </h3>
 <div align="center">
-
-![로그인/회원가입](./t3Project/readme_img/login.gif)  
-> Google 로그인 / 이메일 회원가입 기능
-
+  <img src="./t3Project/readme_img/login.gif" width="600" />
+  <br/>
+  <blockquote>Google 로그인 / 이메일 회원가입 기능</blockquote>
+  <br/>
 </div>
-
-<h3 align="center"> 📽️ 마이 페이지 </h3>
+<h3 align="center"> 👤 마이 페이지 </h3>
 <div align="center">
-
-![로그인/회원가입](./t3Project/readme_img/mypage.gif)  
-> 일정을 관리하고, 커스터마이징 하는 기능
-
+  <img src="./t3Project/readme_img/mypage.gif"/>
+  <br />
+  <blockquote>일정을 관리하고, 커스터마이징 하는 기능</blockquote>
+  <br/>
 </div>
-
-
+<h3 align="center"> 📁 태그 필터링 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/index.gif"/>
+  <br/>
+  <blockquote>태그로 필터링을 통한 검색 간편화</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 🤖 AI 챗봇 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/ai.gif"/>
+  <br />
+  <blockquote>Gemini 기반 AI 챗봇으로 여행지 추천 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> ✍️ 아티클 페이지 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/article-1.gif"/>
+  <br/>
+  <blockquote>토글식 태그 버튼</blockquote>
+  <br/>
+  <img src="./t3Project/readme_img/article-2.gif"/>
+  <br/>
+  <blockquote>캐러셀 스와이프 / 마우스 휠 스와이프 / 버튼식 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 🗺️ 지도 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/map.gif"/>
+  <br/>
+  <blockquote>여행지의 경로를 짜고, 관리하는 기능</blockquote>
+  <br/>
+</div>
+<h3 align="center"> 📍 룰렛 </h3>
+<div align="center">
+  <img src="./t3Project/readme_img/roulette.gif" />
+  <br/>
+  <blockquote>룰렛을 통한 랜덤하게 여행지를 추천받는 기능</blockquote>
+  <br/>
+</div>
 <h2 align="center"> 🔧 기술 </h2>
 <p align="center">
   <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" />
@@ -117,7 +174,7 @@
                                        ## 카드 렌더링, 필터/검색 통합 로직
                                        ## 검색창 태그 관리 & 필터 제어
 ```
-~~~
+~~~ 
 
 <h2 align="center"> 🎨 컬러 </h2>
 

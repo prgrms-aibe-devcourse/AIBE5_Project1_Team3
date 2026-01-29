@@ -529,11 +529,9 @@ function injectToastUI() {
     if (document.getElementById('like-toast')) return;
     
     const toastHtml = `
-        <div id="like-toast" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-white text-blue-600 px-6 py-3 rounded-full shadow-2xl z-[9999] transition-all duration-500 opacity-0 translate-y-10 flex items-center gap-3 backdrop-blur-md border border-white/10 pointer-events-none">
-            <div class="bg-green-500 rounded-full p-1 shadow-lg shadow-green-500/30">
-                <i data-lucide="check" class="w-3 h-3 text-white stroke-[4]"></i>
-            </div>
+        <div id="like-toast" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-full shadow-2xl z-[9999] transition-all duration-500 opacity-0 translate-y-10 flex items-center gap-3 backdrop-blur-md border border-white/10 pointer-events-none">
             <span id="like-toast-message" class="text-sm font-bold tracking-wide"></span>
+        </div>
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', toastHtml);
@@ -544,6 +542,7 @@ function injectToastUI() {
  * 토스트 알림 표시 함수
  * @param {string} message - 표시할 메시지
  */
+
 function showLikeToast(message) {
     const toast = document.getElementById('like-toast');
     const msgBox = document.getElementById('like-toast-message');

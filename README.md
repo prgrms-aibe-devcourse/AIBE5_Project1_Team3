@@ -23,6 +23,8 @@
 
 <h2 align="center"> 📽️ 주요 기능 </h2>
 
+<div align="center">
+
 |    기능     |                         설명                          |
 | :---------: | :---------------------------------------------------: |
 |   AI 추천   |  Gemini 기반 챗봇으로 여행지를 추천받을 수 있습니다.  |
@@ -32,36 +34,26 @@
 |    지도     |     원하는 여행지의 경로를 안내받을 수 있습니다.      |
 | 태그 필터링 | 태그를 통해 검색을 좀 더 원활하게 진행할 수 있습니다. |
 
+</div>
+
 <h2 align="center"> 📽️ 세부 기능 </h2>
+
 <h3 align="center"> 📽️ 소셜 로그인 </h3>
-![로그인/회원가입](./t3Project/readme_img/login.gif)
+<div align="center">
+
+![로그인/회원가입](./t3Project/readme_img/login.gif)  
 > Google 로그인 / 이메일 회원가입 기능
 
+</div>
+
 <h3 align="center"> 📽️ 마이 페이지 </h3>
-![로그인/회원가입](./t3Project/readme_img/mypage.gif)
+<div align="center">
+
+![로그인/회원가입](./t3Project/readme_img/mypage.gif)  
 > 일정을 관리하고, 커스터마이징 하는 기능
 
-<h3 align="center"> 📽️ 태그 필터링 </h3>
-![메인페이지](./t3Project/readme_img/index.gif)
-> 태그로 필터링을 통한 검색 간편화
+</div>
 
-<h3 align="center"> 📽️ AI 챗봇 </h3>
-![ai챗봇](./t3Project/readme_img/ai.gif)
-> Gemini 기반 AI 챗봇으로 여행지 추천 기능
-
-<h3 align="center"> 📽️ 아티클 페이지 </h3>
-![article-1](./t3Project/readme_img/article-1.gif)
-> 토글식 태그 버튼
-![article-1](./t3Project/readme_img/article-2.gif)
-> 캐러셀 스와이프 / 마우스 휠 스와이프 / 버튼식 기능
-
-<h3 align="center"> 📽️ 지도 </h3>
-![map](./t3Project/readme_img/map.gif)
-> 여행지의 경로를 짜고, 관리하는 기능
-
-<h3 align="center"> 📽️ 룰렛 </h3>
-![roullete](./t3Project/readme_img/roulette.gif)
-> 룰렛을 통한 랜덤하게 여행지를 추천받는 기능
 
 <h2 align="center"> 🔧 기술 </h2>
 <p align="center">
@@ -125,7 +117,7 @@
                                        ## 카드 렌더링, 필터/검색 통합 로직
                                        ## 검색창 태그 관리 & 필터 제어
 ```
-~~~ 
+~~~
 
 <h2 align="center"> 🎨 컬러 </h2>
 

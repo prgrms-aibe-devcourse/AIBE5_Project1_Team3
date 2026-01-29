@@ -116,7 +116,7 @@ function injectDokdoData() {
     if (typeof ARTICLES === 'undefined') return;
 
     // 이미 존재하는지 확인
-    if (ARTICLES.some(a => a.title === '독도')) return;
+    if (ARTICLES.some(a => a.name === '독도')) return;
 
     ARTICLES.push(dokdo);
     // state.filteredArticles 업데이트

@@ -87,7 +87,7 @@
   <blockquote>Gemini 기반 AI 챗봇으로 여행지 추천 기능</blockquote>
   <br/>
 </div>
-<h3 align="center"> ✍️ 아티클 페이지 </h3>
+<h3 align="center"> ✍️ 아티클 </h3>
 <div align="center">
   <img src="./t3Project/readme_img/article-1.gif"/>
   <br/>
@@ -119,7 +119,6 @@
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" />
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
   <br />
-  <br />
   <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" />
   <img src="https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white" />
   <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white" />
@@ -133,7 +132,6 @@
   <img src="https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white" />
   <img src="https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white" />
   <img src="https://img.shields.io/badge/Claude-D97757?style=for-the-badge&logo=claude&logoColor=white" />
-  <br/>
   <br/>
   <img src="https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white" />
   <img src="https://img.shields.io/badge/Grok-000000?style=for-the-badge&logo=x&logoColor=white"/>
@@ -186,10 +184,7 @@
 ```
 ~~~
 
-<h2 align="center"> 🎨 Color </h2>
-
-- 컬러 팔레트
-  
+<h2 align="center"> 🎨 Colors </h2>
   <img src="./t3Project/readme_img/color_pallete.jpeg" />
   
   - PRIMARY ( 주요 강조 ) : 신뢰감을 주는 진한 블루

@@ -116,7 +116,7 @@ function injectDokdoData() {
     if (typeof ARTICLES === 'undefined') return;
 
     // 이미 존재하는지 확인
-    if (ARTICLES.some(a => a.title === '대한민국 가장 동쪽에 위치한 섬, 독도')) return;
+    if (ARTICLES.some(a => a.title === '독도')) return;
 
     ARTICLES.push(dokdo);
     // state.filteredArticles 업데이트
@@ -1139,8 +1139,8 @@ function showLoginModal(message = '찜하기 기능은 로그인 후<br>이용�
                 <h3 style="margin-bottom:10px; font-size:18px;">로그인이 필요합니다</h3>
                 <p style="color:#666; font-size:14px; margin-bottom:25px; line-height:1.5;">${message}</p>
                 <div style="display:flex; gap:10px;">
-                <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
-                <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6;; cursor:pointer; font-weight:bold;">로그인하기</button>
+                    <button onclick="document.getElementById('login-confirm-modal').remove()" style="flex:1; padding:12px; border:none; border-radius:8px; background:#eee; cursor:pointer;">나중에</button>
+                    <button onclick="location.href='login.html'" style="flex:1; padding:12px; border:none; border-radius:8px; background:#000; background:#3b82f6; cursor:pointer; font-weight:bold; color:#ffffff;">로그인하기</button>
                 </div>
             </div>
         </div>

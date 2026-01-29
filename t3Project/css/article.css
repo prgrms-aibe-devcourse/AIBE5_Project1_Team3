@@ -116,10 +116,14 @@ body {
   transition: all 0.3s ease;
 }
 
-.navbar .nav-item,
-.navbar .btn-login {
+.navbar .nav-item{
   color: var(--gray-900) !important;
 }
+
+
+.navbar .btn-login{
+    color : var(--white) !important;
+} 
 
 /* nav-icon-btn 아이콘 항상 검은색 - 모든 상태에서 적용 */
 .navbar .nav-icon-btn i {
@@ -173,9 +177,7 @@ body {
   /* 배경색: 세련된 브라이트 블루 (원하시는 색상 코드로 변경 가능) */
   /* background-color: #ffd850 !important; 밝은 노란색 */
   /* background-color: #3b82f6 !important; 브라이트 블루 */
-  /* background-color: #2563eb !important; 세련된 파란색 */
-  /* color: #ffffff !important; */
-
+  
   /* 형태 및 간격 */
   padding: 10px 24px;
   border-radius: 50px; /* 완전한 라운드 형태 */
@@ -191,6 +193,9 @@ body {
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  background-color: #2563eb !important;
+    color: #ffffff !important;
+
 }
 
 /* 마우스를 올렸을 때 (Hover) */
@@ -352,6 +357,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background: white;
+    border-radius: var(--radius-2xl);
 }
 .host-profile {
     display: flex;
